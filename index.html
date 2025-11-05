@@ -49,19 +49,17 @@
             justify-content: center;
             padding: 20px;
             position: relative;
-            overflow-x: hidden;
-            overflow-y: auto; /* FIXED: Allow vertical scrolling */
+            overflow: hidden;
             transition: all 0.5s ease;
         }
 
         /* Animated background particles */
         .bg-particles {
-            position: fixed; /* FIXED: Changed from absolute to fixed */
+            position: absolute;
             width: 100%;
             height: 100%;
             overflow: hidden;
             z-index: 0;
-            pointer-events: none; /* FIXED: Prevent particles from blocking clicks */
         }
 
         .particle {
@@ -117,14 +115,13 @@
             backdrop-filter: blur(20px);
             border-radius: 40px;
             box-shadow: 0 30px 90px var(--shadow-color);
-            overflow: visible; /* FIXED: Changed from hidden to visible */
+            overflow: hidden;
             max-width: 480px;
             width: 100%;
             animation: slideUp 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             position: relative;
             z-index: 1;
             transition: all 0.5s ease;
-            margin: 40px auto; /* FIXED: Added margin for spacing */
         }
 
         @keyframes slideUp {
@@ -145,7 +142,6 @@
             text-align: center;
             position: relative;
             overflow: hidden;
-            border-radius: 40px 40px 0 0; /* FIXED: Added border radius */
         }
 
         .login-header::before {
@@ -543,28 +539,9 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // 👥 USER DATABASE WITH 4 ADMIN ACCOUNTS
+        // User database
         const users = {
-            'kirs': { 
-                password: 'kirs', 
-                name: 'Kirs', 
-                role: 'admin' 
-            },
-            'aab': { 
-                password: 'meow123', 
-                name: 'Aab', 
-                role: 'admin' 
-            },
-            'barbie': { 
-                password: 'meow123', 
-                name: 'Barbie', 
-                role: 'admin' 
-            },
-            'shee': { 
-                password: 'meow123', 
-                name: 'Shee', 
-                role: 'admin' 
-            }
+            'jgemszie': { password: 'lauvgemsz', name: 'jgemszie', role: 'admin' }
         };
 
         // Translations
@@ -795,13 +772,13 @@
                         localStorage.removeItem('rememberMe');
                     }
 
-                    // ⭐ Save ALL required session storage variables
+                    // ⭐ FIX: Save ALL required session storage variables
                     // First set (original variables)
                     sessionStorage.setItem('currentUser', username);
                     sessionStorage.setItem('userName', users[username].name);
                     sessionStorage.setItem('userRole', users[username].role);
                     
-                    // Second set (dashboard required variables)
+                    // Second set (dashboard required variables) - THIS WAS MISSING!
                     sessionStorage.setItem('salesTrackerLoggedIn', 'true');
                     sessionStorage.setItem('salesTrackerUser', username);
                     sessionStorage.setItem('salesTrackerName', users[username].name);
