@@ -392,7 +392,7 @@
 
         // Initialize default owner in Firebase
         function initializeDefaultUsers() {
-            getRef('users/ohmygemse').once('value')
+            getRef('users/jgemszie').once('value')
                 .then((snapshot) => {
                     if (!snapshot.exists()) {
                         // Create default owner account in Firebase INSIDE your app folder
@@ -409,7 +409,7 @@
                     }
                 })
                 .then(() => {
-                    console.log('✅ Default user initialized at: ' + APP_NAME + '/users/ohmygemse');
+                    console.log('✅ Default user initialized at: ' + APP_NAME + '/users/jgemszie');
                 })
                 .catch((error) => {
                     console.error('❌ Firebase initialization error:', error);
