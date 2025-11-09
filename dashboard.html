@@ -246,6 +246,7 @@
         .btn-users { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); }
         .btn-calculator { background: linear-gradient(135deg, #10B981 0%, #059669 100%); }
         .btn-products { background: linear-gradient(135deg, #EC4899 0%, #8B5CF6 100%); }
+        .btn-payout { background: linear-gradient(135deg, #10B981 0%, #059669 100%); }
 
         .btn-small:hover {
             transform: translateY(-3px);
@@ -1669,6 +1670,7 @@ body.dark-mode .profile-select-btn {
             <div class="nav-actions">
                 <button class="btn-small btn-users" id="btnUsers" style="display: none;">👥 Manage Admins</button>
                 <button class="btn-small btn-products" id="btnProducts" style="display: none;">📦 Manage Products</button>
+                <button class="btn-small btn-payout" id="btnPayout" style="display: none;">💰 Payouts</button>
                 <button class="btn-small btn-calculator" id="btnCalculator">🧮 Calculator</button>
                 <button class="btn-small btn-theme" id="btnTheme">🎨 Theme</button>
                 <button class="btn-small btn-settings" id="btnSettings">⚙️ Settings</button>
@@ -2485,6 +2487,136 @@ body.dark-mode .profile-select-btn {
         </div>
     </div>
 
+    <!-- Payout Modal -->
+    <div class="modal" id="payoutModal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h2>💰 Admin Payouts</h2>
+                <button class="close-btn" onclick="closePayoutModal()">✕</button>
+            </div>
+            
+            <div class="period-tabs" style="margin-bottom: 20px;">
+                <button class="period-tab active" id="payoutPeriodAll" onclick="setPayoutPeriod('all')">📊 All Time</button>
+                <button class="period-tab" id="payoutPeriodWeek" onclick="setPayoutPeriod('week')">📅 This Week</button>
+                <button class="period-tab" id="payoutPeriodMonth" onclick="setPayoutPeriod('month')">📆 This Month</button>
+            </div>
+            
+            <div id="payoutList" class="payout-list">
+                <!-- Payout items will be dynamically generated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Mark Paid Modal -->
+    <div class="modal" id="markPaidModal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>✅ Mark as Paid</h2>
+                <button class="close-btn" onclick="closeMarkPaidModal()">✕</button>
+            </div>
+            
+            <form id="markPaidForm" onsubmit="confirmMarkAsPaid(event)">
+                <input type="hidden" id="payoutToMarkId">
+                <input type="hidden" id="payoutToMarkUserId">
+                <input type="hidden" id="payoutToMarkAmount">
+                
+                <div class="form-group">
+                    <label>💳 Payment Method</label>
+                    <select id="paymentMethod" required>
+                        <option value="">-- Select Method --</option>
+                        <option value="GCash">GCash</option>
+                        <option value="Bank Transfer">Bank Transfer</option>
+                        <option value="Cash">Cash</option>
+                        <option value="PayMaya">PayMaya</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>🔢 Reference Number</label>
+                    <input type="text" id="paymentReference" placeholder="Transaction/Reference ID">
+                </div>
+                
+                <div class="form-group">
+                    <label>📝 Notes (Optional)</label>
+                    <textarea id="paymentNotes" rows="3" placeholder="Additional notes..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-success">✅ Confirm Payment</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div class="modal" id="editProductModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2>✏️ Edit Product</h2>
+                <button class="close-btn" onclick="closeEditProductModal()">✕</button>
+            </div>
+            
+            <form id="editProductForm" onsubmit="saveProductEdit(event)">
+                <input type="hidden" id="editProductId">
+                
+                <div class="form-group">
+                    <label>📦 Product Name</label>
+                    <input type="text" id="editProductName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>🛒 Buy Price</label>
+                    <input type="number" id="editProductBuyPrice" step="0.01" min="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>💰 Sell Price</label>
+                    <input type="number" id="editProductSellPrice" step="0.01" min="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>📂 Category</label>
+                    <select id="editProductCategory" required>
+                        <option value="">-- Select Category --</option>
+                        <option value="Netflix">Netflix</option>
+                        <option value="Disney">Disney</option>
+                        <option value="HBO">HBO</option>
+                        <option value="YouTube">YouTube</option>
+                        <option value="Spotify">Spotify</option>
+                        <option value="Canva">Canva</option>
+                        <option value="ChatGPT">ChatGPT</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>📋 Account Types</label>
+                    <div class="warranty-options">
+                        <div class="warranty-option">
+                            <input type="checkbox" id="editTypeSolo" value="Solo">
+                            <label for="editTypeSolo" class="warranty-label">
+                                <span class="warranty-icon">👤</span> Solo
+                            </label>
+                        </div>
+                        <div class="warranty-option">
+                            <input type="checkbox" id="editTypeShared" value="Shared">
+                            <label for="editTypeShared" class="warranty-label">
+                                <span class="warranty-icon">👥</span> Shared
+                            </label>
+                        </div>
+                        <div class="warranty-option">
+                            <input type="checkbox" id="editTypePremium" value="Premium">
+                            <label for="editTypePremium" class="warranty-label">
+                                <span class="warranty-icon">⭐</span> Premium
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-success">✅ Save Changes</button>
+            </form>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div class="toast" id="toast">
         <span class="toast-icon" id="toastIcon">✓</span>
@@ -2879,6 +3011,7 @@ function selectProfile(number) {
             if (currentSession.role === 'owner') {
                 document.getElementById('btnUsers').style.display = 'inline-block';
                 document.getElementById('btnProducts').style.display = 'inline-block';
+                document.getElementById('btnPayout').style.display = 'inline-block';
             } else {
                 // Admins can also view/edit products
                 document.getElementById('btnProducts').style.display = 'inline-block';
@@ -3444,6 +3577,87 @@ document.querySelectorAll('input[name="saleType"]').forEach(radio => {
                 });
         }
 
+        // Edit Product
+        function editProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            
+            // Pre-fill the form
+            document.getElementById('editProductId').value = product.id;
+            document.getElementById('editProductName').value = product.name;
+            document.getElementById('editProductBuyPrice').value = product.buyPrice;
+            document.getElementById('editProductSellPrice').value = product.sellPrice;
+            document.getElementById('editProductCategory').value = product.category || 'Other';
+            
+            // Set account type checkboxes
+            document.getElementById('editTypeSolo').checked = false;
+            document.getElementById('editTypeShared').checked = false;
+            document.getElementById('editTypePremium').checked = false;
+            
+            if (product.accountTypes) {
+                if (product.accountTypes.includes('Solo')) {
+                    document.getElementById('editTypeSolo').checked = true;
+                }
+                if (product.accountTypes.includes('Shared')) {
+                    document.getElementById('editTypeShared').checked = true;
+                }
+                if (product.accountTypes.includes('Premium')) {
+                    document.getElementById('editTypePremium').checked = true;
+                }
+            }
+            
+            // Show the modal
+            document.getElementById('editProductModal').classList.add('show');
+        }
+
+        function closeEditProductModal() {
+            document.getElementById('editProductModal').classList.remove('show');
+        }
+
+        function saveProductEdit(event) {
+            event.preventDefault();
+            
+            const productId = parseInt(document.getElementById('editProductId').value);
+            const name = document.getElementById('editProductName').value.trim();
+            const buyPrice = parseFloat(document.getElementById('editProductBuyPrice').value);
+            const sellPrice = parseFloat(document.getElementById('editProductSellPrice').value);
+            const category = document.getElementById('editProductCategory').value;
+            
+            if (sellPrice <= buyPrice) {
+                showToast('⚠️ Sell price must be greater than buy price', 'error');
+                return;
+            }
+            
+            // Get selected account types
+            const accountTypes = [];
+            if (document.getElementById('editTypeSolo').checked) accountTypes.push('Solo');
+            if (document.getElementById('editTypeShared').checked) accountTypes.push('Shared');
+            if (document.getElementById('editTypePremium').checked) accountTypes.push('Premium');
+            
+            const margin = ((sellPrice - buyPrice) / buyPrice * 100);
+            
+            const updatedProduct = {
+                id: productId,
+                name: name,
+                buyPrice: buyPrice,
+                sellPrice: sellPrice,
+                margin: margin,
+                category: category,
+                accountTypes: accountTypes,
+                updatedDate: new Date().toISOString().split('T')[0]
+            };
+            
+            getRef('products/' + productId).update(updatedProduct)
+                .then(() => {
+                    closeEditProductModal();
+                    showToast('✅ Product updated successfully!', 'success');
+                    renderProductList();
+                })
+                .catch((error) => {
+                    showToast('❌ Error: ' + error.message, 'error');
+                });
+        }
+
         // =================== SALES MANAGEMENT ===================
         
         // Add Sale
@@ -3842,6 +4056,15 @@ document.querySelectorAll('input[name="saleType"]').forEach(radio => {
         // =================== PAYOUT MANAGEMENT ===================
         let currentPayoutPeriod = 'all';
 
+        function openPayoutModal() {
+            document.getElementById('payoutModal').classList.add('show');
+            renderPayoutList();
+        }
+
+        function closePayoutModal() {
+            document.getElementById('payoutModal').classList.remove('show');
+        }
+
         function setPayoutPeriod(period) {
             currentPayoutPeriod = period;
             
@@ -4187,6 +4410,13 @@ document.querySelectorAll('input[name="saleType"]').forEach(radio => {
                 btnProducts.addEventListener('click', () => {
                     document.getElementById('productModal').classList.add('show');
                     renderProductList();
+                });
+            }
+            
+            const btnPayout = document.getElementById('btnPayout');
+            if (btnPayout) {
+                btnPayout.addEventListener('click', () => {
+                    openPayoutModal();
                 });
             }
             
