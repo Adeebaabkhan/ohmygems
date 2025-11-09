@@ -1991,15 +1991,16 @@ function loadAllData() {
             const sellPrice = product.sellPrice;
             const margin = product.margin;
             
-            // Calculate user's commission
+            // Calculate user's commission - FIXED: Calculate from PROFIT not SELL PRICE
             const userCommissionPercent = currentSession.profitPercent || 100; // Owner gets 100%
-            const commissionPerUnit = (sellPrice * userCommissionPercent) / 100;
+            const actualProfit = sellPrice - buyPrice; // Calculate profit FIRST
+            const commissionPerUnit = (actualProfit * userCommissionPercent) / 100; // Commission from PROFIT
             
             // Display price (what user pays)
             const userPrice = currentSession.role === 'owner' ? sellPrice : (sellPrice - commissionPerUnit);
             
             // Commission amount (what user earns)
-            const yourCommission = currentSession.role === 'owner' ? (sellPrice - buyPrice) : commissionPerUnit;
+            const yourCommission = currentSession.role === 'owner' ? actualProfit : commissionPerUnit;
             
             // Update single unit display
             document.getElementById('productPrice').textContent = '₱' + userPrice.toFixed(2);
@@ -2059,11 +2060,11 @@ function loadAllData() {
             const quantity = parseInt(document.getElementById('productQuantity').value);
             const price = parseFloat(document.getElementById('productPrice').textContent.replace('₱', ''));
             
-            // USE ADMIN'S PROFIT PERCENT FROM THEIR ACCOUNT
+            // USE ADMIN'S PROFIT PERCENT FROM THEIR ACCOUNT - FIXED CALCULATION
             const userCommissionPercent = currentSession.profitPercent || 100;
-            // Calculate the actual profit first (sell price - buy price) const actualProfit = product.sellPrice - product.buyPrice; 
-            // Then calculate admin's commission as a percentage of the PROFIT, not the sell price const commissionAmount = (actualProfit * userCommissionPercent) / 100;
-            const yourProfit = currentSession.role === 'owner' ? (product.sellPrice - product.buyPrice) : commissionAmount;
+            const actualProfit = product.sellPrice - product.buyPrice; // Calculate profit FIRST
+            const commissionAmount = (actualProfit * userCommissionPercent) / 100; // Commission from PROFIT
+            const yourProfit = currentSession.role === 'owner' ? actualProfit : commissionAmount;
             
             const newSale = {
                 id: Date.now(),
