@@ -2144,6 +2144,20 @@ body.dark-mode .profile-select-btn {
                 </form>
             </div>
 
+<!-- Product Search/Filter -->
+<div style="margin: 20px 0; padding: 15px; background: var(--light); border-radius: 20px; border: 2px solid var(--border-color);">
+    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 200px;">
+            <input type="text" id="productSearch" placeholder="🔍 Search products..." 
+                   style="width: 100%; padding: 12px; border-radius: 10px; border: 2px solid var(--border-color);"
+                   onkeyup="filterProducts()">
+        </div>
+        <button class="btn btn-info" onclick="filterProducts('all')">📊 All</button>
+        <button class="btn btn-secondary" onclick="sortProducts('name')">🔤 Sort by Name</button>
+        <button class="btn btn-secondary" onclick="sortProducts('price')">💰 Sort by Price</button>
+    </div>
+</div>
+
 <div class="product-list" id="productList"></div>
 <div class="section-title" style="margin-top: 30px;">🎬 Subscription Products</div>
 <div id="subscriptionProductList" class="product-list"></div>
@@ -3186,19 +3200,45 @@ function updateProductDropdown() {
     const select = document.getElementById('productSelect');
     select.innerHTML = '<option value="">-- Select Product --</option>';
     
-    // Add regular products
+    // Group products by category
+    const categories = {};
     products.forEach(product => {
-        const userCommissionPercent = currentSession.profitPercent || 10;
-        const commissionAmount = (product.sellPrice * userCommissionPercent) / 100;
-        const displayPrice = currentSession.role === 'owner' ? product.sellPrice : adminPrice;
+        const category = product.category || 'Other';
+        if (!categories[category]) {
+            categories[category] = [];
+        }
+        categories[category].push(product);
+    });
+    
+    // Add regular products grouped by category
+    Object.keys(categories).sort().forEach(category => {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = `📦 ${category}`;
         
-        select.innerHTML += `<option value="${product.id}">${product.name} - ₱${displayPrice.toFixed(2)}</option>`;
+        categories[category].forEach(product => {
+            const option = document.createElement('option');
+            option.value = product.id;
+            option.textContent = `${product.name} - ₱${product.sellPrice.toFixed(2)}`;
+            optgroup.appendChild(option);
+        });
+        
+        select.appendChild(optgroup);
     });
     
     // Add subscription products
-    subscriptionProducts.forEach(product => {
-        select.innerHTML += `<option value="${product.id}">🎬 ${product.name}</option>`;
-    });
+    if (subscriptionProducts.length > 0) {
+        const subOptgroup = document.createElement('optgroup');
+        subOptgroup.label = '🎬 Subscription Products';
+        
+        subscriptionProducts.forEach(product => {
+            const option = document.createElement('option');
+            option.value = product.id;
+            option.textContent = product.name;
+            subOptgroup.appendChild(option);
+        });
+        
+        select.appendChild(subOptgroup);
+    }
 }
 
         // Render Product List
@@ -3282,6 +3322,39 @@ function updateProductDropdown() {
                     </div>
                 `;
             }).join('');
+        }
+
+        // =================== PRODUCT FILTERING & SORTING ===================
+        function filterProducts(category = '') {
+            const searchTerm = document.getElementById('productSearch').value.toLowerCase();
+            
+            const filteredProducts = products.filter(product => {
+                const matchesSearch = product.name.toLowerCase().includes(searchTerm);
+                const matchesCategory = !category || category === 'all' || product.category === category;
+                return matchesSearch && matchesCategory;
+            });
+            
+            // Temporarily replace products array for rendering
+            const originalProducts = [...products];
+            products = filteredProducts;
+            renderProductList();
+            products = originalProducts;
+        }
+
+        function sortProducts(sortBy) {
+            const sortedProducts = [...products];
+            
+            if (sortBy === 'name') {
+                sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+            } else if (sortBy === 'price') {
+                sortedProducts.sort((a, b) => b.sellPrice - a.sellPrice);
+            }
+            
+            // Temporarily replace products array for rendering
+            const originalProducts = [...products];
+            products = sortedProducts;
+            renderProductList();
+            products = originalProducts;
         }
 
         // =================== PRODUCT SELECTION & DISPLAY ===================
