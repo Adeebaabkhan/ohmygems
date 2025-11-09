@@ -96,8 +96,14 @@
         }
 
         @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @keyframes fadeIn {
@@ -207,6 +213,7 @@
         .btn-settings { background: var(--gradient-purple); }
         .btn-dark { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
         .btn-logout { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .btn-users { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); }
         .btn-calculator { background: linear-gradient(135deg, #10B981 0%, #059669 100%); }
         .btn-products { background: linear-gradient(135deg, #EC4899 0%, #8B5CF6 100%); }
         .btn-bulk { background: linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%); }
@@ -318,12 +325,30 @@
             border: 3px solid transparent;
         }
 
-        .stat-card:nth-child(1) { background: linear-gradient(135deg, #FFF0F5 0%, #FFE1E8 100%); }
-        .stat-card:nth-child(2) { background: linear-gradient(135deg, #F3E8FF 0%, #E9D5FF 100%); }
-        .stat-card:nth-child(3) { background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%); }
-        .stat-card:nth-child(4) { background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%); }
-        .stat-card:nth-child(5) { background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); }
-        .stat-card:nth-child(6) { background: linear-gradient(135deg, #FFE4E6 0%, #FECDD3 100%); }
+        .stat-card:nth-child(1) { 
+            background: linear-gradient(135deg, #FFF0F5 0%, #FFE1E8 100%); 
+            animation: slideIn 0.9s ease-out;
+        }
+        .stat-card:nth-child(2) { 
+            background: linear-gradient(135deg, #F3E8FF 0%, #E9D5FF 100%); 
+            animation: slideIn 1s ease-out;
+        }
+        .stat-card:nth-child(3) { 
+            background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%); 
+            animation: slideIn 1.1s ease-out;
+        }
+        .stat-card:nth-child(4) { 
+            background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%); 
+            animation: slideIn 1.2s ease-out;
+        }
+        .stat-card:nth-child(5) { 
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); 
+            animation: slideIn 1.3s ease-out;
+        }
+        .stat-card:nth-child(6) { 
+            background: linear-gradient(135deg, #FFE4E6 0%, #FECDD3 100%); 
+            animation: slideIn 1.4s ease-out;
+        }
 
         body.dark-mode .stat-card {
             background: var(--card-bg) !important;
@@ -454,9 +479,9 @@
             transform: scale(1.02);
         }
 
-        input:disabled, input:read-only {
-            opacity: 0.7;
-            cursor: not-allowed;
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            opacity: 1;
         }
 
         .price-info-card {
@@ -568,6 +593,7 @@
             transform: translateY(-3px);
         }
 
+        /* Bulk Sales Specific Styles */
         .bulk-sales-container {
             background: var(--card-bg);
             border-radius: 30px;
@@ -909,6 +935,7 @@
             opacity: 0.7;
         }
 
+        /* INLINE EDITING STYLES - NEW */
         .editable-cell {
             position: relative;
             cursor: pointer;
@@ -1226,6 +1253,22 @@
             opacity: 0.9;
         }
 
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(139, 92, 246, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
@@ -1364,6 +1407,7 @@
             }
         }
 
+        /* Print Styles */
         @media print {
             body {
                 background: white;
@@ -1393,6 +1437,7 @@
             }
         }
 
+        /* Accessibility */
         .sr-only {
             position: absolute;
             width: 1px;
@@ -1410,6 +1455,7 @@
             outline-offset: 2px;
         }
 
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 12px;
             height: 12px;
@@ -1432,6 +1478,7 @@
             background: #1e293b;
         }
 
+        /* Selection */
         ::selection {
             background: var(--primary);
             color: white;
@@ -1451,7 +1498,7 @@
                 <div class="user-avatar" id="userAvatar" title="User Profile">A</div>
                 <div class="user-details">
                     <h3 id="userName">Adeebaabkhan</h3>
-                    <span class="user-role">👑 Owner</span>
+                    <span class="user-role">👑 Administrator</span>
                 </div>
             </div>
             <div class="nav-actions">
@@ -1542,6 +1589,12 @@
                     <label for="bulkDate">📅 Date</label>
                     <input type="date" id="bulkDate">
                 </div>
+                <div class="form-group">
+                    <label for="bulkAdmin">👤 Admin</label>
+                    <select id="bulkAdmin">
+                        <option value="admin">admin</option>
+                    </select>
+                </div>
             </div>
 
             <div class="selected-item-display" id="selectedItemDisplay">
@@ -1609,13 +1662,20 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="salePrice">💵 Price (₱) - <small>✏️ Fully editable</small></label>
-                    <input type="number" id="salePrice" step="0.01" min="0" required onchange="calculateSaleTotal()" placeholder="Enter price">
+                    <label for="adminSelect">👤 Admin</label>
+                    <select id="adminSelect" required>
+                        <option value="admin">admin</option>
+                    </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="saleCapital">💰 Capital (₱) - <small>✏️ Fully editable</small></label>
-                    <input type="number" id="saleCapital" step="0.01" min="0" required onchange="calculateSaleTotal()" placeholder="Enter capital">
+                    <label for="salePrice">💵 Price (₱) - <small>Fully editable for this sale</small></label>
+                    <input type="number" id="salePrice" step="0.01" min="0" required onchange="calculateSaleTotal()" placeholder="Enter custom price">
+                </div>
+
+                <div class="form-group">
+                    <label for="saleCapital">💰 Capital (₱) - <small>Fully editable for this sale</small></label>
+                    <input type="number" id="saleCapital" step="0.01" min="0" required onchange="calculateSaleTotal()" placeholder="Enter custom capital">
                 </div>
 
                 <div class="price-info-card" id="salePriceInfo" style="display: none;">
@@ -1664,12 +1724,13 @@
                             <th>Capital</th>
                             <th>Total</th>
                             <th>Profit</th>
+                            <th>Admin</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="salesTableBody">
                         <tr>
-                            <td colspan="9" class="empty-state">
+                            <td colspan="10" class="empty-state">
                                 <div class="empty-icon">📦</div>
                                 <h3>No sales yet</h3>
                                 <p>Add your first sale to get started!</p>
@@ -1681,7 +1742,7 @@
         </div>
     </div>
 
-    <!-- Product Management Modal WITH INLINE EDITING -->
+    <!-- Product Management Modal -->
     <div class="modal" id="productModal" role="dialog" aria-labelledby="productModalTitle" aria-modal="true">
         <div class="modal-content">
             <div class="modal-header">
@@ -1689,11 +1750,7 @@
                 <button class="close-btn" onclick="closeProductModal()" aria-label="Close modal">✕</button>
             </div>
             
-            <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
-                <button class="btn-small btn-success" onclick="showAddProductForm()">➕ Add New Product</button>
-                <button class="btn-small btn-secondary" onclick="importProductsCSV()">📥 Import CSV</button>
-                <button class="btn-small btn-info" onclick="exportProductsCSV()">📤 Export Products</button>
-            </div>
+            <button class="btn btn-success" onclick="showAddProductForm()" style="margin-bottom: 20px;">➕ Add New Product</button>
 
             <div id="addProductForm" style="display: none; margin-bottom: 25px; background: var(--light); padding: 25px; border-radius: 20px; border: 3px solid var(--border-color);">
                 <h3 style="color: var(--primary); margin-bottom: 15px;">Add New Product</h3>
@@ -1714,11 +1771,11 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="newProductPrice">Default Price (₱)</label>
+                    <label for="newProductPrice">Default Price (₱) - <small>Suggested price, can be edited per sale</small></label>
                     <input type="number" id="newProductPrice" step="0.01" placeholder="95.00" min="0">
                 </div>
                 <div class="form-group">
-                    <label for="newProductCapital">Default Capital (₱)</label>
+                    <label for="newProductCapital">Default Capital (₱) - <small>Suggested capital, can be edited per sale</small></label>
                     <input type="number" id="newProductCapital" step="0.01" placeholder="64.00" min="0">
                 </div>
                 <div style="display: flex; gap: 10px;">
@@ -1727,25 +1784,20 @@
                 </div>
             </div>
 
-            <div style="margin-bottom: 15px;">
-                <input type="text" id="productSearchInput" placeholder="🔍 Search products..." 
-                    style="width: 100%; padding: 12px 20px;" onkeyup="searchProducts()">
-            </div>
-
             <div class="table-wrapper">
                 <table>
                     <thead>
                         <tr>
                             <th>Product</th>
                             <th>Category</th>
-                            <th>Price (₱) - Click to Edit ✏️</th>
-                            <th>Capital (₱) - Click to Edit ✏️</th>
+                            <th>Price - Click to Edit ✏️</th>
+                            <th>Capital - Click to Edit ✏️</th>
                             <th>Profit Margin</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="productTableBody">
-                        <!-- Products will be loaded here with inline editing -->
+                        <!-- Products will be loaded here -->
                     </tbody>
                 </table>
             </div>
@@ -1820,6 +1872,11 @@
                 <input type="text" id="businessName" value="INQUIRE" placeholder="Your business name">
             </div>
 
+            <div class="form-group">
+                <label for="taxRate">📊 Tax Rate (%)</label>
+                <input type="number" id="taxRate" value="0" min="0" max="100" step="0.1" placeholder="0">
+            </div>
+
             <button class="btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
             
             <hr style="margin: 30px 0; border: 2px solid var(--border-color);">
@@ -1846,7 +1903,8 @@
             currency: '₱',
             businessName: 'INQUIRE',
             darkMode: false,
-            theme: 'purple'
+            theme: 'purple',
+            taxRate: 0
         };
         
         let currentPeriod = 'all';
@@ -1872,9 +1930,9 @@
             {name: 'HBO Solo 2devs', category: 'Streaming', price: 75, capital: 50},
             
             // ========== YOUTUBE ==========
-            {name: 'YouTube Solo', category: 'Music', price: 120, capital: 80},
-            {name: 'YouTube Famhead', category: 'Music', price: 150, capital: 100},
-            {name: 'YouTube Invite', category: 'Music', price: 90, capital: 60},
+            {name: 'YouTube Solo', category: 'Streaming', price: 120, capital: 80},
+            {name: 'YouTube Famhead', category: 'Streaming', price: 150, capital: 100},
+            {name: 'YouTube Invite', category: 'Streaming', price: 90, capital: 60},
             
             // ========== SPOTIFY ==========
             {name: 'Spotify Solo', category: 'Music', price: 100, capital: 65},
@@ -2014,8 +2072,9 @@
         // ==================== INITIALIZATION ====================
         function init() {
             console.log('🚀 Initializing INQUIRE Sales Tracker Dashboard...');
-            console.log(`👤 Current User: Adeebaabkhan`);
-            console.log(`📅 Date: 2025-11-09`);
+            console.log('📅 Current Date: 2025-11-09');
+            console.log('⏰ Current Time: 09:03:40 UTC');
+            console.log('👤 Current User: Adeebaabkhan');
             
             // Initialize products if empty
             if (products.length === 0) {
@@ -2059,9 +2118,11 @@
         function saveSettings() {
             const currency = document.getElementById('currencySymbol').value;
             const businessName = document.getElementById('businessName').value;
+            const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
             
             settings.currency = currency;
             settings.businessName = businessName;
+            settings.taxRate = taxRate;
             
             localStorage.setItem('settings', JSON.stringify(settings));
             
@@ -2083,22 +2144,10 @@
             
             document.getElementById('currencySymbol').value = settings.currency;
             document.getElementById('businessName').value = settings.businessName;
+            document.getElementById('taxRate').value = settings.taxRate || 0;
         }
 
-        // ==================== PRODUCT MANAGEMENT (WITH INLINE EDITING) ====================
-        function getCategoryIcon(category) {
-            const icons = {
-                'Streaming': '🎬',
-                'Editing': '✂️',
-                'Music': '🎵',
-                'AI': '🤖',
-                'Education': '📚',
-                'Design': '🎨',
-                'Other': '📦'
-            };
-            return icons[category] || '📦';
-        }
-
+        // ==================== PRODUCT MANAGEMENT WITH INLINE EDITING ====================
         function populateProductSelects() {
             const productSelect = document.getElementById('productSelect');
             productSelect.innerHTML = '<option value="">Select a product...</option>';
@@ -2117,7 +2166,7 @@
                 const optgroup = document.createElement('optgroup');
                 optgroup.label = `${getCategoryIcon(category)} ${category}`;
                 
-                categories[category].sort((a, b) => a.name.localeCompare(b.name)).forEach((product) => {
+                categories[category].sort((a, b) => a.name.localeCompare(b.name)).forEach((product, index) => {
                     const option = document.createElement('option');
                     option.value = products.indexOf(product);
                     option.textContent = product.name;
@@ -2126,6 +2175,19 @@
                 
                 productSelect.appendChild(optgroup);
             });
+        }
+
+        function getCategoryIcon(category) {
+            const icons = {
+                'Streaming': '🎬',
+                'Editing': '✂️',
+                'Music': '🎵',
+                'AI': '🤖',
+                'Education': '📚',
+                'Design': '🎨',
+                'Other': '📦'
+            };
+            return icons[category] || '📦';
         }
 
         function updateSaleInfo() {
@@ -2237,8 +2299,8 @@
                         ${settings.currency}${profitMargin.toFixed(2)} (${profitPercent}%)
                     </td>
                     <td>
-                        <button class="action-btn edit-btn" onclick="editProductFull(${index})" title="Edit details">✏️ Edit</button>
-                        <button class="action-btn delete-btn" onclick="deleteProduct(${index})" title="Delete">🗑️</button>
+                        <button class="action-btn edit-btn" onclick="editProductFull(${index})" title="Edit product">✏️ Edit</button>
+                        <button class="action-btn delete-btn" onclick="deleteProduct(${index})" title="Delete product">🗑️ Delete</button>
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -2247,6 +2309,7 @@
             document.getElementById('activeProducts').textContent = products.length;
         }
 
+        // INLINE PRICE EDITING - NEW FEATURE
         function editProductPrice(index, field) {
             const product = products[index];
             const cellId = `${field}-cell-${index}`;
@@ -2266,6 +2329,7 @@
                 </div>
             `;
             
+            // Focus the input
             document.getElementById(`edit-input-${index}-${field}`).focus();
             document.getElementById(`edit-input-${index}-${field}`).select();
         }
@@ -2331,89 +2395,6 @@
             }
         }
 
-        function searchProducts() {
-            const searchTerm = document.getElementById('productSearchInput').value.toLowerCase();
-            const rows = document.querySelectorAll('#productTableBody tr');
-            
-            let visibleCount = 0;
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                const isVisible = text.includes(searchTerm);
-                row.style.display = isVisible ? '' : 'none';
-                if (isVisible && !row.querySelector('.empty-state')) visibleCount++;
-            });
-            
-            console.log(`🔍 Product search: "${searchTerm}" - ${visibleCount} results`);
-        }
-
-        function exportProductsCSV() {
-            if (products.length === 0) {
-                showToast('No products to export', 'error');
-                return;
-            }
-            
-            let csv = 'Product Name,Category,Default Price,Default Capital,Profit Margin,Profit %\n';
-            
-            products.forEach(product => {
-                const profitMargin = product.price - product.capital;
-                const profitPercent = product.capital > 0 ? ((profitMargin / product.capital) * 100).toFixed(1) : 0;
-                csv += `"${product.name}","${product.category}",${product.price},${product.capital},${profitMargin},${profitPercent}\n`;
-            });
-            
-            const filename = `products-list-${new Date().toISOString().split('T')[0]}.csv`;
-            downloadCSV(csv, filename);
-        }
-
-        function importProductsCSV() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.csv';
-            
-            input.onchange = function(e) {
-                const file = e.target.files[0];
-                const reader = new FileReader();
-                
-                reader.onload = function(event) {
-                    const csv = event.target.result;
-                    const lines = csv.split('\n');
-                    let imported = 0;
-                    
-                    // Skip header row
-                    for (let i = 1; i < lines.length; i++) {
-                        const line = lines[i].trim();
-                        if (!line) continue;
-                        
-                        // Parse CSV line (handle quoted strings)
-                        const matches = line.match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g);
-                        if (!matches || matches.length < 4) continue;
-                        
-                        const name = matches[0].replace(/"/g, '').trim();
-                        const category = matches[1].replace(/"/g, '').trim();
-                        const price = parseFloat(matches[2]);
-                        const capital = parseFloat(matches[3]);
-                        
-                        if (name && category && !isNaN(price) && !isNaN(capital)) {
-                            products.push({ name, category, price, capital });
-                            imported++;
-                        }
-                    }
-                    
-                    if (imported > 0) {
-                        saveProducts();
-                        populateProductSelects();
-                        loadProducts();
-                        showToast(`${imported} products imported successfully!`, 'success');
-                    } else {
-                        showToast('No valid products found in CSV', 'error');
-                    }
-                };
-                
-                reader.readAsText(file);
-            };
-            
-            input.click();
-        }
-
         // ==================== SALES MANAGEMENT ====================
         function addSale(event) {
             event.preventDefault();
@@ -2427,6 +2408,7 @@
             const product = products[productIndex];
             const qty = parseInt(document.getElementById('quantity').value);
             const date = document.getElementById('saleDate').value;
+            const admin = document.getElementById('adminSelect').value;
             const price = parseFloat(document.getElementById('salePrice').value);
             const capital = parseFloat(document.getElementById('saleCapital').value);
             
@@ -2441,7 +2423,7 @@
                 totalCapital: qty * capital,
                 profit: (qty * price) - (qty * capital),
                 date: date,
-                admin: 'Adeebaabkhan',
+                admin: admin,
                 timestamp: new Date().toISOString()
             };
             
@@ -2465,7 +2447,7 @@
             if (sales.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="9" class="empty-state">
+                        <td colspan="10" class="empty-state">
                             <div class="empty-icon">📦</div>
                             <h3>No sales yet</h3>
                             <p>Add your first sale to get started!</p>
@@ -2496,6 +2478,7 @@
                     <td class="amount-cell" style="color: ${profitColor}">
                         <strong>${settings.currency}${sale.profit.toFixed(2)}</strong>
                     </td>
+                    <td>${sale.admin}</td>
                     <td>
                         <button class="action-btn delete-btn" onclick="deleteSale(${sale.id})" title="Delete sale">🗑️</button>
                     </td>
@@ -2527,7 +2510,7 @@
                 if (isVisible && !row.querySelector('.empty-state')) visibleCount++;
             });
             
-            console.log(`🔍 Sales search: "${searchTerm}" - ${visibleCount} results found`);
+            console.log(`🔍 Search: "${searchTerm}" - ${visibleCount} results found`);
         }
 
         function filterSales(filter) {
@@ -2690,6 +2673,7 @@
 
         function saveBulkSales() {
             const date = document.getElementById('bulkDate').value;
+            const admin = document.getElementById('bulkAdmin').value;
             
             if (!date) {
                 showToast('Please select a date', 'error');
@@ -2723,7 +2707,7 @@
                         totalCapital: qty * capital,
                         profit: (qty * price) - (qty * capital),
                         date: date,
-                        admin: 'Adeebaabkhan',
+                        admin: admin,
                         timestamp: new Date().toISOString()
                     };
                     
@@ -2861,10 +2845,7 @@
                         tension: 0.4,
                         fill: true,
                         pointRadius: 5,
-                        pointHoverRadius: 8,
-                        pointBackgroundColor: '#EC4899',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2
+                        pointHoverRadius: 8
                     }]
                 },
                 options: {
@@ -3026,6 +3007,7 @@
                     case '-': result = prev - current; break;
                     case '*': result = prev * current; break;
                     case '/': result = current !== 0 ? prev / current : 0; break;
+                    case '%': result = prev % current; break;
                 }
                 
                 calcDisplay = result.toString();
@@ -3033,10 +3015,8 @@
                 calcOperator = '';
                 calcWaitingForOperand = true;
                 updateCalcDisplay();
-            } else if (['+', '-', '*', '/'].some(op => calcDisplay.endsWith(op))) {
-                // Handle operator at end of display
-                const op = calcDisplay.slice(-1);
-                calcOperator = op;
+            } else if (['+', '-', '*', '/', '%'].includes(calcDisplay.slice(-1))) {
+                calcOperator = calcDisplay.slice(-1);
                 calcPrevValue = calcDisplay.slice(0, -1);
                 calcWaitingForOperand = true;
             }
@@ -3105,8 +3085,7 @@
             document.body.classList.toggle('dark-mode');
             settings.darkMode = document.body.classList.contains('dark-mode');
             localStorage.setItem('settings', JSON.stringify(settings));
-            
-            const mode = settings.darkMode ? 'Dark' : 'Light';
+                        const mode = settings.darkMode ? 'Dark' : 'Light';
             showToast(`${mode} mode activated`, 'info');
         }
 
@@ -3182,12 +3161,6 @@
                 toggleBulkSales();
             }
             
-            // Ctrl/Cmd + P to open products
-            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
-                e.preventDefault();
-                openProductModal();
-            }
-            
             // Escape to close modals
             if (e.key === 'Escape') {
                 document.querySelectorAll('.modal.show').forEach(modal => {
@@ -3203,19 +3176,16 @@
             autoSaveTimer = setTimeout(() => {
                 saveSales();
                 saveProducts();
-                console.log('💾 Auto-saved at ' + new Date().toISOString());
+                console.log('💾 Auto-saved');
             }, 5000);
         }
 
-        // Prevent accidental page close with unsaved bulk sales
+        // Prevent accidental page close
         window.addEventListener('beforeunload', function(e) {
             if (document.getElementById('bulkSalesContainer').style.display !== 'none') {
-                const bulkTableBody = document.getElementById('bulkSalesTableBody');
-                if (bulkTableBody && bulkTableBody.children.length > 0) {
-                    e.preventDefault();
-                    e.returnValue = 'You have unsaved bulk sales. Are you sure you want to leave?';
-                    return e.returnValue;
-                }
+                e.preventDefault();
+                e.returnValue = 'You have unsaved bulk sales. Are you sure you want to leave?';
+                return e.returnValue;
             }
         });
 
@@ -3229,17 +3199,12 @@
             }, 500);
         });
 
-        // Update time every minute
-        setInterval(() => {
-            console.log(`⏰ Current Time: ${new Date().toISOString()}`);
-        }, 60000);
-
-        // Log app version and info
+        // Log app version
         console.log('═══════════════════════════════════════════════════');
         console.log('🚀 INQUIRE Sales Tracker Dashboard v2.0');
         console.log('📅 Current Date: 2025-11-09');
-        console.log('⏰ Current Time: 08:55:58 UTC');
-        console.log('👤 User: Adeebaabkhan (Owner)');
+        console.log('⏰ Current Time: 09:06:44 UTC');
+        console.log('👤 Current User: Adeebaabkhan');
         console.log('💎 80+ Products Available');
         console.log('✨ Fully Customizable Pricing');
         console.log('📦 Bulk Sales Entry Enabled');
@@ -3250,7 +3215,6 @@
         console.log('⌨️  Keyboard Shortcuts:');
         console.log('   Ctrl+K - Open Calculator');
         console.log('   Ctrl+B - Toggle Bulk Sales');
-        console.log('   Ctrl+P - Open Products');
         console.log('   ESC    - Close Modals');
         console.log('═══════════════════════════════════════════════════');
     </script>
