@@ -999,7 +999,225 @@
             transform: translateX(5px);
             box-shadow: var(--shadow-sm);
         }
+/* Profile Tracking Styles */
+.product-type-toggle {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+}
 
+.type-toggle-btn {
+    flex: 1;
+    padding: 15px 20px;
+    background: var(--light);
+    border: 3px solid var(--border-color);
+    border-radius: 18px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: var(--transition);
+    text-align: center;
+    color: var(--text-color);
+}
+
+body.dark-mode .type-toggle-btn {
+    background: #1e293b;
+}
+
+.type-toggle-btn.active {
+    background: var(--gradient-pink);
+    color: white;
+    border-color: var(--primary);
+    transform: scale(1.05);
+    box-shadow: var(--shadow-md);
+}
+
+.subscription-fields {
+    display: none;
+    background: linear-gradient(135deg, #F3E8FF 0%, #E9D5FF 100%);
+    padding: 25px;
+    border-radius: 20px;
+    margin-top: 20px;
+    border: 3px solid var(--primary);
+}
+
+body.dark-mode .subscription-fields {
+    background: #1e293b;
+}
+
+.subscription-fields.show {
+    display: block;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.profile-slot {
+    background: var(--light);
+    border: 3px solid var(--border-color);
+    border-radius: 15px;
+    padding: 12px;
+    text-align: center;
+    transition: var(--transition);
+}
+
+body.dark-mode .profile-slot {
+    background: #1e293b;
+}
+
+.profile-slot.sold {
+    background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+    border-color: var(--success);
+}
+
+.profile-slot.available {
+    background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%);
+    border-color: var(--info);
+}
+
+.profile-slot-icon {
+    font-size: 2em;
+    margin-bottom: 5px;
+}
+
+.profile-slot-label {
+    font-weight: 700;
+    color: var(--text-color);
+    font-size: 0.85em;
+}
+
+.profile-slot-info {
+    font-size: 0.7em;
+    color: var(--primary);
+    margin-top: 3px;
+}
+
+.subscription-product-item {
+    background: linear-gradient(135deg, #F3E8FF 0%, #E9D5FF 100%);
+    border: 3px solid var(--primary);
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 20px;
+}
+
+body.dark-mode .subscription-product-item {
+    background: #1e293b;
+}
+
+.subscription-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.subscription-title {
+    font-size: 1.4em;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.subscription-pricing {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.price-tag {
+    background: white;
+    padding: 10px 18px;
+    border-radius: 15px;
+    font-weight: 700;
+    border: 2px solid var(--primary);
+}
+
+body.dark-mode .price-tag {
+    background: #0f172a;
+}
+
+.availability-status {
+    background: var(--gradient-cyan);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-weight: 700;
+    display: inline-block;
+    margin-bottom: 15px;
+}
+
+.sale-type-select {
+    display: none;
+    background: linear-gradient(135deg, #FFF0F5 0%, #FFE1E8 100%);
+    padding: 20px;
+    border-radius: 15px;
+    margin-top: 15px;
+    border: 3px solid var(--secondary);
+}
+
+body.dark-mode .sale-type-select {
+    background: #1e293b;
+}
+
+.sale-type-select.show {
+    display: block;
+}
+
+.profile-select-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.profile-select-btn {
+    padding: 15px 10px;
+    background: var(--light);
+    border: 3px solid var(--border-color);
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: var(--transition);
+    text-align: center;
+    color: var(--text-color);
+}
+
+body.dark-mode .profile-select-btn {
+    background: #1e293b;
+}
+
+.profile-select-btn:hover:not(.disabled) {
+    transform: scale(1.1);
+    box-shadow: var(--shadow-sm);
+}
+
+.profile-select-btn.selected {
+    background: var(--gradient-pink);
+    color: white;
+    border-color: var(--primary);
+}
+
+.profile-select-btn.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
         .user-item-info {
             flex: 1;
         }
@@ -1352,7 +1570,35 @@
                         <span class="price-info-value highlight" id="totalEarnings">₱0</span>
                     </div>
                 </div>
+<!-- Sale Type Selection (for subscription products) -->
+<div id="saleTypeSelection" class="sale-type-select">
+    <h4 style="color: var(--secondary); margin-bottom: 15px; font-weight: 800;">Choose Sale Type</h4>
+    
+    <div class="warranty-options">
+        <div class="warranty-option">
+            <input type="radio" id="saleTypeFull" name="saleType" value="full" checked>
+            <label for="saleTypeFull" class="warranty-label">
+                <span class="warranty-icon">📦</span>
+                <span>Full Account</span>
+            </label>
+        </div>
+        <div class="warranty-option">
+            <input type="radio" id="saleTypeProfile" name="saleType" value="profile">
+            <label for="saleTypeProfile" class="warranty-label">
+                <span class="warranty-icon">👤</span>
+                <span>Individual Profile</span>
+            </label>
+        </div>
+    </div>
 
+    <!-- Profile Selection -->
+    <div id="profileSelection" style="display: none; margin-top: 20px;">
+        <label style="display: block; font-weight: 700; color: var(--primary); margin-bottom: 10px;">
+            Select Profile Number:
+        </label>
+        <div id="profileSelectGrid" class="profile-select-grid"></div>
+    </div>
+</div>
                 <!-- Sold Status -->
                 <div class="form-group">
                     <label>📦 Status</label>
@@ -1425,6 +1671,65 @@
             </div>
             
             <div class="form-section" style="border: none; box-shadow: none; padding: 0;">
+                <!-- Product Type Toggle -->
+<div class="form-section" style="border: none; box-shadow: none; padding: 0;">
+    <h3 class="section-title">🎯 Product Type</h3>
+    <div class="product-type-toggle">
+        <div class="type-toggle-btn active" id="regularProductBtn" onclick="switchProductType('regular')">
+            📦 Regular Product
+        </div>
+        <div class="type-toggle-btn" id="subscriptionProductBtn" onclick="switchProductType('subscription')">
+            🎬 Subscription with Profiles
+        </div>
+    </div>
+</div>
+
+<!-- Subscription Product Form -->
+<div id="subscriptionFields" class="subscription-fields">
+    <h4 style="color: var(--primary); margin-bottom: 15px; font-weight: 800;">📺 Subscription Product Setup</h4>
+    <form id="addSubscriptionForm">
+        <div class="form-group">
+            <label>📦 Product Name</label>
+            <select id="subProductNameSelect" onchange="handleSubProductNameSelect()" required>
+                <option value="">-- Select --</option>
+                <option value="Netflix">Netflix</option>
+                <option value="Spotify">Spotify</option>
+                <option value="Disney+">Disney+</option>
+                <option value="YouTube Premium">YouTube Premium</option>
+                <option value="Canva Pro">Canva Pro</option>
+                <option value="custom">➕ Custom...</option>
+            </select>
+            <input type="text" id="subProductName" placeholder="Enter custom name" style="display: none; margin-top: 10px;">
+        </div>
+
+        <div class="form-group">
+            <label>🛒 Buy Price (Your Cost)</label>
+            <input type="number" id="subBuyPrice" placeholder="e.g., 250" step="0.01" min="0" required>
+        </div>
+
+        <div class="form-group">
+            <label>💰 Full Account Sell Price</label>
+            <input type="number" id="subFullPrice" placeholder="e.g., 300" step="0.01" min="0" required>
+        </div>
+
+        <div class="form-group">
+            <label>👥 Number of Profiles/Slots</label>
+            <input type="number" id="subTotalProfiles" placeholder="e.g., 5" min="1" max="20" required>
+        </div>
+
+<div class="form-group">
+    <label>👤 Solo Profile Price (Per Individual Profile)</label>
+    <input type="number" id="subSoloPrice" placeholder="e.g., 50" step="0.01" min="0" required>
+</div>
+
+<div class="form-group">
+    <label>👥 Shared Full Account Price (All Profiles)</label>
+    <input type="number" id="subSharedPrice" placeholder="e.g., 200" step="0.01" min="0" required>
+</div>
+
+        <button type="submit" class="btn btn-success">➕ ADD SUBSCRIPTION PRODUCT</button>
+    </form>
+</div>
                 <h3 class="section-title">➕ Add New Product</h3>
                 <form id="addProductForm" class="form-single-column">
                     <div class="form-group">
@@ -1480,8 +1785,10 @@
                 </form>
             </div>
 
-            <div class="section-title" style="margin-top: 30px;">📋 Product List</div>
-            <div class="product-list" id="productList"></div>
+<div class="product-list" id="productList"></div>
+<div class="section-title" style="margin-top: 30px;">🎬 Subscription Products</div>
+<div id="subscriptionProductList" class="product-list"></div>
+            
         </div>
     </div>
 
@@ -1615,7 +1922,7 @@
 
 <script>
     // =================== APP CONFIGURATION ===================
-    const APP_NAME = 'ohmygemse';
+    const APP_NAME = 'vanille';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCa4XYpwePgiTWL30sSkIubYbWizTHwEQU",
@@ -1624,8 +1931,8 @@ const firebaseConfig = {
   projectId: "maisonetoile-5eee1",
   storageBucket: "maisonetoile-5eee1.firebasestorage.app",
   messagingSenderId: "902250837280",
-  appId: "1:902250837280:web:aafa8661ee155c5dfdd345",
-  measurementId: "G-Z7HJ4CQ82S"
+  appId: "1:902250837280:web:6fbdc2dae35a4409fdd345",
+  measurementId: "G-15EJJVWCX9"
 };
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
@@ -1643,8 +1950,10 @@ console.log('📂 All data will be stored in:', APP_NAME + '/');
         let sales = [];
         let users = [];
         let payouts = [];
-        let products = [];
-        let settings = {
+let products = [];
+let subscriptionProducts = [];
+let selectedProfile = null;
+    let settings = {
             theme: 'theme-purple',
             darkMode: false,
             lowStockThreshold: 5
@@ -1652,6 +1961,121 @@ console.log('📂 All data will be stored in:', APP_NAME + '/');
 
         let calcValue = '0';
 
+// =================== SUBSCRIPTION PRODUCTS ===================
+
+function switchProductType(type) {
+    document.getElementById('regularProductBtn').classList.remove('active');
+    document.getElementById('subscriptionProductBtn').classList.remove('active');
+    
+    if (type === 'regular') {
+        document.getElementById('regularProductBtn').classList.add('active');
+        document.getElementById('subscriptionFields').classList.remove('show');
+    } else {
+        document.getElementById('subscriptionProductBtn').classList.add('active');
+        document.getElementById('subscriptionFields').classList.add('show');
+    }
+}
+
+function handleSubProductNameSelect() {
+    const select = document.getElementById('subProductNameSelect');
+    const customInput = document.getElementById('subProductName');
+    
+    if (select.value === 'custom') {
+        customInput.style.display = 'block';
+        customInput.required = true;
+    } else {
+        customInput.style.display = 'none';
+        customInput.required = false;
+    }
+}
+
+function renderSubscriptionProducts() {
+    const container = document.getElementById('subscriptionProductList');
+    if (!container) return;
+    
+    if (subscriptionProducts.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon">🎬</div><p>No subscription products yet</p></div>';
+        return;
+    }
+    
+    container.innerHTML = subscriptionProducts.map(product => {
+        const availableCount = product.profiles.filter(p => !p.sold).length;
+        
+        return `
+            <div class="subscription-product-item">
+                <div class="subscription-header">
+                    <div class="subscription-title">🎬 ${product.name}</div>
+                    <div>
+                        <button class="action-btn delete-btn" onclick="deleteSubscriptionProduct(${product.id})">🗑️</button>
+                    </div>
+                </div>
+                
+                <div class="subscription-pricing">
+                    <div class="price-tag">💰 Full: ₱${product.fullPrice.toFixed(2)}</div>
+                    <div class="price-tag">👤 Profile: ₱${product.profilePrice.toFixed(2)}</div>
+                    <div class="price-tag">🛒 Cost: ₱${product.buyPrice.toFixed(2)}</div>
+                </div>
+                
+                <div class="availability-status">
+                    ${availableCount}/${product.totalProfiles} profiles available
+                </div>
+                
+                <div class="profile-grid">
+                    ${product.profiles.map(profile => `
+                        <div class="profile-slot ${profile.sold ? 'sold' : 'available'}">
+                            <div class="profile-slot-icon">${profile.sold ? '✅' : '📦'}</div>
+                            <div class="profile-slot-label">Profile ${profile.number}</div>
+                            <div class="profile-slot-info">${profile.sold ? profile.soldBy : 'Available'}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function deleteSubscriptionProduct(productId) {
+    if (!confirm('Delete this subscription product?')) return;
+    getRef('subscriptionProducts/' + productId).remove()
+        .then(() => showToast('🗑️ Product deleted', 'info'))
+        .catch((error) => showToast('❌ Error: ' + error.message, 'error'));
+}
+
+function handleProductSelectionForSale() {
+    const productSelect = document.getElementById('productSelect');
+    const productId = parseInt(productSelect.value);
+    const saleTypeSelection = document.getElementById('saleTypeSelection');
+    if (!saleTypeSelection) return;
+    
+    const subProduct = subscriptionProducts.find(p => p.id === productId);
+    if (subProduct) {
+        saleTypeSelection.classList.add('show');
+        updateProfileSelection(subProduct);
+    } else {
+        saleTypeSelection.classList.remove('show');
+    }
+}
+
+function updateProfileSelection(subProduct) {
+    const profileGrid = document.getElementById('profileSelectGrid');
+    if (!profileGrid) return;
+    
+    const availableProfiles = subProduct.profiles.filter(p => !p.sold);
+    profileGrid.innerHTML = availableProfiles.map(profile => `
+        <div class="profile-select-btn" onclick="selectProfile(${profile.number})" id="profileBtn${profile.number}">
+            Profile ${profile.number}
+        </div>
+    `).join('');
+}
+
+function selectProfile(number) {
+    selectedProfile = number;
+    document.querySelectorAll('.profile-select-btn').forEach(btn => btn.classList.remove('selected'));
+    const btn = document.getElementById('profileBtn' + number);
+    if (btn) btn.classList.add('selected');
+}
+
+// =================== END SUBSCRIPTION PRODUCTS ===================
         // =================== INITIALIZATION ===================
         function init() {
             console.log('🚀 Initializing...');
@@ -1741,6 +2165,14 @@ function loadAllData() {
         }
     });
 
+// Load subscription products
+getRef('subscriptionProducts').on('value', (snapshot) => {
+    const subProductsData = snapshot.val() || {};
+    subscriptionProducts = Object.values(subProductsData);
+    console.log('📺 Loaded subscription products:', subscriptionProducts.length);
+    renderSubscriptionProducts();
+    updateProductDropdown();
+});
     // Load payouts
     getRef('payouts').on('value', (snapshot) => {
         const payData = snapshot.val() || {};
@@ -1883,21 +2315,80 @@ function loadAllData() {
                 });
         });
 
-        // Update Product Dropdown
-        function updateProductDropdown() {
-            const select = document.getElementById('productSelect');
-            select.innerHTML = '<option value="">-- Select Product --</option>';
-            
-            products.forEach(product => {
-                // USE CURRENT USER'S PROFIT PERCENT
-                const userCommissionPercent = currentSession.profitPercent || 100; // Owner gets 100%
-                const commissionAmount = (product.sellPrice * userCommissionPercent) / 100;
-                const adminPrice = product.sellPrice - commissionAmount;
-                const displayPrice = currentSession.role === 'owner' ? product.sellPrice : adminPrice;
-                
-                select.innerHTML += `<option value="${product.id}">${product.name} - ₱${displayPrice.toFixed(2)}</option>`;
-            });
-        }
+// Add Subscription Product
+document.getElementById('addSubscriptionForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    if (currentSession.role !== 'owner') {
+        showToast('❌ Only owner can add products', 'error');
+        return;
+    }
+    
+    const nameSelect = document.getElementById('subProductNameSelect');
+    const customName = document.getElementById('subProductName');
+    const productName = nameSelect.value === 'custom' ? customName.value : nameSelect.value;
+    
+    if (!productName) {
+        showToast('⚠️ Please enter a product name', 'error');
+        return;
+    }
+    
+    const buyPrice = parseFloat(document.getElementById('subBuyPrice').value);
+    const fullPrice = parseFloat(document.getElementById('subFullPrice').value);
+    const totalProfiles = parseInt(document.getElementById('subTotalProfiles').value);
+const soloPrice = parseFloat(document.getElementById('subSoloPrice').value);
+const sharedPrice = parseFloat(document.getElementById('subSharedPrice').value);    
+    const profiles = [];
+    for (let i = 1; i <= totalProfiles; i++) {
+        profiles.push({
+            number: i,
+            sold: false,
+            soldBy: '',
+            soldDate: ''
+        });
+    }
+    
+    const newProduct = {
+        id: Date.now(),
+        name: productName,
+        buyPrice: buyPrice,
+        fullPrice: fullPrice,
+        totalProfiles: totalProfiles,
+soloPrice: soloPrice,
+sharedPrice: sharedPrice,
+        profiles: profiles,
+        createdAt: new Date().toISOString().split('T')[0]
+    };
+    
+    getRef('subscriptionProducts/' + newProduct.id).set(newProduct)
+        .then(() => {
+            document.getElementById('addSubscriptionForm').reset();
+            document.getElementById('subProductName').style.display = 'none';
+            showToast('✅ Subscription product added successfully!', 'success');
+        })
+        .catch((error) => {
+            showToast('❌ Error: ' + error.message, 'error');
+        });
+});
+// Update Product Dropdown
+function updateProductDropdown() {
+    const select = document.getElementById('productSelect');
+    select.innerHTML = '<option value="">-- Select Product --</option>';
+    
+    // Add regular products
+    products.forEach(product => {
+        const userCommissionPercent = currentSession.profitPercent || 10;
+        const commissionAmount = (product.sellPrice * userCommissionPercent) / 100;
+        const displayPrice = currentSession.role === 'owner' ? product.sellPrice : adminPrice;
+        
+        select.innerHTML += `<option value="${product.id}">${product.name} - ₱${displayPrice.toFixed(2)}</option>`;
+    });
+    
+    // Add subscription products
+    subscriptionProducts.forEach(product => {
+        select.innerHTML += `<option value="${product.id}">🎬 ${product.name}</option>`;
+    });
+}
 
         // Render Product List
         function renderProductList() {
@@ -1965,6 +2456,21 @@ function loadAllData() {
             displayProductDetails(productId);
         });
 
+// Handle product selection for subscription products
+document.getElementById('productSelect').addEventListener('change', handleProductSelectionForSale);
+
+// Handle sale type radio buttons
+document.querySelectorAll('input[name="saleType"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        const profileSelection = document.getElementById('profileSelection');
+        if (this.value === 'profile') {
+            profileSelection.style.display = 'block';
+        } else {
+            profileSelection.style.display = 'none';
+            selectedProfile = null;
+        }
+    });
+});
         // Update when quantity changes
         document.getElementById('productQuantity').addEventListener('input', function() {
             const productId = parseInt(document.getElementById('productSelect').value);
@@ -1990,15 +2496,16 @@ function loadAllData() {
             const sellPrice = product.sellPrice;
             const margin = product.margin;
             
-            // Calculate user's commission
+            // Calculate user's commission - FIXED: Calculate from PROFIT not SELL PRICE
             const userCommissionPercent = currentSession.profitPercent || 100; // Owner gets 100%
-            const commissionPerUnit = (sellPrice * userCommissionPercent) / 100;
+            const actualProfit = sellPrice - buyPrice; // Calculate profit FIRST
+            const commissionPerUnit = (actualProfit * userCommissionPercent) / 100; // Commission from PROFIT
             
             // Display price (what user pays)
             const userPrice = currentSession.role === 'owner' ? sellPrice : (sellPrice - commissionPerUnit);
             
             // Commission amount (what user earns)
-            const yourCommission = currentSession.role === 'owner' ? (sellPrice - buyPrice) : commissionPerUnit;
+            const yourCommission = currentSession.role === 'owner' ? actualProfit : commissionPerUnit;
             
             // Update single unit display
             document.getElementById('productPrice').textContent = '₱' + userPrice.toFixed(2);
@@ -2058,10 +2565,11 @@ function loadAllData() {
             const quantity = parseInt(document.getElementById('productQuantity').value);
             const price = parseFloat(document.getElementById('productPrice').textContent.replace('₱', ''));
             
-            // USE ADMIN'S PROFIT PERCENT FROM THEIR ACCOUNT
+            // USE ADMIN'S PROFIT PERCENT FROM THEIR ACCOUNT - FIXED CALCULATION
             const userCommissionPercent = currentSession.profitPercent || 100;
-            const commissionAmount = (product.sellPrice * userCommissionPercent) / 100;
-            const yourProfit = currentSession.role === 'owner' ? (product.sellPrice - product.buyPrice) : commissionAmount;
+            const actualProfit = product.sellPrice - product.buyPrice; // Calculate profit FIRST
+            const commissionAmount = (actualProfit * userCommissionPercent) / 100; // Commission from PROFIT
+            const yourProfit = currentSession.role === 'owner' ? actualProfit : commissionAmount;
             
             const newSale = {
                 id: Date.now(),
@@ -2691,6 +3199,148 @@ function loadAllData() {
             console.log('✅ Event listeners setup complete');
         }
 
+// =================== ADD SALE FORM HANDLER ===================
+document.getElementById('addSaleForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const productId = parseInt(document.getElementById('productSelect').value);
+    if (!productId) {
+        showToast('⚠️ Please select a product', 'error');
+        return;
+    }
+    
+    const subProduct = subscriptionProducts.find(p => p.id === productId);
+    
+    if (subProduct) {
+        const saleType = document.querySelector('input[name="saleType"]:checked')?.value;
+        
+        if (!saleType) {
+            showToast('⚠️ Please select sale type', 'error');
+            return;
+        }
+        
+        if (saleType === 'profile') {
+            if (!selectedProfile) {
+                showToast('⚠️ Please select a profile number', 'error');
+                return;
+            }
+            
+            const profile = subProduct.profiles.find(p => p.number === selectedProfile);
+            if (!profile || profile.sold) {
+                showToast('⚠️ Profile not available', 'error');
+                return;
+            }
+            
+            profile.sold = true;
+            profile.soldBy = currentUsername;
+            profile.soldDate = new Date().toISOString().split('T')[0];
+            
+            getRef('subscriptionProducts/' + subProduct.id).set(subProduct)
+                .then(() => {
+                    const newSale = {
+                        id: Date.now(),
+                        productName: subProduct.name + ` (Profile ${selectedProfile})`,
+                        warrantyType: 'N/A',
+                        accountType: 'Profile',
+                        quantity: 1,
+price: subProduct.soloPrice,
+                        commission: 0,
+totalPrice: subProduct.soloPrice,
+                        totalCommission: 0,
+                        sold: true,
+                        date: new Date().toISOString().split('T')[0],
+                        soldBy: currentUsername
+                    };
+                    
+                    const userKey = currentUsername.replace(/[.#$[\]]/g, '_');
+                    return getRef('sales/' + userKey + '/' + newSale.id).set(newSale);
+                })
+                .then(() => {
+                    document.getElementById('addSaleForm').reset();
+                    document.getElementById('saleTypeSelection').classList.remove('show');
+                    selectedProfile = null;
+                    showToast('🎬 Profile sale added!', 'success');
+                })
+                .catch((error) => {
+                    showToast('❌ Error: ' + error.message, 'error');
+                });
+                
+        } else {
+            subProduct.profiles.forEach(profile => {
+                profile.sold = true;
+                profile.soldBy = currentUsername;
+                profile.soldDate = new Date().toISOString().split('T')[0];
+            });
+            
+            getRef('subscriptionProducts/' + subProduct.id).set(subProduct)
+                .then(() => {
+                    const newSale = {
+                        id: Date.now(),
+                        productName: subProduct.name + ' (Full Account)',
+                        warrantyType: 'N/A',
+                        accountType: 'Full',
+                        quantity: 1,
+price: subProduct.sharedPrice,
+                        commission: 0,
+totalPrice: subProduct.sharedPrice,
+                        totalCommission: 0,
+                        sold: true,
+                        date: new Date().toISOString().split('T')[0],
+                        soldBy: currentUsername
+                    };
+                    
+                    const userKey = currentUsername.replace(/[.#$[\]]/g, '_');
+                    return getRef('sales/' + userKey + '/' + newSale.id).set(newSale);
+                })
+                .then(() => {
+                    document.getElementById('addSaleForm').reset();
+                    document.getElementById('saleTypeSelection').classList.remove('show');
+                    showToast('🎬 Full account sale added!', 'success');
+                })
+                .catch((error) => {
+                    showToast('❌ Error: ' + error.message, 'error');
+                });
+        }
+        
+    } else {
+        const product = products.find(p => p.id === productId);
+        if (!product) return;
+        
+        const warrantyType = document.querySelector('input[name="warranty"]:checked')?.value || 'nw';
+        const accountType = document.querySelector('input[name="accountType"]:checked')?.value || 'solo';
+        const quantity = parseInt(document.getElementById('productQuantity').value) || 1;
+        const status = document.getElementById('productStatus').value;
+        
+        const price = product.sellPrice;
+        const userCommissionPercent = currentSession.profitPercent || 10;
+        const commissionAmount = (price * userCommissionPercent) / 100;
+        
+        const newSale = {
+            id: Date.now(),
+            productName: product.name,
+            warrantyType: warrantyType,
+            accountType: accountType,
+            quantity: quantity,
+            price: price,
+            commission: commissionAmount,
+            totalPrice: price * quantity,
+            totalCommission: commissionAmount * quantity,
+            sold: status === 'sold',
+            date: new Date().toISOString().split('T')[0],
+            soldBy: currentUsername
+        };
+        
+        const userKey = currentUsername.replace(/[.#$[\]]/g, '_');
+        getRef('sales/' + userKey + '/' + newSale.id).set(newSale)
+            .then(() => {
+                document.getElementById('addSaleForm').reset();
+                showToast('✅ Sale added!', 'success');
+            })
+            .catch((error) => {
+                showToast('❌ Error: ' + error.message, 'error');
+            });
+    }
+});
         // =================== MODAL FUNCTIONS ===================
         function closeUserModal() {
             document.getElementById('userModal').classList.remove('show');
