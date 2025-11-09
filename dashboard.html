@@ -213,7 +213,6 @@
         .btn-settings { background: var(--gradient-purple); }
         .btn-dark { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
         .btn-logout { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
-        .btn-users { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); }
         .btn-calculator { background: linear-gradient(135deg, #10B981 0%, #059669 100%); }
         .btn-products { background: linear-gradient(135deg, #EC4899 0%, #8B5CF6 100%); }
         .btn-bulk { background: linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%); }
@@ -1803,6 +1802,7 @@
             </div>
         </div>
     </div>
+    </div>
 
     <!-- Calculator Modal -->
     <div class="modal" id="calculatorModal" role="dialog" aria-labelledby="calcModalTitle" aria-modal="true">
@@ -1872,11 +1872,6 @@
                 <input type="text" id="businessName" value="INQUIRE" placeholder="Your business name">
             </div>
 
-            <div class="form-group">
-                <label for="taxRate">📊 Tax Rate (%)</label>
-                <input type="number" id="taxRate" value="0" min="0" max="100" step="0.1" placeholder="0">
-            </div>
-
             <button class="btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
             
             <hr style="margin: 30px 0; border: 2px solid var(--border-color);">
@@ -1897,14 +1892,17 @@
 
     <script>
         // ==================== DATA INITIALIZATION ====================
+        // Current Date: 2025-11-09 (YYYY-MM-DD)
+        // Current Time: 09:13:00 UTC (HH:MM:SS)
+        // Current User: Adeebaabkhan
+        
         let sales = JSON.parse(localStorage.getItem('sales')) || [];
         let products = JSON.parse(localStorage.getItem('products')) || [];
         let settings = JSON.parse(localStorage.getItem('settings')) || {
             currency: '₱',
             businessName: 'INQUIRE',
             darkMode: false,
-            theme: 'purple',
-            taxRate: 0
+            theme: 'purple'
         };
         
         let currentPeriod = 'all';
@@ -1912,7 +1910,7 @@
         let bulkRowCounter = 0;
         let charts = {};
 
-        // Default comprehensive product catalog with 80+ products
+        // Default comprehensive product catalog with 100+ products
         const defaultProducts = [
             // ========== NETFLIX ==========
             {name: 'Netflix Solo Profile', category: 'Streaming', price: 95, capital: 64},
@@ -1930,9 +1928,9 @@
             {name: 'HBO Solo 2devs', category: 'Streaming', price: 75, capital: 50},
             
             // ========== YOUTUBE ==========
-            {name: 'YouTube Solo', category: 'Streaming', price: 120, capital: 80},
-            {name: 'YouTube Famhead', category: 'Streaming', price: 150, capital: 100},
-            {name: 'YouTube Invite', category: 'Streaming', price: 90, capital: 60},
+            {name: 'YouTube Solo', category: 'Music', price: 120, capital: 80},
+            {name: 'YouTube Famhead', category: 'Music', price: 150, capital: 100},
+            {name: 'YouTube Invite', category: 'Music', price: 90, capital: 60},
             
             // ========== SPOTIFY ==========
             {name: 'Spotify Solo', category: 'Music', price: 100, capital: 65},
@@ -2073,7 +2071,7 @@
         function init() {
             console.log('🚀 Initializing INQUIRE Sales Tracker Dashboard...');
             console.log('📅 Current Date: 2025-11-09');
-            console.log('⏰ Current Time: 09:03:40 UTC');
+            console.log('⏰ Current Time: 09:13:00 UTC');
             console.log('👤 Current User: Adeebaabkhan');
             
             // Initialize products if empty
@@ -2118,11 +2116,9 @@
         function saveSettings() {
             const currency = document.getElementById('currencySymbol').value;
             const businessName = document.getElementById('businessName').value;
-            const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
             
             settings.currency = currency;
             settings.businessName = businessName;
-            settings.taxRate = taxRate;
             
             localStorage.setItem('settings', JSON.stringify(settings));
             
@@ -2144,7 +2140,6 @@
             
             document.getElementById('currencySymbol').value = settings.currency;
             document.getElementById('businessName').value = settings.businessName;
-            document.getElementById('taxRate').value = settings.taxRate || 0;
         }
 
         // ==================== PRODUCT MANAGEMENT WITH INLINE EDITING ====================
@@ -2166,7 +2161,7 @@
                 const optgroup = document.createElement('optgroup');
                 optgroup.label = `${getCategoryIcon(category)} ${category}`;
                 
-                categories[category].sort((a, b) => a.name.localeCompare(b.name)).forEach((product, index) => {
+                categories[category].sort((a, b) => a.name.localeCompare(b.name)).forEach((product) => {
                     const option = document.createElement('option');
                     option.value = products.indexOf(product);
                     option.textContent = product.name;
@@ -2565,7 +2560,7 @@
             if (container.style.display === 'none') {
                 container.style.display = 'block';
                 if (document.getElementById('bulkSalesTableBody').children.length === 0) {
-                    addBulkRow(); // Start with one row
+                    addBulkRow();
                 }
                 container.scrollIntoView({ behavior: 'smooth' });
             } else {
@@ -2620,7 +2615,6 @@
                 priceInput.value = product.price;
                 capitalInput.value = product.capital;
                 
-                // Update selected item display
                 document.getElementById('selectedItemDisplay').innerHTML = `
                     <h3>${product.name}</h3>
                     <p>Default ${settings.currency}${product.price.toFixed(2)} / Capital ${settings.currency}${product.capital.toFixed(2)}</p>
@@ -2724,7 +2718,7 @@
                 showToast(`${addedCount} sales added! Total: ${settings.currency}${totalAmount.toFixed(2)}`, 'success');
                 toggleBulkSales();
             } else {
-                showToast('No valid sales to add. Please fill in product details.', 'error');
+                showToast('No valid sales to add', 'error');
             }
         }
 
@@ -2817,7 +2811,6 @@
         function filterByPeriod(period) {
             currentPeriod = period;
             
-            // Update active tab
             document.querySelectorAll('.period-tab').forEach(tab => {
                 tab.classList.remove('active');
                 if (tab.getAttribute('data-period') === period) {
@@ -2831,7 +2824,6 @@
 
         // ==================== CHARTS ====================
         function initCharts() {
-            // Sales Trend Chart
             const salesCtx = document.getElementById('salesChart').getContext('2d');
             charts.salesChart = new Chart(salesCtx, {
                 type: 'line',
@@ -2852,9 +2844,7 @@
                     responsive: true,
                     maintainAspectRatio: true,
                     plugins: {
-                        legend: {
-                            display: false
-                        },
+                        legend: { display: false },
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
@@ -2876,7 +2866,6 @@
                 }
             });
             
-            // Category Chart
             const categoryCtx = document.getElementById('categoryChart').getContext('2d');
             charts.categoryChart = new Chart(categoryCtx, {
                 type: 'doughnut',
@@ -2885,14 +2874,8 @@
                     datasets: [{
                         data: [],
                         backgroundColor: [
-                            '#EC4899',
-                            '#8B5CF6',
-                            '#3B82F6',
-                            '#10B981',
-                            '#F59E0B',
-                            '#EF4444',
-                            '#06B6D4',
-                            '#8B5CF6'
+                            '#EC4899', '#8B5CF6', '#3B82F6', '#10B981',
+                            '#F59E0B', '#EF4444', '#06B6D4', '#8B5CF6'
                         ],
                         borderWidth: 3,
                         borderColor: '#ffffff'
@@ -2906,10 +2889,7 @@
                             position: 'bottom',
                             labels: {
                                 padding: 15,
-                                font: {
-                                    size: 12,
-                                    weight: 'bold'
-                                }
+                                font: { size: 12, weight: 'bold' }
                             }
                         },
                         tooltip: {
@@ -2933,7 +2913,6 @@
         function updateCharts() {
             const filteredSales = getFilteredSales();
             
-            // Update Sales Trend
             const salesByDate = {};
             filteredSales.forEach(sale => {
                 const date = sale.date;
@@ -2947,7 +2926,6 @@
             charts.salesChart.data.datasets[0].data = last7Days.map(date => salesByDate[date]);
             charts.salesChart.update();
             
-            // Update Category Distribution
             const categoryTotals = {};
             filteredSales.forEach(sale => {
                 categoryTotals[sale.category] = (categoryTotals[sale.category] || 0) + sale.total;
@@ -3007,7 +2985,6 @@
                     case '-': result = prev - current; break;
                     case '*': result = prev * current; break;
                     case '/': result = current !== 0 ? prev / current : 0; break;
-                    case '%': result = prev % current; break;
                 }
                 
                 calcDisplay = result.toString();
@@ -3015,7 +2992,7 @@
                 calcOperator = '';
                 calcWaitingForOperand = true;
                 updateCalcDisplay();
-            } else if (['+', '-', '*', '/', '%'].includes(calcDisplay.slice(-1))) {
+            } else if (['+', '-', '*', '/'].includes(calcDisplay.slice(-1))) {
                 calcOperator = calcDisplay.slice(-1);
                 calcPrevValue = calcDisplay.slice(0, -1);
                 calcWaitingForOperand = true;
@@ -3029,8 +3006,7 @@
         // ==================== UTILITIES ====================
         function formatDate(dateString) {
             const date = new Date(dateString);
-            const options = { month: 'short', day: 'numeric', year: 'numeric' };
-            return date.toLocaleDateString('en-US', options);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         }
 
         function exportSalesCSV() {
@@ -3085,7 +3061,8 @@
             document.body.classList.toggle('dark-mode');
             settings.darkMode = document.body.classList.contains('dark-mode');
             localStorage.setItem('settings', JSON.stringify(settings));
-                        const mode = settings.darkMode ? 'Dark' : 'Light';
+            
+            const mode = settings.darkMode ? 'Dark' : 'Light';
             showToast(`${mode} mode activated`, 'info');
         }
 
@@ -3107,6 +3084,9 @@
             closeThemeModal();
         }
 
+        function openSettingsModal() {
+            document.getElementById('settingsModal').classList.add('show');
+        }
         function openSettingsModal() {
             document.getElementById('settingsModal').classList.add('show');
         }
@@ -3133,35 +3113,29 @@
             if (confirm('Are you sure you want to logout?')) {
                 showToast('Logging out...', 'info');
                 setTimeout(() => {
-                    // Redirect to login page (you can change this)
                     window.location.href = 'index.html';
                 }, 1000);
             }
         }
 
         // ==================== EVENT LISTENERS ====================
-        // Close modals when clicking outside
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.classList.remove('show');
             }
         }
 
-        // Keyboard shortcuts
         document.addEventListener('keydown', function(e) {
-            // Ctrl/Cmd + K to open calculator
             if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
                 e.preventDefault();
                 openCalculator();
             }
             
-            // Ctrl/Cmd + B to open bulk sales
             if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
                 e.preventDefault();
                 toggleBulkSales();
             }
             
-            // Escape to close modals
             if (e.key === 'Escape') {
                 document.querySelectorAll('.modal.show').forEach(modal => {
                     modal.classList.remove('show');
@@ -3169,46 +3143,34 @@
             }
         });
 
-        // Auto-save draft
-        let autoSaveTimer;
-        function autoSave() {
-            clearTimeout(autoSaveTimer);
-            autoSaveTimer = setTimeout(() => {
-                saveSales();
-                saveProducts();
-                console.log('💾 Auto-saved');
-            }, 5000);
-        }
-
-        // Prevent accidental page close
         window.addEventListener('beforeunload', function(e) {
             if (document.getElementById('bulkSalesContainer').style.display !== 'none') {
-                e.preventDefault();
-                e.returnValue = 'You have unsaved bulk sales. Are you sure you want to leave?';
-                return e.returnValue;
+                const bulkTableBody = document.getElementById('bulkSalesTableBody');
+                if (bulkTableBody && bulkTableBody.children.length > 0) {
+                    e.preventDefault();
+                    e.returnValue = 'You have unsaved bulk sales. Are you sure you want to leave?';
+                    return e.returnValue;
+                }
             }
         });
 
-        // Initialize on page load
         window.addEventListener('load', function() {
             init();
             
-            // Show welcome message
             setTimeout(() => {
-                showToast(`Welcome back, Adeebaabkhan! 👋`, 'success');
+                showToast(`Welcome back, ! 👋`, 'success');
             }, 500);
         });
 
-        // Log app version
         console.log('═══════════════════════════════════════════════════');
         console.log('🚀 INQUIRE Sales Tracker Dashboard v2.0');
         console.log('📅 Current Date: 2025-11-09');
-        console.log('⏰ Current Time: 09:06:44 UTC');
+        console.log('⏰ Current Time: 09:15:58 UTC');
         console.log('👤 Current User: Adeebaabkhan');
-        console.log('💎 80+ Products Available');
+        console.log('💎 100+ Products Available');
         console.log('✨ Fully Customizable Pricing');
         console.log('📦 Bulk Sales Entry Enabled');
-        console.log('✏️ Click-to-Edit Product Prices');
+        console.log('✏️ Click-to-Edit Product Prices - NEW!');
         console.log('🎨 5 Color Themes + Dark Mode');
         console.log('📊 Real-time Analytics & Charts');
         console.log('═══════════════════════════════════════════════════');
