@@ -1892,7 +1892,7 @@ function loadAllData() {
             products.forEach(product => {
                 // USE CURRENT USER'S PROFIT PERCENT
                 const userCommissionPercent = currentSession.profitPercent || 100; // Owner gets 100%
-                const commissionAmount = (product.sellPrice * userCommissionPercent) / 100;
+                // Calculate the actual profit first (sell price - buy price) const actualProfit = product.sellPrice - product.buyPrice;  // Then calculate admin's commission as a percentage of the PROFIT, not the sell price const commissionAmount = (actualProfit * userCommissionPercent) / 100;
                 const adminPrice = product.sellPrice - commissionAmount;
                 const displayPrice = currentSession.role === 'owner' ? product.sellPrice : adminPrice;
                 
@@ -2061,7 +2061,8 @@ function loadAllData() {
             
             // USE ADMIN'S PROFIT PERCENT FROM THEIR ACCOUNT
             const userCommissionPercent = currentSession.profitPercent || 100;
-            const commissionAmount = (product.sellPrice * userCommissionPercent) / 100;
+            // Calculate the actual profit first (sell price - buy price) const actualProfit = product.sellPrice - product.buyPrice; 
+            // Then calculate admin's commission as a percentage of the PROFIT, not the sell price const commissionAmount = (actualProfit * userCommissionPercent) / 100;
             const yourProfit = currentSession.role === 'owner' ? (product.sellPrice - product.buyPrice) : commissionAmount;
             
             const newSale = {
