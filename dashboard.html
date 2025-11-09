@@ -1772,6 +1772,75 @@ body.dark-mode .profile-select-btn {
                     </div>
                 </div>
 
+                <!-- Profile Tracking Fields (for streaming services) -->
+                <div id="profileTrackingFields" style="display: none;">
+                    <!-- Account ID -->
+                    <div class="form-group">
+                        <label>🎬 Account ID</label>
+                        <select id="accountIdSelect">
+                            <option value="">-- Select Account --</option>
+                        </select>
+                    </div>
+
+                    <!-- Profile Number -->
+                    <div class="form-group">
+                        <label>🔢 Profile Number</label>
+                        <select id="profileNumberSelect" onchange="updateProfileStatus()">
+                            <option value="">-- Select Profile --</option>
+                            <option value="1">Profile 1</option>
+                            <option value="2">Profile 2</option>
+                            <option value="3">Profile 3</option>
+                            <option value="4">Profile 4</option>
+                            <option value="5">Profile 5</option>
+                        </select>
+                    </div>
+
+                    <!-- Profile Status Display -->
+                    <div id="profileStatusDisplay" class="price-info-card" style="display: none; background: linear-gradient(135deg, #FFF0F5 0%, #FFE1E8 100%);">
+                        <div class="price-info-row">
+                            <span class="price-info-label">📊 Profile Status</span>
+                            <span class="price-info-value" id="profileStatusText">Loading...</span>
+                        </div>
+                        <div id="profileSlotDetails" style="margin-top: 10px; font-size: 0.9em; color: var(--text-color);"></div>
+                    </div>
+
+                    <!-- Profile Name (OPTIONAL) -->
+                    <div class="form-group">
+                        <label>👤 Profile Name (Optional)</label>
+                        <input type="text" id="profileNameInput" placeholder="e.g., John's Profile (optional - can leave blank)">
+                        <small style="color: var(--text-color); opacity: 0.7; margin-top: 5px; display: block;">You can leave this blank</small>
+                    </div>
+
+                    <!-- Profile Type -->
+                    <div class="form-group">
+                        <label>📋 Profile Type</label>
+                        <div class="account-type-options">
+                            <div class="account-type-option">
+                                <input type="radio" id="profileTypeSolo" name="profileType" value="Solo">
+                                <label for="profileTypeSolo" class="account-type-label">
+                                    <span>👤</span>
+                                    <span>Solo (1 user)</span>
+                                </label>
+                            </div>
+                            <div class="account-type-option">
+                                <input type="radio" id="profileTypeShared" name="profileType" value="Shared">
+                                <label for="profileTypeShared" class="account-type-label">
+                                    <span>👥</span>
+                                    <span>Shared (2 users)</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sold By -->
+                    <div class="form-group">
+                        <label>🎯 Sold By</label>
+                        <select id="soldBySelect">
+                            <option value="">-- Select Admin --</option>
+                        </select>
+                    </div>
+                </div>
+
                 <!-- Warranty -->
                 <div class="form-group">
                     <label>🛡️ Warranty Type</label>
@@ -2655,6 +2724,7 @@ console.log('📂 All data will be stored in:', APP_NAME + '/');
         let payouts = [];
 let products = [];
 let subscriptionProducts = [];
+let accounts = []; // Store streaming service accounts
 let selectedProfile = null;
 let realAdmins = []; // Store real admins from Firebase
     let settings = {
@@ -2664,6 +2734,9 @@ let realAdmins = []; // Store real admins from Firebase
         };
 
         let calcValue = '0';
+        
+        // Streaming service categories for profile tracking
+        const STREAMING_CATEGORIES = ['Netflix', 'Disney', 'HBO', 'YouTube', 'Prime Video', 'Apple TV+', 'Paramount+', 'Discovery+', 'Crunchyroll', 'VIU', 'WeTV', 'Vimeo', 'iQIYI', 'Loklok', 'iWant', 'Vivaone', 'Vivamax', 'Vivabundle'];
 
 // =================== DEFAULT PRODUCTS CATALOG ===================
 const DEFAULT_PRODUCTS = [
@@ -3114,12 +3187,41 @@ getRef('subscriptionProducts').on('value', (snapshot) => {
         autoCalculatePayouts();
     });
 
+    // Load accounts (for profile tracking)
+    getRef('accounts').on('value', (snapshot) => {
+        const accountsData = snapshot.val() || {};
+        accounts = Object.values(accountsData);
+        console.log('🎬 Loaded accounts:', accounts.length);
+        populateAccountDropdown();
+    });
+
     // Load settings
     getRef('settings/' + currentUsername).once('value').then((snapshot) => {
         if (snapshot.exists()) {
             settings = snapshot.val();
         }
         applySettings();
+    });
+    
+    // Populate Sold By dropdown with real admin names
+    populateSoldByDropdown();
+}
+
+// Populate Sold By dropdown with admin names
+function populateSoldByDropdown() {
+    const soldBySelect = document.getElementById('soldBySelect');
+    if (!soldBySelect) return;
+    
+    soldBySelect.innerHTML = '<option value="">-- Select Admin --</option>';
+    
+    // Add current user first
+    soldBySelect.innerHTML += `<option value="${currentSession.username}">${currentSession.customName} (You)</option>`;
+    
+    // Add other admins
+    users.forEach(user => {
+        if (user.role === 'admin' && user.username !== currentSession.username) {
+            soldBySelect.innerHTML += `<option value="${user.username}">${user.customName}</option>`;
+        }
     });
 }
 
@@ -3496,7 +3598,98 @@ function updateProductDropdown() {
         document.getElementById('productSelect').addEventListener('change', function() {
             const productId = parseInt(this.value);
             displayProductDetails(productId);
+            handleProductChangeForProfileTracking(productId);
         });
+
+        // Handle product selection for profile tracking
+        function handleProductChangeForProfileTracking(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) {
+                document.getElementById('profileTrackingFields').style.display = 'none';
+                return;
+            }
+            
+            // Check if product is a streaming service
+            const isStreaming = STREAMING_CATEGORIES.includes(product.category);
+            
+            if (isStreaming) {
+                document.getElementById('profileTrackingFields').style.display = 'block';
+                populateAccountDropdown(product.category);
+            } else {
+                document.getElementById('profileTrackingFields').style.display = 'none';
+            }
+        }
+
+        // Populate account dropdown based on product category
+        function populateAccountDropdown(category) {
+            const accountSelect = document.getElementById('accountIdSelect');
+            if (!accountSelect) return;
+            
+            accountSelect.innerHTML = '<option value="">-- Select Account --</option>';
+            
+            const filteredAccounts = accounts.filter(acc => acc.product && acc.product.includes(category));
+            filteredAccounts.forEach(account => {
+                accountSelect.innerHTML += `<option value="${account.id}">${account.id} - ${account.product}</option>`;
+            });
+            
+            if (filteredAccounts.length === 0) {
+                accountSelect.innerHTML += '<option value="" disabled>No accounts available - Create one first</option>';
+            }
+        }
+
+        // Update profile status when profile is selected
+        function updateProfileStatus() {
+            const accountId = document.getElementById('accountIdSelect').value;
+            const profileNumber = document.getElementById('profileNumberSelect').value;
+            const profileType = document.querySelector('input[name="profileType"]:checked')?.value;
+            
+            if (!accountId || !profileNumber) {
+                document.getElementById('profileStatusDisplay').style.display = 'none';
+                return;
+            }
+            
+            // Find sales for this account and profile
+            const existingSales = sales.filter(s => 
+                s.accountId === accountId && 
+                s.profileNumber === parseInt(profileNumber)
+            );
+            
+            const maxSlots = profileType === 'Solo' ? 1 : 2;
+            const filledSlots = existingSales.length;
+            const availableSlots = maxSlots - filledSlots;
+            
+            // Determine status
+            let statusText = '';
+            let statusColor = '';
+            
+            if (filledSlots === 0) {
+                statusText = `✅ AVAILABLE (0/${maxSlots} slots filled)`;
+                statusColor = 'var(--success)';
+            } else if (filledSlots < maxSlots) {
+                statusText = `⚠️ HALF FILLED (${filledSlots}/${maxSlots} slots filled)`;
+                statusColor = 'var(--warning)';
+            } else {
+                statusText = `🔴 FULL (${filledSlots}/${maxSlots} slots filled)`;
+                statusColor = 'var(--danger)';
+            }
+            
+            document.getElementById('profileStatusText').textContent = statusText;
+            document.getElementById('profileStatusText').style.color = statusColor;
+            
+            // Show slot details
+            let slotDetails = '<strong>Slot Details:</strong><br>';
+            for (let i = 1; i <= maxSlots; i++) {
+                const slotSale = existingSales.find(s => s.slotNumber === i);
+                if (slotSale) {
+                    slotDetails += `• Slot ${i}: ✅ SOLD by ${slotSale.soldBy} (${slotSale.date})<br>`;
+                } else {
+                    slotDetails += `• Slot ${i}: 🟢 AVAILABLE ← You're selling this<br>`;
+                }
+            }
+            
+            document.getElementById('profileSlotDetails').innerHTML = slotDetails;
+            document.getElementById('profileStatusDisplay').style.display = 'block';
+        }
 
 // Handle product selection for subscription products
 document.getElementById('productSelect').addEventListener('change', handleProductSelectionForSale);
