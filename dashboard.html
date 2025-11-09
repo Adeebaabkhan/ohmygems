@@ -2501,33 +2501,47 @@ getRef('subscriptionProducts').on('value', (snapshot) => {
             }
         }
 
-        // Auto-calculate prices when buy/sell price changes
-        function autoCalculatePrices() {
-            const buyPrice = parseFloat(document.getElementById('newBuyPrice').value) || 0;
-            const sellPrice = parseFloat(document.getElementById('newSellPrice').value) || 0;
-            
-            if (buyPrice > 0 && sellPrice > 0) {
-                const profit = sellPrice - buyPrice;
-                const margin = ((profit / buyPrice) * 100);
-                
-                // Calculate example admin prices
-                const commission20 = (sellPrice * 20) / 100;
-                const commission30 = (sellPrice * 30) / 100;
-                const adminPrice20 = sellPrice - commission20;
-                const adminPrice30 = sellPrice - commission30;
-                
-                // Update preview display - OWNER'S PROFIT
-                document.getElementById('autoProfit').textContent = '₱' + profit.toFixed(2);
-                document.getElementById('autoProfitPercent').textContent = margin.toFixed(2) + '%';
-                document.getElementById('autoAdminPrice20').textContent = '₱' + adminPrice20.toFixed(2);
-                document.getElementById('autoAdminPrice30').textContent = '₱' + adminPrice30.toFixed(2);
-                
-                document.getElementById('productCalculation').style.display = 'block';
-            } else {
-                document.getElementById('newMargin').value = '';
-                document.getElementById('productCalculation').style.display = 'none';
-            }
-        }
+function autoCalculatePrices() {
+    const buy = parseFloat(document.getElementById('newBuyPrice').value) || 0;
+    const sell = parseFloat(document.getElementById('newSellPrice').value) || 0;
+    
+    // Validate prices
+    if (buy <= 0 || sell <= 0) {
+        document.getElementById('productCalculation').style.display = 'none';
+        return;
+    }
+    
+    if (sell <= buy) {
+        showToast('Sell price must be greater than buy price!', 'error');
+        document.getElementById('productCalculation').style.display = 'none';
+        return;
+    }
+    
+    // Calculate total profit
+    const totalProfit = sell - buy;
+    
+    // Calculate margin percentage
+    const marginPercent = ((totalProfit / buy) * 100).toFixed(2);
+    
+    // Calculate admin commissions (what they GET from the profit)
+    const admin20Commission = totalProfit * 0.20; // 20% of profit
+    const owner20Profit = totalProfit - admin20Commission; // Remaining for owner
+    
+    const admin30Commission = totalProfit * 0.30; // 30% of profit
+    const owner30Profit = totalProfit - admin30Commission; // Remaining for owner
+    
+    // Update display
+    document.getElementById('autoProfit').textContent = `₱${totalProfit.toFixed(2)}`;
+    document.getElementById('autoProfitPercent').textContent = `${marginPercent}%`;
+    document.getElementById('newMargin').value = marginPercent;
+    
+    // Show the breakdown clearly
+    document.getElementById('autoAdminPrice20').textContent = `Admin: ₱${admin20Commission.toFixed(2)} | You: ₱${owner20Profit.toFixed(2)}`;
+    document.getElementById('autoAdminPrice30').textContent = `Admin: ₱${admin30Commission.toFixed(2)} | You: ₱${owner30Profit.toFixed(2)}`;
+    
+    // Show the calculation card
+    document.getElementById('productCalculation').style.display = 'block';
+}
 
         // Add Product
         document.getElementById('addProductForm').addEventListener('submit', function(e) {
