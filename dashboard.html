@@ -1960,7 +1960,6 @@ body.dark-mode .profile-select-btn {
                                 <th style="min-width: 180px;">📦 Product</th>
                                 <th style="min-width: 120px;">👤 Account Type</th>
                                 <th style="min-width: 100px;">🛡️ Warranty</th>
-                                <th style="min-width: 150px;">👥 Customer</th>
                                 <th style="min-width: 100px;">💵 Buy (₱)</th>
                                 <th style="min-width: 100px;">💰 Sell (₱)</th>
                                 <th style="min-width: 80px;">🔢 Qty</th>
@@ -2010,6 +2009,11 @@ body.dark-mode .profile-select-btn {
                             <th>Date</th>
                             <th id="adminColumn">Admin</th>
                             <th>Product</th>
+                            <th>Account</th>
+                            <th>Profile</th>
+                            <th>Slot</th>
+                            <th>Profile Name</th>
+                            <th>Sold By</th>
                             <th>Warranty</th>
                             <th>Type</th>
                             <th>Qty</th>
@@ -3864,58 +3868,170 @@ document.querySelectorAll('input[name="saleType"]').forEach(radio => {
                 return;
             }
             
-            const warrantyType = document.querySelector('input[name="warranty"]:checked');
-            const accountType = document.querySelector('input[name="accountType"]:checked');
-            
-            if (!warrantyType) {
-                showToast('⚠️ Please select warranty type (FW or NW)', 'error');
-                return;
-            }
-            
-            if (!accountType) {
-                showToast('⚠️ Please select account type (Solo or Shared)', 'error');
-                return;
-            }
-            
             const product = products.find(p => p.id === productId);
-            const quantity = parseInt(document.getElementById('productQuantity').value);
-            const price = parseFloat(document.getElementById('productPrice').textContent.replace('₱', ''));
+            const isStreaming = STREAMING_CATEGORIES.includes(product.category);
             
-            // USE ADMIN'S PROFIT PERCENT FROM THEIR ACCOUNT - FIXED CALCULATION
-            const userCommissionPercent = currentSession.profitPercent || 100;
-            const actualProfit = product.sellPrice - product.buyPrice; // Calculate profit FIRST
-            const commissionAmount = (actualProfit * userCommissionPercent) / 100; // Commission from PROFIT
-            const yourProfit = currentSession.role === 'owner' ? actualProfit : commissionAmount;
-            
-            const newSale = {
-                id: Date.now(),
-                userId: currentSession.id,
-                userName: currentSession.customName,
-                productId: productId,
-                productName: product.name,
-                warranty: warrantyType.value,
-                accountType: accountType.value,
-                quantity: quantity,
-                price: price,
-                commission: yourProfit,
-                totalPrice: price * quantity,
-                totalCommission: yourProfit * quantity,
-                sold: document.getElementById('productSoldStatus').value === 'yes',
-                date: new Date().toISOString().split('T')[0]
-            };
-            
-            const userKey = currentSession.username.replace(/[.#$/[\]]/g, '_');
-            getRef('sales/' + userKey + '/' + newSale.id).set(newSale)
-                .then(() => {
-                    document.getElementById('addSaleForm').reset();
-                    document.getElementById('productDetailsCard').style.display = 'none';
-                    document.getElementById('totalEarningsCard').style.display = 'none';
-                    showToast('✅ Sale added successfully!', 'success');
-                    autoCalculatePayouts();
-                })
-                .catch((error) => {
-                    showToast('❌ Error: ' + error.message, 'error');
-                });
+            // Check if profile tracking fields are shown
+            if (isStreaming && document.getElementById('profileTrackingFields').style.display !== 'none') {
+                // Validate profile tracking fields
+                const accountId = document.getElementById('accountIdSelect').value;
+                const profileNumber = document.getElementById('profileNumberSelect').value;
+                const profileType = document.querySelector('input[name="profileType"]:checked');
+                const soldBy = document.getElementById('soldBySelect').value;
+                
+                if (!accountId) {
+                    showToast('⚠️ Please select an account', 'error');
+                    return;
+                }
+                
+                if (!profileNumber) {
+                    showToast('⚠️ Please select a profile number', 'error');
+                    return;
+                }
+                
+                if (!profileType) {
+                    showToast('⚠️ Please select profile type (Solo or Shared)', 'error');
+                    return;
+                }
+                
+                if (!soldBy) {
+                    showToast('⚠️ Please select who sold this', 'error');
+                    return;
+                }
+                
+                // Check for overselling - validate slot availability
+                const maxSlots = profileType.value === 'Solo' ? 1 : 2;
+                const existingSales = sales.filter(s => 
+                    s.accountId === accountId && 
+                    s.profileNumber === parseInt(profileNumber)
+                );
+                
+                if (existingSales.length >= maxSlots) {
+                    const soldByNames = existingSales.map(s => s.soldBy).join(', ');
+                    showToast(`❌ This slot is already sold! All ${maxSlots} slots filled by: ${soldByNames}`, 'error');
+                    return;
+                }
+                
+                // Determine which slot number to use
+                const usedSlots = existingSales.map(s => s.slotNumber).sort();
+                let slotNumber = 1;
+                for (let i = 1; i <= maxSlots; i++) {
+                    if (!usedSlots.includes(i)) {
+                        slotNumber = i;
+                        break;
+                    }
+                }
+                
+                const profileName = document.getElementById('profileNameInput').value.trim() || null;
+                
+                const quantity = 1; // Always 1 for profile sales
+                const price = parseFloat(document.getElementById('productPrice').textContent.replace('₱', ''));
+                
+                // Calculate commission based on sold by admin
+                const soldByUser = users.find(u => u.username === soldBy);
+                const userCommissionPercent = soldByUser ? soldByUser.profitPercent : (currentSession.profitPercent || 100);
+                const actualProfit = product.sellPrice - product.buyPrice;
+                const commissionAmount = (actualProfit * userCommissionPercent) / 100;
+                const ownerProfit = actualProfit - commissionAmount;
+                
+                const newSale = {
+                    id: Date.now(),
+                    userId: soldByUser ? soldByUser.id : currentSession.id,
+                    userName: soldByUser ? soldByUser.customName : currentSession.customName,
+                    productId: productId,
+                    productName: product.name,
+                    product: product.name,
+                    accountId: accountId,
+                    profileNumber: parseInt(profileNumber),
+                    slotNumber: slotNumber,
+                    profileName: profileName,
+                    profileType: profileType.value,
+                    soldBy: soldBy,
+                    buyPrice: product.buyPrice,
+                    sellPrice: product.sellPrice,
+                    price: price,
+                    commission: commissionAmount,
+                    ownerProfit: ownerProfit,
+                    warranty: 'NW', // Default for streaming
+                    accountType: profileType.value,
+                    quantity: quantity,
+                    totalPrice: price * quantity,
+                    totalCommission: commissionAmount * quantity,
+                    sold: true,
+                    date: new Date().toISOString().split('T')[0]
+                };
+                
+                const userKey = (soldByUser ? soldByUser.username : currentSession.username).replace(/[.#$/[\]]/g, '_');
+                getRef('sales/' + userKey + '/' + newSale.id).set(newSale)
+                    .then(() => {
+                        document.getElementById('addSaleForm').reset();
+                        document.getElementById('productDetailsCard').style.display = 'none';
+                        document.getElementById('totalEarningsCard').style.display = 'none';
+                        document.getElementById('profileTrackingFields').style.display = 'none';
+                        document.getElementById('profileStatusDisplay').style.display = 'none';
+                        showToast('✅ Profile slot sold successfully!', 'success');
+                        autoCalculatePayouts();
+                    })
+                    .catch((error) => {
+                        showToast('❌ Error: ' + error.message, 'error');
+                    });
+                
+            } else {
+                // Regular sale (non-streaming)
+                const warrantyType = document.querySelector('input[name="warranty"]:checked');
+                const accountType = document.querySelector('input[name="accountType"]:checked');
+                
+                if (!warrantyType) {
+                    showToast('⚠️ Please select warranty type (FW or NW)', 'error');
+                    return;
+                }
+                
+                if (!accountType) {
+                    showToast('⚠️ Please select account type (Solo or Shared)', 'error');
+                    return;
+                }
+                
+                const quantity = parseInt(document.getElementById('productQuantity').value);
+                const price = parseFloat(document.getElementById('productPrice').textContent.replace('₱', ''));
+                
+                // USE ADMIN'S PROFIT PERCENT FROM THEIR ACCOUNT - FIXED CALCULATION
+                const userCommissionPercent = currentSession.profitPercent || 100;
+                const actualProfit = product.sellPrice - product.buyPrice; // Calculate profit FIRST
+                const commissionAmount = (actualProfit * userCommissionPercent) / 100; // Commission from PROFIT
+                const yourProfit = currentSession.role === 'owner' ? actualProfit : commissionAmount;
+                
+                const newSale = {
+                    id: Date.now(),
+                    userId: currentSession.id,
+                    userName: currentSession.customName,
+                    productId: productId,
+                    productName: product.name,
+                    warranty: warrantyType.value,
+                    accountType: accountType.value,
+                    quantity: quantity,
+                    price: price,
+                    buyPrice: product.buyPrice,
+                    sellPrice: product.sellPrice,
+                    commission: yourProfit,
+                    totalPrice: price * quantity,
+                    totalCommission: yourProfit * quantity,
+                    sold: document.getElementById('productSoldStatus').value === 'yes',
+                    date: new Date().toISOString().split('T')[0]
+                };
+                
+                const userKey = currentSession.username.replace(/[.#$/[\]]/g, '_');
+                getRef('sales/' + userKey + '/' + newSale.id).set(newSale)
+                    .then(() => {
+                        document.getElementById('addSaleForm').reset();
+                        document.getElementById('productDetailsCard').style.display = 'none';
+                        document.getElementById('totalEarningsCard').style.display = 'none';
+                        showToast('✅ Sale added successfully!', 'success');
+                        autoCalculatePayouts();
+                    })
+                    .catch((error) => {
+                        showToast('❌ Error: ' + error.message, 'error');
+                    });
+            }
         });
 
         // =================== DELETE SALE ===================
@@ -4155,7 +4271,7 @@ document.querySelectorAll('input[name="saleType"]').forEach(radio => {
             if (filtered.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="10">
+                        <td colspan="15">
                             <div class="empty-state">
                                 <div class="empty-icon">📦</div>
                                 <h3>No sales found</h3>
@@ -4172,11 +4288,23 @@ document.querySelectorAll('input[name="saleType"]').forEach(radio => {
                 const accountClass = sale.accountType === 'Solo' ? 'solo' : 'shared';
                 const soldIcon = sale.sold ? '✅' : '📦';
                 
+                // Format profile tracking columns
+                const accountId = sale.accountId || '-';
+                const profileNumber = sale.profileNumber ? `Profile ${sale.profileNumber}` : '-';
+                const slotNumber = sale.slotNumber ? `${sale.slotNumber}/${sale.profileType === 'Solo' ? '1' : '2'}` : '-';
+                const profileName = sale.profileName || '-';
+                const soldBy = sale.soldBy || sale.userName || '-';
+                
                 return `
                     <tr>
                         <td>${sale.date}</td>
                         ${currentSession.role === 'owner' ? `<td>${sale.userName}</td>` : ''}
                         <td>${sale.productName}</td>
+                        <td>${accountId}</td>
+                        <td>${profileNumber}</td>
+                        <td>${slotNumber}</td>
+                        <td>${profileName}</td>
+                        <td>${soldBy}</td>
                         <td><span class="warranty-badge ${warrantyClass}">${sale.warranty}</span></td>
                         <td><span class="account-type-badge ${accountClass}">${sale.accountType}</span></td>
                         <td>${sale.quantity}</td>
@@ -5029,9 +5157,6 @@ totalPrice: subProduct.sharedPrice,
                     </select>
                 </td>
                 <td>
-                    <input type="text" class="bulk-customer" placeholder="Customer name">
-                </td>
-                <td>
                     <input type="number" class="bulk-buy" placeholder="0" min="0" step="0.01">
                 </td>
                 <td>
@@ -5126,7 +5251,6 @@ totalPrice: subProduct.sharedPrice,
                 const productSelect = row.querySelector('.bulk-product');
                 const accountType = row.querySelector('.bulk-account-type').value;
                 const warranty = row.querySelector('.bulk-warranty').value;
-                const customer = row.querySelector('.bulk-customer').value;
                 const buyPrice = parseFloat(row.querySelector('.bulk-buy').value) || 0;
                 const sellPrice = parseFloat(row.querySelector('.bulk-sell').value) || 0;
                 const qty = parseInt(row.querySelector('.bulk-qty').value) || 1;
@@ -5161,9 +5285,9 @@ totalPrice: subProduct.sharedPrice,
                     userName: currentSession.customName,
                     product: selectedProduct.name,
                     productId: selectedProduct.id,
+                    productName: selectedProduct.name,
                     accountType: accountType,
                     warranty: warranty,
-                    customer: customer || 'N/A',
                     quantity: qty,
                     price: sellPrice,
                     buyPrice: buyPrice,
