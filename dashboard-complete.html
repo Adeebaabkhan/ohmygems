@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Dashboard</h1>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Products</a></li>
+                <li><a href="#">Bulk Sales</a></li>
+                <li><a href="#">Payout System</a></li>
+                <li><a href="#">Themes</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="products">
+            <h2>Products</h2>
+            <div id="product-list">
+                <!-- Products will be loaded here -->
+            </div>
+        </section>
+        <section id="bulk-sales">
+            <h2>Bulk Sales Entry</h2>
+            <form id="bulk-sales-form">
+                <label for="product">Product:</label>
+                <select id="product" name="product">
+                    <!-- Options will be populated here -->
+                </select>
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" name="quantity" required />
+                <button type="submit">Submit</button>
+            </form>
+        </section>
+        <section id="payout-system">
+            <h2>Payout System</h2>
+            <div id="payout-info">
+                <!-- Payout information will be displayed here -->
+            </div>
+        </section>
+        <section id="themes">
+            <h2>Custom Theme Creator</h2>
+            <button id="theme-creator">Create Theme</button>
+            <div id="theme-presets">
+                <!-- Theme presets will be displayed here -->
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>© 2025 Dashboard Inc.</p>
+    </footer>
+    <script src="firebase.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
