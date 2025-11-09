@@ -1394,6 +1394,124 @@ body.dark-mode .profile-select-btn {
                 grid-template-columns: repeat(4, 1fr);
             }
         }
+
+        /* =================== BULK SALES STYLES =================== */
+        .bulk-sales-container {
+            background: var(--card-bg);
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 30px;
+        }
+
+        .bulk-sales-table {
+            width: 100%;
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+
+        .bulk-sales-table table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card-bg);
+        }
+
+        .bulk-sales-table th {
+            background: var(--primary);
+            color: white;
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 0.9em;
+        }
+
+        .bulk-sales-table td {
+            padding: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .bulk-sales-table input,
+        .bulk-sales-table select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 0.9em;
+            font-family: var(--font-family);
+            background: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .bulk-sales-table input:focus,
+        .bulk-sales-table select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .bulk-row-delete {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: var(--transition);
+        }
+
+        .bulk-row-delete:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+
+        .bulk-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .bulk-toggle-section {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: 3px dashed var(--border-color);
+        }
+
+        .bulk-toggle-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 15px;
+            font-weight: 800;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bulk-toggle-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .bulk-toggle-btn.active {
+            background: var(--success);
+        }
+
+        @media (max-width: 768px) {
+            .bulk-sales-table {
+                font-size: 0.85em;
+            }
+
+            .bulk-actions {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 <body class="theme-purple">
@@ -1612,6 +1730,49 @@ body.dark-mode .profile-select-btn {
             </form>
         </div>
 
+        <!-- Bulk Add Sales Section -->
+        <div class="bulk-sales-container" id="bulkSalesSection">
+            <div class="bulk-toggle-section">
+                <h2 class="section-title">⚡ Bulk Add Sales (Fast Entry)</h2>
+                <p style="margin-bottom: 15px; opacity: 0.8;">Add multiple sales at once to save time!</p>
+                <button class="bulk-toggle-btn" id="toggleBulkSales" onclick="toggleBulkSales()">
+                    📋 Show Bulk Entry
+                </button>
+            </div>
+
+            <div id="bulkSalesForm" style="display: none;">
+                <div class="bulk-sales-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="min-width: 180px;">📦 Product</th>
+                                <th style="min-width: 120px;">👤 Account Type</th>
+                                <th style="min-width: 100px;">🛡️ Warranty</th>
+                                <th style="min-width: 150px;">👥 Customer</th>
+                                <th style="min-width: 100px;">💵 Buy (₱)</th>
+                                <th style="min-width: 100px;">💰 Sell (₱)</th>
+                                <th style="min-width: 80px;">🔢 Qty</th>
+                                <th style="min-width: 100px;">📦 Status</th>
+                                <th style="min-width: 80px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bulkSalesTableBody">
+                            <!-- Bulk rows will be added here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="bulk-actions">
+                    <button class="btn btn-secondary" onclick="addBulkRow()">➕ Add Row</button>
+                    <button class="btn btn-success" onclick="saveBulkSales()">💾 Save All Sales</button>
+                    <button class="btn btn-info" onclick="applyToAllWarranty()">🛡️ Apply Warranty to All</button>
+                    <button class="btn btn-info" onclick="applyToAllAccountType()">👤 Apply Account Type to All</button>
+                    <button class="btn btn-info" onclick="applyToAllStatus()">📦 Apply Status to All</button>
+                    <span id="bulkRowCount" style="font-weight: 700; color: var(--primary);">0 rows</span>
+                </div>
+            </div>
+        </div>
+
         <!-- Sales Table -->
         <div class="table-section">
             <h2 class="section-title">📋 Sales Records</h2>
@@ -1826,20 +1987,15 @@ body.dark-mode .profile-select-btn {
                     <!-- Auto-calculated info display -->
                     <div id="productCalculation" class="price-info-card" style="display: none;">
                         <div class="price-info-row">
-                            <span class="price-info-label">🎯 Your Profit (Owner)</span>
+                            <span class="price-info-label">💰 Total Profit</span>
                             <span class="price-info-value highlight" id="autoProfit">₱0</span>
                         </div>
                         <div class="price-info-row">
                             <span class="price-info-label">📊 Profit Margin</span>
                             <span class="price-info-value" id="autoProfitPercent">0%</span>
                         </div>
-                        <div class="price-info-row">
-                            <span class="price-info-label">👤 Admin Price (20% commission)</span>
-                            <span class="price-info-value" id="autoAdminPrice20">₱0</span>
-                        </div>
-                        <div class="price-info-row">
-                            <span class="price-info-label">👤 Admin Price (30% commission)</span>
-                            <span class="price-info-value" id="autoAdminPrice30">₱0</span>
+                        <div id="adminCommissionsList" style="margin-top: 10px;">
+                            <!-- Real admin commissions will be dynamically inserted here -->
                         </div>
                     </div>
                     
@@ -2015,6 +2171,7 @@ console.log('📂 All data will be stored in:', APP_NAME + '/');
 let products = [];
 let subscriptionProducts = [];
 let selectedProfile = null;
+let realAdmins = []; // Store real admins from Firebase
     let settings = {
             theme: 'theme-purple',
             darkMode: false,
@@ -2376,6 +2533,26 @@ function selectProfile(number) {
             }
         }
 
+// =================== LOAD REAL ADMINS ===================
+function loadRealAdmins() {
+    realAdmins = [];
+    users.forEach(user => {
+        if (user.role === 'admin') {
+            realAdmins.push({
+                username: user.customName || user.username,
+                commission: user.profitPercent || 25,
+                uid: user.id
+            });
+        }
+    });
+    console.log('✅ Loaded real admins for calculations:', realAdmins.length);
+    
+    // Refresh product calculation if it's visible
+    if (document.getElementById('productCalculation').style.display === 'block') {
+        autoCalculatePrices();
+    }
+}
+
 function loadAllData() {
     console.log('🔄 Loading all data from:', APP_NAME + '/');
     
@@ -2384,6 +2561,9 @@ function loadAllData() {
         const usersData = snapshot.val() || {};
         users = Object.values(usersData);
         console.log('✅ Loaded users:', users.length);
+        
+        // Load real admins for product calculations
+        loadRealAdmins();
         
         // Update user filter for owner
         if (currentSession.role === 'owner') {
@@ -2523,21 +2703,32 @@ function autoCalculatePrices() {
     // Calculate margin percentage
     const marginPercent = ((totalProfit / buy) * 100).toFixed(2);
     
-    // Calculate admin commissions (what they GET from the profit)
-    const admin20Commission = totalProfit * 0.20; // 20% of profit
-    const owner20Profit = totalProfit - admin20Commission; // Remaining for owner
-    
-    const admin30Commission = totalProfit * 0.30; // 30% of profit
-    const owner30Profit = totalProfit - admin30Commission; // Remaining for owner
-    
     // Update display
     document.getElementById('autoProfit').textContent = `₱${totalProfit.toFixed(2)}`;
     document.getElementById('autoProfitPercent').textContent = `${marginPercent}%`;
     document.getElementById('newMargin').value = marginPercent;
     
-    // Show the breakdown clearly
-    document.getElementById('autoAdminPrice20').textContent = `Admin: ₱${admin20Commission.toFixed(2)} | You: ₱${owner20Profit.toFixed(2)}`;
-    document.getElementById('autoAdminPrice30').textContent = `Admin: ₱${admin30Commission.toFixed(2)} | You: ₱${owner30Profit.toFixed(2)}`;
+    // Display real admin commissions
+    const adminCommissionsList = document.getElementById('adminCommissionsList');
+    if (realAdmins.length === 0) {
+        adminCommissionsList.innerHTML = `
+            <div class="price-info-row">
+                <span class="price-info-label">ℹ️ No admins yet</span>
+                <span class="price-info-value">Add admins in User Management</span>
+            </div>
+        `;
+    } else {
+        adminCommissionsList.innerHTML = realAdmins.map(admin => {
+            const adminCommission = totalProfit * (admin.commission / 100);
+            const ownerProfit = totalProfit - adminCommission;
+            return `
+                <div class="price-info-row">
+                    <span class="price-info-label">👤 ${admin.username} (${admin.commission}%)</span>
+                    <span class="price-info-value">${admin.username}: ₱${adminCommission.toFixed(2)} | You: ₱${ownerProfit.toFixed(2)}</span>
+                </div>
+            `;
+        }).join('');
+    }
     
     // Show the calculation card
     document.getElementById('productCalculation').style.display = 'block';
@@ -3643,6 +3834,249 @@ totalPrice: subProduct.sharedPrice,
                 }
             });
         });
+
+        // =================== BULK SALES FUNCTIONS ===================
+        let bulkSalesRows = [];
+
+        function toggleBulkSales() {
+            const bulkForm = document.getElementById('bulkSalesForm');
+            const toggleBtn = document.getElementById('toggleBulkSales');
+            
+            if (bulkForm.style.display === 'none') {
+                bulkForm.style.display = 'block';
+                toggleBtn.textContent = '🔼 Hide Bulk Entry';
+                toggleBtn.classList.add('active');
+                
+                // Initialize with 3 rows if empty
+                if (bulkSalesRows.length === 0) {
+                    for (let i = 0; i < 3; i++) {
+                        addBulkRow();
+                    }
+                }
+            } else {
+                bulkForm.style.display = 'none';
+                toggleBtn.textContent = '📋 Show Bulk Entry';
+                toggleBtn.classList.remove('active');
+            }
+        }
+
+        function addBulkRow() {
+            const rowId = Date.now() + Math.random();
+            bulkSalesRows.push(rowId);
+            
+            const tbody = document.getElementById('bulkSalesTableBody');
+            const row = document.createElement('tr');
+            row.id = `bulk-row-${rowId}`;
+            
+            // Build product options from available products
+            let productOptions = '<option value="">-- Select --</option>';
+            products.forEach(product => {
+                productOptions += `<option value="${product.id}" data-buy="${product.buyPrice}" data-sell="${product.sellPrice}">${product.name}</option>`;
+            });
+            
+            row.innerHTML = `
+                <td>
+                    <select class="bulk-product" data-row="${rowId}" onchange="updateBulkRowPrices(${rowId})">
+                        ${productOptions}
+                    </select>
+                </td>
+                <td>
+                    <select class="bulk-account-type">
+                        <option value="Solo">Solo</option>
+                        <option value="Shared">Shared</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="bulk-warranty">
+                        <option value="FW">FW</option>
+                        <option value="NW">NW</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" class="bulk-customer" placeholder="Customer name">
+                </td>
+                <td>
+                    <input type="number" class="bulk-buy" placeholder="0" min="0" step="0.01">
+                </td>
+                <td>
+                    <input type="number" class="bulk-sell" placeholder="0" min="0" step="0.01">
+                </td>
+                <td>
+                    <input type="number" class="bulk-qty" placeholder="1" min="1" value="1">
+                </td>
+                <td>
+                    <select class="bulk-status">
+                        <option value="no">In Stock</option>
+                        <option value="yes">Sold</option>
+                    </select>
+                </td>
+                <td>
+                    <button class="bulk-row-delete" onclick="removeBulkRow(${rowId})">✕</button>
+                </td>
+            `;
+            
+            tbody.appendChild(row);
+            updateBulkRowCount();
+        }
+
+        function removeBulkRow(rowId) {
+            bulkSalesRows = bulkSalesRows.filter(id => id !== rowId);
+            document.getElementById(`bulk-row-${rowId}`).remove();
+            updateBulkRowCount();
+        }
+
+        function updateBulkRowCount() {
+            document.getElementById('bulkRowCount').textContent = `${bulkSalesRows.length} rows`;
+        }
+
+        function updateBulkRowPrices(rowId) {
+            const row = document.getElementById(`bulk-row-${rowId}`);
+            const productSelect = row.querySelector('.bulk-product');
+            const selectedOption = productSelect.options[productSelect.selectedIndex];
+            
+            if (selectedOption.value) {
+                const buyPrice = parseFloat(selectedOption.dataset.buy) || 0;
+                const sellPrice = parseFloat(selectedOption.dataset.sell) || 0;
+                
+                row.querySelector('.bulk-buy').value = buyPrice;
+                row.querySelector('.bulk-sell').value = sellPrice;
+            }
+        }
+
+        function applyToAllWarranty() {
+            const firstRow = document.querySelector('.bulk-warranty');
+            if (!firstRow) return;
+            
+            const value = firstRow.value;
+            document.querySelectorAll('.bulk-warranty').forEach(select => {
+                select.value = value;
+            });
+            showToast('✅ Warranty applied to all rows', 'success');
+        }
+
+        function applyToAllAccountType() {
+            const firstRow = document.querySelector('.bulk-account-type');
+            if (!firstRow) return;
+            
+            const value = firstRow.value;
+            document.querySelectorAll('.bulk-account-type').forEach(select => {
+                select.value = value;
+            });
+            showToast('✅ Account type applied to all rows', 'success');
+        }
+
+        function applyToAllStatus() {
+            const firstRow = document.querySelector('.bulk-status');
+            if (!firstRow) return;
+            
+            const value = firstRow.value;
+            document.querySelectorAll('.bulk-status').forEach(select => {
+                select.value = value;
+            });
+            showToast('✅ Status applied to all rows', 'success');
+        }
+
+        async function saveBulkSales() {
+            if (bulkSalesRows.length === 0) {
+                showToast('⚠️ No rows to save', 'error');
+                return;
+            }
+
+            const rows = document.querySelectorAll('#bulkSalesTableBody tr');
+            const salesToSave = [];
+            const errors = [];
+
+            rows.forEach((row, index) => {
+                const productSelect = row.querySelector('.bulk-product');
+                const accountType = row.querySelector('.bulk-account-type').value;
+                const warranty = row.querySelector('.bulk-warranty').value;
+                const customer = row.querySelector('.bulk-customer').value;
+                const buyPrice = parseFloat(row.querySelector('.bulk-buy').value) || 0;
+                const sellPrice = parseFloat(row.querySelector('.bulk-sell').value) || 0;
+                const qty = parseInt(row.querySelector('.bulk-qty').value) || 1;
+                const status = row.querySelector('.bulk-status').value;
+
+                // Validation
+                if (!productSelect.value) {
+                    errors.push(`Row ${index + 1}: Product not selected`);
+                    return;
+                }
+                if (buyPrice <= 0 || sellPrice <= 0) {
+                    errors.push(`Row ${index + 1}: Invalid prices`);
+                    return;
+                }
+                if (sellPrice <= buyPrice) {
+                    errors.push(`Row ${index + 1}: Sell price must be > buy price`);
+                    return;
+                }
+
+                const selectedProduct = products.find(p => p.id == productSelect.value);
+                if (!selectedProduct) {
+                    errors.push(`Row ${index + 1}: Product not found`);
+                    return;
+                }
+
+                const commission = sellPrice - buyPrice;
+                const totalCommission = commission * qty;
+
+                salesToSave.push({
+                    id: Date.now() + index,
+                    userId: currentSession.id,
+                    userName: currentSession.customName,
+                    product: selectedProduct.name,
+                    productId: selectedProduct.id,
+                    accountType: accountType,
+                    warranty: warranty,
+                    customer: customer || 'N/A',
+                    quantity: qty,
+                    price: sellPrice,
+                    buyPrice: buyPrice,
+                    totalPrice: sellPrice * qty,
+                    commission: commission,
+                    totalCommission: totalCommission,
+                    sold: status === 'yes',
+                    date: new Date().toISOString().split('T')[0],
+                    timestamp: Date.now()
+                });
+            });
+
+            if (errors.length > 0) {
+                showToast(`❌ Errors found:\n${errors.join('\n')}`, 'error');
+                return;
+            }
+
+            if (salesToSave.length === 0) {
+                showToast('⚠️ No valid sales to save', 'error');
+                return;
+            }
+
+            // Show progress
+            showToast(`⏳ Saving ${salesToSave.length} sales...`, 'info');
+
+            try {
+                // Save each sale to Firebase
+                const savePromises = salesToSave.map(sale => {
+                    return getRef(`sales/${currentSession.id}/${sale.id}`).set(sale);
+                });
+
+                await Promise.all(savePromises);
+
+                showToast(`✅ Successfully added ${salesToSave.length} sales!`, 'success');
+                
+                // Clear bulk form
+                bulkSalesRows = [];
+                document.getElementById('bulkSalesTableBody').innerHTML = '';
+                updateBulkRowCount();
+                
+                // Hide bulk form
+                toggleBulkSales();
+                
+                // Refresh sales table
+                updateUI();
+            } catch (error) {
+                showToast(`❌ Error saving sales: ${error.message}`, 'error');
+            }
+        }
 
         // =================== TOAST ===================
         function showToast(message, type = 'success') {
