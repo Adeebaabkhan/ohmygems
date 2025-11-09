@@ -116,12 +116,6 @@
             50% { transform: scale(1.05); }
         }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-
         .app-container {
             max-width: 1400px;
             margin: 0 auto;
@@ -213,18 +207,14 @@
         .btn-settings { background: var(--gradient-purple); }
         .btn-dark { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
         .btn-logout { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
-        .btn-users { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); }
         .btn-calculator { background: linear-gradient(135deg, #10B981 0%, #059669 100%); }
         .btn-products { background: linear-gradient(135deg, #EC4899 0%, #8B5CF6 100%); }
         .btn-bulk { background: linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%); }
+        .btn-info { background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); }
 
         .btn-small:hover {
             transform: translateY(-3px);
             box-shadow: var(--shadow-md);
-        }
-
-        .btn-small:active {
-            transform: translateY(0);
         }
 
         .app-header {
@@ -324,30 +314,12 @@
             border: 3px solid transparent;
         }
 
-        .stat-card:nth-child(1) { 
-            background: linear-gradient(135deg, #FFF0F5 0%, #FFE1E8 100%); 
-            animation: slideIn 0.9s ease-out;
-        }
-        .stat-card:nth-child(2) { 
-            background: linear-gradient(135deg, #F3E8FF 0%, #E9D5FF 100%); 
-            animation: slideIn 1s ease-out;
-        }
-        .stat-card:nth-child(3) { 
-            background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%); 
-            animation: slideIn 1.1s ease-out;
-        }
-        .stat-card:nth-child(4) { 
-            background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%); 
-            animation: slideIn 1.2s ease-out;
-        }
-        .stat-card:nth-child(5) { 
-            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); 
-            animation: slideIn 1.3s ease-out;
-        }
-        .stat-card:nth-child(6) { 
-            background: linear-gradient(135deg, #FFE4E6 0%, #FECDD3 100%); 
-            animation: slideIn 1.4s ease-out;
-        }
+        .stat-card:nth-child(1) { background: linear-gradient(135deg, #FFF0F5 0%, #FFE1E8 100%); }
+        .stat-card:nth-child(2) { background: linear-gradient(135deg, #F3E8FF 0%, #E9D5FF 100%); }
+        .stat-card:nth-child(3) { background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%); }
+        .stat-card:nth-child(4) { background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%); }
+        .stat-card:nth-child(5) { background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); }
+        .stat-card:nth-child(6) { background: linear-gradient(135deg, #FFE4E6 0%, #FECDD3 100%); }
 
         body.dark-mode .stat-card {
             background: var(--card-bg) !important;
@@ -478,11 +450,6 @@
             transform: scale(1.02);
         }
 
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-            opacity: 1;
-        }
-
         .price-info-card {
             background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%);
             padding: 20px;
@@ -579,7 +546,6 @@
         .btn-danger:hover {
             box-shadow: var(--shadow-lg);
             transform: translateY(-3px);
-            animation: shake 0.5s;
         }
 
         .btn-success {
@@ -934,6 +900,93 @@
             opacity: 0.7;
         }
 
+        /* INLINE EDITING STYLES */
+        .editable-cell {
+            position: relative;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 15px 35px 15px 18px !important;
+        }
+
+        .editable-cell:hover {
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        .editable-cell input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 700;
+            background: var(--card-bg);
+            color: var(--primary);
+        }
+
+        .editable-cell .edit-icon {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0;
+            transition: var(--transition);
+            font-size: 0.9em;
+            color: var(--primary);
+            pointer-events: none;
+        }
+
+        .editable-cell:hover .edit-icon {
+            opacity: 1;
+        }
+
+        .save-edit-btn {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            margin-right: 5px;
+            transition: var(--transition);
+            font-size: 1em;
+        }
+
+        .save-edit-btn:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .cancel-edit-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: var(--transition);
+            font-size: 1em;
+        }
+
+        .cancel-edit-btn:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .profit-margin-cell {
+            font-weight: 800;
+            font-size: 1.1em;
+        }
+
+        .profit-positive {
+            color: var(--success);
+        }
+
+        .profit-negative {
+            color: var(--danger);
+        }
+
         .calculator-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -985,27 +1038,20 @@
             box-shadow: var(--shadow-sm);
         }
 
-        .calc-btn:active {
-            transform: scale(0.95);
-        }
-
         .calc-btn.operator {
             background: var(--gradient-purple);
             color: white;
-            border-color: var(--primary);
         }
 
         .calc-btn.equals {
             grid-column: 3 / 5;
             background: var(--gradient-pink);
             color: white;
-            border-color: var(--secondary);
         }
 
         .calc-btn.clear {
             background: var(--gradient-cyan);
             color: white;
-            border-color: var(--info);
         }
 
         .modal {
@@ -1032,27 +1078,13 @@
             background: var(--card-bg);
             border-radius: 35px;
             padding: 40px;
-            max-width: 900px;
+            max-width: 1000px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 25px 70px rgba(139, 92, 246, 0.5);
             border: 4px solid var(--border-color);
             animation: slideIn 0.3s ease-out;
-        }
-
-        .modal-content::-webkit-scrollbar {
-            width: 10px;
-        }
-
-        .modal-content::-webkit-scrollbar-track {
-            background: var(--light);
-            border-radius: 10px;
-        }
-
-        .modal-content::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 10px;
         }
 
         .modal-header {
@@ -1112,16 +1144,10 @@
 
         .toast.show {
             transform: translateX(0);
-            animation: slideIn 0.3s ease-out;
         }
 
         .toast-icon {
             font-size: 2em;
-        }
-
-        .toast-message {
-            font-weight: 600;
-            color: var(--text-color);
         }
 
         .toast.success { 
@@ -1161,40 +1187,11 @@
         .category-design { background: #FCE7F3; color: #EC4899; }
         .category-other { background: #F3E8FF; color: #8B5CF6; }
 
-        body.dark-mode .category-badge {
-            opacity: 0.9;
-        }
-
-        /* Loading Animation */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(139, 92, 246, 0.3);
-            border-radius: 50%;
-            border-top-color: var(--primary);
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
         /* Responsive Design */
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
                 text-align: center;
-            }
-
-            .app-icon {
-                width: 70px;
-                height: 70px;
-                font-size: 2.5em;
-            }
-
-            .header-text h1 {
-                font-size: 1.8em;
             }
 
             .charts-section {
@@ -1215,33 +1212,8 @@
                 min-width: 120px;
             }
 
-            .bulk-sales-table {
-                font-size: 0.85em;
-            }
-
             .modal-content {
                 padding: 20px;
-                max-width: 100%;
-            }
-
-            .stat-value {
-                font-size: 1.8em;
-            }
-
-            .dashboard {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            }
-
-            .table-controls {
-                flex-direction: column;
-            }
-
-            .search-box {
-                width: 100%;
-            }
-
-            .filter-btn {
-                width: 100%;
             }
         }
 
@@ -1258,147 +1230,13 @@
                 font-size: 1.5em;
             }
 
-            .header-text p {
-                font-size: 0.9em;
-            }
-
             .stat-card {
                 padding: 20px;
-            }
-
-            .stat-icon {
-                font-size: 2.2em;
             }
 
             .form-section, .bulk-sales-container, .table-section {
                 padding: 20px;
             }
-
-            .section-title {
-                font-size: 1.3em;
-            }
-
-            .btn {
-                padding: 15px 20px;
-                font-size: 0.95em;
-            }
-
-            .top-nav {
-                padding: 15px 20px;
-            }
-
-            .user-avatar {
-                width: 45px;
-                height: 45px;
-                font-size: 1.3em;
-            }
-
-            .user-details h3 {
-                font-size: 1em;
-            }
-
-            .period-tab {
-                padding: 10px 18px;
-                font-size: 0.9em;
-            }
-
-            .modal-header h2 {
-                font-size: 1.5em;
-            }
-
-            .calc-btn {
-                padding: 15px;
-                font-size: 1.1em;
-            }
-
-            .toast {
-                bottom: 15px;
-                right: 15px;
-                left: 15px;
-                max-width: none;
-            }
-        }
-
-        /* Print Styles */
-        @media print {
-            body {
-                background: white;
-                padding: 0;
-            }
-
-            .top-nav,
-            .btn,
-            .btn-small,
-            .action-btn,
-            .modal,
-            .toast {
-                display: none !important;
-            }
-
-            .app-container {
-                max-width: 100%;
-            }
-
-            .stat-card,
-            .chart-card,
-            .form-section,
-            .table-section {
-                break-inside: avoid;
-                box-shadow: none;
-                border: 1px solid #ddd;
-            }
-        }
-
-        /* Accessibility */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border-width: 0;
-        }
-
-        *:focus-visible {
-            outline: 3px solid var(--primary);
-            outline-offset: 2px;
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 12px;
-            height: 12px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--light);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 6px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-dark);
-        }
-
-        body.dark-mode ::-webkit-scrollbar-track {
-            background: #1e293b;
-        }
-
-        /* Selection */
-        ::selection {
-            background: var(--primary);
-            color: white;
-        }
-
-        ::-moz-selection {
-            background: var(--primary);
-            color: white;
         }
     </style>
 </head>
@@ -1407,27 +1245,27 @@
         <!-- Top Navigation -->
         <nav class="top-nav">
             <div class="user-info">
-                <div class="user-avatar" id="userAvatar" title="User Profile">A</div>
+                <div class="user-avatar" id="userAvatar">A</div>
                 <div class="user-details">
                     <h3 id="userName">Adeebaabkhan</h3>
-                    <span class="user-role">👑 Administrator</span>
+                    <span class="user-role">👑 Owner</span>
                 </div>
             </div>
             <div class="nav-actions">
-                <button class="btn-small btn-bulk" onclick="toggleBulkSales()" title="Bulk Sales Entry">📦 Bulk Sales</button>
-                <button class="btn-small btn-products" onclick="openProductModal()" title="Manage Products">🛍️ Products</button>
-                <button class="btn-small btn-calculator" onclick="openCalculator()" title="Open Calculator">🔢 Calculator</button>
-                <button class="btn-small btn-theme" onclick="openThemeModal()" title="Change Theme">🎨 Theme</button>
-                <button class="btn-small btn-settings" onclick="openSettingsModal()" title="Settings">⚙️ Settings</button>
-                <button class="btn-small btn-dark" onclick="toggleDarkMode()" title="Toggle Dark Mode">🌙 Dark</button>
-                <button class="btn-small btn-logout" onclick="logout()" title="Logout">🚪 Logout</button>
+                <button class="btn-small btn-bulk" onclick="toggleBulkSales()">📦 Bulk Sales</button>
+                <button class="btn-small btn-products" onclick="openProductModal()">🛍️ Products</button>
+                <button class="btn-small btn-calculator" onclick="openCalculator()">🔢 Calculator</button>
+                <button class="btn-small btn-theme" onclick="openThemeModal()">🎨 Theme</button>
+                <button class="btn-small btn-settings" onclick="openSettingsModal()">⚙️ Settings</button>
+                <button class="btn-small btn-dark" onclick="toggleDarkMode()">🌙 Dark</button>
+                <button class="btn-small btn-logout" onclick="logout()">🚪 Logout</button>
             </div>
         </nav>
 
         <!-- App Header -->
         <header class="app-header">
             <div class="header-content">
-                <div class="app-icon" title="INQUIRE Dashboard">💎</div>
+                <div class="app-icon">💎</div>
                 <div class="header-text">
                     <h1>INQUIRE</h1>
                     <p>Sales Tracker Dashboard • Track Your Success 🚀</p>
@@ -1437,40 +1275,40 @@
 
         <!-- Period Tabs -->
         <div class="period-tabs">
-            <div class="period-tab active" data-period="all" onclick="filterByPeriod('all')" title="View All Time">📅 All Time</div>
-            <div class="period-tab" data-period="today" onclick="filterByPeriod('today')" title="View Today">📆 Today</div>
-            <div class="period-tab" data-period="week" onclick="filterByPeriod('week')" title="View This Week">📊 This Week</div>
-            <div class="period-tab" data-period="month" onclick="filterByPeriod('month')" title="View This Month">📈 This Month</div>
+            <div class="period-tab active" data-period="all" onclick="filterByPeriod('all')">📅 All Time</div>
+            <div class="period-tab" data-period="today" onclick="filterByPeriod('today')">📆 Today</div>
+            <div class="period-tab" data-period="week" onclick="filterByPeriod('week')">📊 This Week</div>
+            <div class="period-tab" data-period="month" onclick="filterByPeriod('month')">📈 This Month</div>
         </div>
 
         <!-- Dashboard Stats -->
         <div class="dashboard">
-            <div class="stat-card" title="Total Sales Amount">
+            <div class="stat-card">
                 <div class="stat-icon">💰</div>
                 <div class="stat-label">Total Sales</div>
                 <div class="stat-value" id="totalSales">₱0.00</div>
             </div>
-            <div class="stat-card" title="Number of Products Sold">
+            <div class="stat-card">
                 <div class="stat-icon">📦</div>
                 <div class="stat-label">Products Sold</div>
                 <div class="stat-value" id="productsSold">0</div>
             </div>
-            <div class="stat-card" title="Total Revenue Generated">
+            <div class="stat-card">
                 <div class="stat-icon">💵</div>
                 <div class="stat-label">Revenue</div>
                 <div class="stat-value" id="totalRevenue">₱0.00</div>
             </div>
-            <div class="stat-card" title="Number of Active Products">
+            <div class="stat-card">
                 <div class="stat-icon">🛍️</div>
                 <div class="stat-label">Active Products</div>
                 <div class="stat-value" id="activeProducts">0</div>
             </div>
-            <div class="stat-card" title="Total Profit Earned">
+            <div class="stat-card">
                 <div class="stat-icon">💸</div>
                 <div class="stat-label">Profit</div>
                 <div class="stat-value" id="totalProfit">₱0.00</div>
             </div>
-            <div class="stat-card" title="Best Selling Product">
+            <div class="stat-card">
                 <div class="stat-icon">🏆</div>
                 <div class="stat-label">Best Seller</div>
                 <div class="stat-value" id="bestSeller" style="font-size: 1.2em;">-</div>
@@ -1501,12 +1339,6 @@
                     <label for="bulkDate">📅 Date</label>
                     <input type="date" id="bulkDate">
                 </div>
-                <div class="form-group">
-                    <label for="bulkAdmin">👤 Admin</label>
-                    <select id="bulkAdmin">
-                        <option value="admin">admin</option>
-                    </select>
-                </div>
             </div>
 
             <div class="selected-item-display" id="selectedItemDisplay">
@@ -1530,7 +1362,6 @@
                         </tr>
                     </thead>
                     <tbody id="bulkSalesTableBody">
-                        <!-- Rows will be added dynamically -->
                     </tbody>
                 </table>
             </div>
@@ -1574,20 +1405,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="adminSelect">👤 Admin</label>
-                    <select id="adminSelect" required>
-                        <option value="admin">admin</option>
-                    </select>
+                    <label for="salePrice">💵 Price (₱) - <small>✏️ Fully editable</small></label>
+                    <input type="number" id="salePrice" step="0.01" min="0" required onchange="calculateSaleTotal()" placeholder="Enter price">
                 </div>
 
                 <div class="form-group">
-                    <label for="salePrice">💵 Price (₱) - <small>Fully editable for this sale</small></label>
-                    <input type="number" id="salePrice" step="0.01" min="0" required onchange="calculateSaleTotal()" placeholder="Enter custom price">
-                </div>
-
-                <div class="form-group">
-                    <label for="saleCapital">💰 Capital (₱) - <small>Fully editable for this sale</small></label>
-                    <input type="number" id="saleCapital" step="0.01" min="0" required onchange="calculateSaleTotal()" placeholder="Enter custom capital">
+                    <label for="saleCapital">💰 Capital (₱) - <small>✏️ Fully editable</small></label>
+                    <input type="number" id="saleCapital" step="0.01" min="0" required onchange="calculateSaleTotal()" placeholder="Enter capital">
                 </div>
 
                 <div class="price-info-card" id="salePriceInfo" style="display: none;">
@@ -1616,7 +1440,7 @@
             <div class="table-controls">
                 <div class="search-box">
                     <span class="search-icon">🔍</span>
-                    <input type="text" id="searchInput" placeholder="Search sales..." onkeyup="searchSales()" aria-label="Search sales">
+                    <input type="text" id="searchInput" placeholder="Search sales..." onkeyup="searchSales()">
                 </div>
                 <button class="filter-btn active" data-filter="all" onclick="filterSales('all')">All</button>
                 <button class="filter-btn" data-filter="today" onclick="filterSales('today')">Today</button>
@@ -1636,13 +1460,12 @@
                             <th>Capital</th>
                             <th>Total</th>
                             <th>Profit</th>
-                            <th>Admin</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="salesTableBody">
                         <tr>
-                            <td colspan="10" class="empty-state">
+                            <td colspan="9" class="empty-state">
                                 <div class="empty-icon">📦</div>
                                 <h3>No sales yet</h3>
                                 <p>Add your first sale to get started!</p>
@@ -1654,15 +1477,19 @@
         </div>
     </div>
 
-    <!-- Product Management Modal -->
-    <div class="modal" id="productModal" role="dialog" aria-labelledby="productModalTitle" aria-modal="true">
+    <!-- Product Management Modal WITH INLINE EDITING -->
+    <div class="modal" id="productModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="productModalTitle">🛍️ Product Management</h2>
-                <button class="close-btn" onclick="closeProductModal()" aria-label="Close modal">✕</button>
+                <h2>🛍️ Product Management - <small style="color: var(--secondary);">Click prices to edit! ✏️</small></h2>
+                <button class="close-btn" onclick="closeProductModal()">✕</button>
             </div>
             
-            <button class="btn btn-success" onclick="showAddProductForm()" style="margin-bottom: 20px;">➕ Add New Product</button>
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                <button class="btn-small btn-success" onclick="showAddProductForm()">➕ Add New Product</button>
+                <button class="btn-small btn-secondary" onclick="importProductsCSV()">📥 Import CSV</button>
+                <button class="btn-small btn-info" onclick="exportProductsCSV()">📤 Export Products</button>
+            </div>
 
             <div id="addProductForm" style="display: none; margin-bottom: 25px; background: var(--light); padding: 25px; border-radius: 20px; border: 3px solid var(--border-color);">
                 <h3 style="color: var(--primary); margin-bottom: 15px;">Add New Product</h3>
@@ -1683,11 +1510,11 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="newProductPrice">Default Price (₱) - <small>Suggested price, can be edited per sale</small></label>
+                    <label for="newProductPrice">Default Price (₱)</label>
                     <input type="number" id="newProductPrice" step="0.01" placeholder="95.00" min="0">
                 </div>
                 <div class="form-group">
-                    <label for="newProductCapital">Default Capital (₱) - <small>Suggested capital, can be edited per sale</small></label>
+                    <label for="newProductCapital">Default Capital (₱)</label>
                     <input type="number" id="newProductCapital" step="0.01" placeholder="64.00" min="0">
                 </div>
                 <div style="display: flex; gap: 10px;">
@@ -1696,19 +1523,24 @@
                 </div>
             </div>
 
+            <div style="margin-bottom: 15px;">
+                <input type="text" id="productSearchInput" placeholder="🔍 Search products..." 
+                    style="width: 100%; padding: 12px 20px;" onkeyup="searchProducts()">
+            </div>
+
             <div class="table-wrapper">
                 <table>
                     <thead>
                         <tr>
                             <th>Product</th>
                             <th>Category</th>
-                            <th>Default Price</th>
-                            <th>Default Capital</th>
+                            <th>Price (₱) - Click to Edit ✏️</th>
+                            <th>Capital (₱) - Click to Edit ✏️</th>
+                            <th>Profit Margin</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="productTableBody">
-                        <!-- Products will be loaded here -->
                     </tbody>
                 </table>
             </div>
@@ -1716,76 +1548,71 @@
     </div>
 
     <!-- Calculator Modal -->
-    <div class="modal" id="calculatorModal" role="dialog" aria-labelledby="calcModalTitle" aria-modal="true">
+    <div class="modal" id="calculatorModal">
         <div class="modal-content" style="max-width: 400px;">
             <div class="modal-header">
-                <h2 id="calcModalTitle">🔢 Calculator</h2>
-                <button class="close-btn" onclick="closeCalculator()" aria-label="Close calculator">✕</button>
+                <h2>🔢 Calculator</h2>
+                <button class="close-btn" onclick="closeCalculator()">✕</button>
             </div>
             
             <div class="calculator-grid">
-                <div class="calc-display" id="calcDisplay" aria-live="polite" aria-atomic="true">0</div>
-                <button class="calc-btn clear" onclick="clearCalc()" aria-label="Clear">C</button>
-                <button class="calc-btn operator" onclick="appendCalc('/')" aria-label="Divide">/</button>
-                <button class="calc-btn operator" onclick="appendCalc('*')" aria-label="Multiply">×</button>
-                <button class="calc-btn operator" onclick="deleteCalc()" aria-label="Delete">⌫</button>
-                <button class="calc-btn" onclick="appendCalc('7')" aria-label="Seven">7</button>
-                <button class="calc-btn" onclick="appendCalc('8')" aria-label="Eight">8</button>
-                <button class="calc-btn" onclick="appendCalc('9')" aria-label="Nine">9</button>
-                <button class="calc-btn operator" onclick="appendCalc('-')" aria-label="Subtract">-</button>
-                <button class="calc-btn" onclick="appendCalc('4')" aria-label="Four">4</button>
-                <button class="calc-btn" onclick="appendCalc('5')" aria-label="Five">5</button>
-                <button class="calc-btn" onclick="appendCalc('6')" aria-label="Six">6</button>
-                <button class="calc-btn operator" onclick="appendCalc('+')" aria-label="Add">+</button>
-                <button class="calc-btn" onclick="appendCalc('1')" aria-label="One">1</button>
-                <button class="calc-btn" onclick="appendCalc('2')" aria-label="Two">2</button>
-                <button class="calc-btn" onclick="appendCalc('3')" aria-label="Three">3</button>
-                <button class="calc-btn" onclick="appendCalc('0')" aria-label="Zero">0</button>
-                <button class="calc-btn" onclick="appendCalc('.')" aria-label="Decimal">.</button>
-                <button class="calc-btn equals" onclick="calculateResult()" aria-label="Equals">=</button>
+                <div class="calc-display" id="calcDisplay">0</div>
+                <button class="calc-btn clear" onclick="clearCalc()">C</button>
+                <button class="calc-btn operator" onclick="appendCalc('/')">/</button>
+                <button class="calc-btn operator" onclick="appendCalc('*')">×</button>
+                <button class="calc-btn operator" onclick="deleteCalc()">⌫</button>
+                <button class="calc-btn" onclick="appendCalc('7')">7</button>
+                <button class="calc-btn" onclick="appendCalc('8')">8</button>
+                <button class="calc-btn" onclick="appendCalc('9')">9</button>
+                <button class="calc-btn operator" onclick="appendCalc('-')">-</button>
+                <button class="calc-btn" onclick="appendCalc('4')">4</button>
+                <button class="calc-btn" onclick="appendCalc('5')">5</button>
+                <button class="calc-btn" onclick="appendCalc('6')">6</button>
+                <button class="calc-btn operator" onclick="appendCalc('+')">+</button>
+                <button class="calc-btn" onclick="appendCalc('1')">1</button>
+                <button class="calc-btn" onclick="appendCalc('2')">2</button>
+                <button class="calc-btn" onclick="appendCalc('3')">3</button>
+                <button class="calc-btn" onclick="appendCalc('0')">0</button>
+                <button class="calc-btn" onclick="appendCalc('.')">.</button>
+                <button class="calc-btn equals" onclick="calculateResult()">=</button>
             </div>
         </div>
     </div>
 
     <!-- Theme Modal -->
-    <div class="modal" id="themeModal" role="dialog" aria-labelledby="themeModalTitle" aria-modal="true">
+    <div class="modal" id="themeModal">
         <div class="modal-content" style="max-width: 500px;">
             <div class="modal-header">
-                <h2 id="themeModalTitle">🎨 Choose Theme</h2>
-                <button class="close-btn" onclick="closeThemeModal()" aria-label="Close theme selector">✕</button>
+                <h2>🎨 Choose Theme</h2>
+                <button class="close-btn" onclick="closeThemeModal()">✕</button>
             </div>
             
             <div style="display: grid; gap: 15px;">
-                <button class="btn btn-primary" onclick="changeTheme('purple')">💜 Purple Theme</button>
-                <button class="btn" style="background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); color: white;" onclick="changeTheme('blue')">💙 Blue Theme</button>
-                <button class="btn" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: white;" onclick="changeTheme('green')">💚 Green Theme</button>
-                <button class="btn" style="background: linear-gradient(135deg, #EC4899 0%, #DB2777 100%); color: white;" onclick="changeTheme('pink')">💗 Pink Theme</button>
-                <button class="btn" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: white;" onclick="changeTheme('orange')">🧡 Orange Theme</button>
+                <button class="btn btn-primary" onclick="changeTheme('purple')">💜 Purple</button>
+                <button class="btn" style="background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); color: white;" onclick="changeTheme('blue')">💙 Blue</button>
+                <button class="btn" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: white;" onclick="changeTheme('green')">💚 Green</button>
+                <button class="btn" style="background: linear-gradient(135deg, #EC4899 0%, #DB2777 100%); color: white;" onclick="changeTheme('pink')">💗 Pink</button>
+                <button class="btn" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: white;" onclick="changeTheme('orange')">🧡 Orange</button>
             </div>
         </div>
     </div>
 
     <!-- Settings Modal -->
-    <div class="modal" id="settingsModal" role="dialog" aria-labelledby="settingsModalTitle" aria-modal="true">
+    <div class="modal" id="settingsModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="settingsModalTitle">⚙️ Settings</h2>
-                <button class="close-btn" onclick="closeSettingsModal()" aria-label="Close settings">✕</button>
+                <h2>⚙️ Settings</h2>
+                <button class="close-btn" onclick="closeSettingsModal()">✕</button>
             </div>
             
             <div class="form-group">
                 <label for="currencySymbol">💱 Currency Symbol</label>
-                <input type="text" id="currencySymbol" value="₱" maxlength="3" placeholder="₱">
+                <input type="text" id="currencySymbol" value="₱" maxlength="3">
             </div>
 
             <div class="form-group">
                 <label for="businessName">🏢 Business Name</label>
-                <input type="text" id="businessName" value="INQUIRE" placeholder="Your business name">
-            </div>
-
-            <div class="form-group">
-                <label for="taxRate">📊 Tax Rate (%)</label>
-                <input type="number" id="taxRate" value="0" min="0" max="100" step="0.1" placeholder="0">
+                <input type="text" id="businessName" value="INQUIRE">
             </div>
 
             <button class="btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
@@ -1793,17 +1620,15 @@
             <hr style="margin: 30px 0; border: 2px solid var(--border-color);">
             
             <h3 style="color: var(--danger); margin-bottom: 15px;">⚠️ Danger Zone</h3>
-            <p style="margin-bottom: 15px; color: var(--text-color); line-height: 1.6;">
-                This will permanently delete all sales data. This action cannot be undone. Please make sure to export your data before proceeding.
-            </p>
+            <p style="margin-bottom: 15px; color: var(--text-color);">This will permanently delete all sales data.</p>
             <button class="btn btn-danger" onclick="clearAllData()">🗑️ Clear All Data</button>
         </div>
     </div>
 
     <!-- Toast Notification -->
-    <div class="toast" id="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast" id="toast">
         <span class="toast-icon">✅</span>
-        <span class="toast-message" id="toastMessage">Success!</span>
+        <span id="toastMessage">Success!</span>
     </div>
 
     <script>
@@ -1814,8 +1639,7 @@
             currency: '₱',
             businessName: 'INQUIRE',
             darkMode: false,
-            theme: 'purple',
-            taxRate: 0
+            theme: 'purple'
         };
         
         let currentPeriod = 'all';
@@ -1823,33 +1647,33 @@
         let bulkRowCounter = 0;
         let charts = {};
 
-        // Default comprehensive product catalog with 80+ products
+        // Default comprehensive product catalog
         const defaultProducts = [
-            // ========== NETFLIX ==========
+            // Netflix
             {name: 'Netflix Solo Profile', category: 'Streaming', price: 95, capital: 64},
             {name: 'Netflix Shared Profile', category: 'Streaming', price: 85, capital: 54},
             {name: 'Netflix Solo Account', category: 'Streaming', price: 120, capital: 80},
             
-            // ========== DISNEY ==========
+            // Disney
             {name: 'Disney Shared', category: 'Streaming', price: 75, capital: 50},
             {name: 'Disney Solo 1dev', category: 'Streaming', price: 40, capital: 25},
             {name: 'Disney Solo 2devs', category: 'Streaming', price: 70, capital: 45},
             
-            // ========== HBO ==========
+            // HBO
             {name: 'HBO Shared', category: 'Streaming', price: 80, capital: 55},
             {name: 'HBO Solo 1dev', category: 'Streaming', price: 45, capital: 30},
             {name: 'HBO Solo 2devs', category: 'Streaming', price: 75, capital: 50},
             
-            // ========== YOUTUBE ==========
-            {name: 'YouTube Solo', category: 'Streaming', price: 120, capital: 80},
-            {name: 'YouTube Famhead', category: 'Streaming', price: 150, capital: 100},
-            {name: 'YouTube Invite', category: 'Streaming', price: 90, capital: 60},
+            // YouTube
+            {name: 'YouTube Solo', category: 'Music', price: 120, capital: 80},
+            {name: 'YouTube Famhead', category: 'Music', price: 150, capital: 100},
+            {name: 'YouTube Invite', category: 'Music', price: 90, capital: 60},
             
-            // ========== SPOTIFY ==========
+            // Spotify
             {name: 'Spotify Solo', category: 'Music', price: 100, capital: 65},
             {name: 'Spotify Shared', category: 'Music', price: 70, capital: 45},
             
-            // ========== VIVA ==========
+            // Viva
             {name: 'Vivaone Solo', category: 'Streaming', price: 85, capital: 55},
             {name: 'Vivaone Shared', category: 'Streaming', price: 65, capital: 40},
             {name: 'Vivamax Solo', category: 'Streaming', price: 90, capital: 60},
@@ -1857,152 +1681,88 @@
             {name: 'Vivabundle Shared', category: 'Streaming', price: 110, capital: 75},
             {name: 'Vivabundle Solo', category: 'Streaming', price: 140, capital: 95},
             
-            // ========== CHATGPT ==========
+            // ChatGPT
             {name: 'ChatGPT Shared', category: 'AI', price: 250, capital: 180},
             {name: 'ChatGPT Solo', category: 'AI', price: 450, capital: 320},
             
-            // ========== REMINI ==========
+            // Remini
             {name: 'Remini 7d Shared', category: 'Editing', price: 30, capital: 18},
             {name: 'Remini 7d Solo', category: 'Editing', price: 45, capital: 28},
             {name: 'Remini 1m Shared', category: 'Editing', price: 90, capital: 60},
             {name: 'Remini 1m Solo', category: 'Editing', price: 130, capital: 90},
             
-            // ========== CAPCUT ==========
+            // Capcut
             {name: 'Capcut 7d Shared', category: 'Editing', price: 35, capital: 20},
             {name: 'Capcut 7d Solo', category: 'Editing', price: 50, capital: 30},
             {name: 'Capcut 1m Shared', category: 'Editing', price: 100, capital: 65},
             {name: 'Capcut 1m Solo', category: 'Editing', price: 140, capital: 95},
             
-            // ========== LOKLOK ==========
+            // Loklok
             {name: 'Loklok Standard Shared', category: 'Streaming', price: 60, capital: 38},
             {name: 'Loklok Basic Shared', category: 'Streaming', price: 45, capital: 28},
             
-            // ========== IWANT ==========
+            // iWant
             {name: 'iWant Shared', category: 'Streaming', price: 55, capital: 35},
             {name: 'iWant Solo', category: 'Streaming', price: 80, capital: 52},
             
-            // ========== GRAMMARLY ==========
+            // Grammarly
             {name: 'Grammarly Shared', category: 'Education', price: 120, capital: 80},
             {name: 'Grammarly Solo', category: 'Education', price: 200, capital: 140},
             
-            // ========== QUILLBOT ==========
+            // Quillbot
             {name: 'Quillbot Shared', category: 'Education', price: 110, capital: 75},
             {name: 'Quillbot Solo', category: 'Education', price: 180, capital: 125},
             
-            // ========== PRIME ==========
+            // Prime
             {name: 'Prime Shared', category: 'Streaming', price: 95, capital: 62},
             {name: 'Prime Solo', category: 'Streaming', price: 130, capital: 88},
             
-            // ========== IQIYI ==========
+            // iQIYI
             {name: 'iQIYI Shared', category: 'Streaming', price: 70, capital: 45},
-            {name: 'iQIYI Solo', category: 'Streaming', price: 100, capital: 65},
             
-            // ========== CANVA ==========
+            // Canva
             {name: 'Canva Solo', category: 'Design', price: 150, capital: 100},
             {name: 'Canva Head', category: 'Design', price: 180, capital: 125},
             {name: 'Canva Invite', category: 'Design', price: 120, capital: 80},
             
-            // ========== ADDITIONAL STREAMING SERVICES ==========
+            // Additional products
             {name: 'Crunchyroll Shared', category: 'Streaming', price: 75, capital: 48},
             {name: 'Crunchyroll Solo', category: 'Streaming', price: 110, capital: 72},
-            {name: 'Paramount+ Shared', category: 'Streaming', price: 80, capital: 52},
-            {name: 'Paramount+ Solo', category: 'Streaming', price: 115, capital: 75},
             {name: 'Apple TV+ Shared', category: 'Streaming', price: 85, capital: 55},
             {name: 'Apple TV+ Solo', category: 'Streaming', price: 120, capital: 80},
-            {name: 'WeTV Shared', category: 'Streaming', price: 65, capital: 42},
-            {name: 'WeTV Solo', category: 'Streaming', price: 95, capital: 62},
-            {name: 'Viu Premium Shared', category: 'Streaming', price: 70, capital: 45},
-            {name: 'Viu Premium Solo', category: 'Streaming', price: 100, capital: 65},
-            {name: 'Bilibili Premium', category: 'Streaming', price: 90, capital: 58},
-            
-            // ========== MUSIC SERVICES ==========
             {name: 'Apple Music Shared', category: 'Music', price: 80, capital: 52},
             {name: 'Apple Music Solo', category: 'Music', price: 110, capital: 72},
-            {name: 'YouTube Music Shared', category: 'Music', price: 75, capital: 48},
-            {name: 'YouTube Music Solo', category: 'Music', price: 105, capital: 68},
-            {name: 'Tidal Shared', category: 'Music', price: 95, capital: 62},
-            {name: 'Deezer Premium', category: 'Music', price: 85, capital: 55},
-            
-            // ========== AI TOOLS ==========
             {name: 'Midjourney Solo', category: 'AI', price: 550, capital: 400},
-            {name: 'Midjourney Shared', category: 'AI', price: 350, capital: 250},
-            {name: 'Jasper AI Solo', category: 'AI', price: 500, capital: 360},
-            {name: 'Copy.ai Pro', category: 'AI', price: 300, capital: 215},
-            {name: 'Writesonic Shared', category: 'AI', price: 200, capital: 140},
-            
-            // ========== EDITING TOOLS ==========
+            {name: 'Adobe Creative Cloud Solo', category: 'Design', price: 600, capital: 450},
             {name: 'Filmora Shared', category: 'Editing', price: 180, capital: 125},
             {name: 'Filmora Solo', category: 'Editing', price: 280, capital: 200},
             {name: 'Picsart Shared', category: 'Editing', price: 90, capital: 60},
             {name: 'Picsart Solo', category: 'Editing', price: 140, capital: 95},
-            {name: 'VN Video Editor Pro', category: 'Editing', price: 120, capital: 80},
-            {name: 'InShot Pro', category: 'Editing', price: 100, capital: 65},
-            {name: 'Lightroom Shared', category: 'Editing', price: 150, capital: 100},
-            {name: 'Lightroom Solo', category: 'Editing', price: 220, capital: 155},
-            {name: 'Snapseed Pro', category: 'Editing', price: 85, capital: 55},
-            {name: 'VSCO Premium', category: 'Editing', price: 110, capital: 72},
-            
-            // ========== DESIGN TOOLS ==========
-            {name: 'Adobe Creative Cloud Shared', category: 'Design', price: 350, capital: 250},
-            {name: 'Adobe Creative Cloud Solo', category: 'Design', price: 600, capital: 450},
-            {name: 'Adobe Photoshop Solo', category: 'Design', price: 280, capital: 200},
-            {name: 'Adobe Illustrator Solo', category: 'Design', price: 280, capital: 200},
-            {name: 'Figma Pro', category: 'Design', price: 320, capital: 230},
-            {name: 'Sketch Solo', category: 'Design', price: 250, capital: 180},
-            
-            // ========== EDUCATION ==========
+            {name: 'WeTV Shared', category: 'Streaming', price: 65, capital: 42},
+            {name: 'WeTV Solo', category: 'Streaming', price: 95, capital: 62},
+            {name: 'Viu Premium Shared', category: 'Streaming', price: 70, capital: 45},
+            {name: 'Viu Premium Solo', category: 'Streaming', price: 100, capital: 65},
             {name: 'Duolingo Plus', category: 'Education', price: 120, capital: 80},
-            {name: 'Coursera Plus', category: 'Education', price: 450, capital: 320},
-            {name: 'Skillshare Shared', category: 'Education', price: 180, capital: 125},
-            {name: 'Skillshare Solo', category: 'Education', price: 280, capital: 200},
-            {name: 'Udemy Course Bundle', category: 'Education', price: 250, capital: 180},
-            {name: 'LinkedIn Premium', category: 'Education', price: 280, capital: 200},
-            {name: 'Masterclass Shared', category: 'Education', price: 220, capital: 155},
-            {name: 'Khan Academy Plus', category: 'Education', price: 150, capital: 100},
-            
-            // ========== PRODUCTIVITY & OTHER ==========
-            {name: 'Microsoft 365 Shared', category: 'Other', price: 200, capital: 140},
-            {name: 'Microsoft 365 Solo', category: 'Other', price: 350, capital: 250},
-            {name: 'Google One 100GB', category: 'Other', price: 85, capital: 55},
-            {name: 'Google One 200GB', category: 'Other', price: 130, capital: 88},
-            {name: 'iCloud+ 50GB', category: 'Other', price: 45, capital: 28},
-            {name: 'iCloud+ 200GB', category: 'Other', price: 130, capital: 88},
-            {name: 'Dropbox Plus', category: 'Other', price: 180, capital: 125},
-            {name: 'Notion Pro', category: 'Other', price: 150, capital: 100},
-            {name: 'Evernote Premium', category: 'Other', price: 170, capital: 115},
-            {name: 'Zoom Pro', category: 'Other', price: 200, capital: 140},
-            {name: 'NordVPN Shared', category: 'Other', price: 180, capital: 125},
             {name: 'NordVPN Solo', category: 'Other', price: 320, capital: 230},
-            {name: 'ExpressVPN Solo', category: 'Other', price: 380, capital: 270},
-            {name: 'Surfshark VPN', category: 'Other', price: 220, capital: 155},
-            {name: 'Headspace Meditation', category: 'Other', price: 150, capital: 100},
-            {name: 'Calm Meditation', category: 'Other', price: 140, capital: 95},
-            {name: 'Peloton Digital', category: 'Other', price: 180, capital: 125}
+            {name: 'Microsoft 365 Solo', category: 'Other', price: 350, capital: 250}
         ];
 
         // ==================== INITIALIZATION ====================
         function init() {
             console.log('🚀 Initializing INQUIRE Sales Tracker Dashboard...');
             
-            // Initialize products if empty
             if (products.length === 0) {
                 console.log('📦 Loading default products...');
                 products = [...defaultProducts];
                 saveProducts();
             }
             
-            // Set current date
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('saleDate').value = today;
             document.getElementById('bulkDate').value = today;
             
-            // Load settings
             loadSettings();
-            
-            // Populate dropdowns
             populateProductSelects();
-            
-            // Load data
             loadProducts();
             loadSales();
             updateDashboard();
@@ -2015,28 +1775,21 @@
         // ==================== LOCAL STORAGE ====================
         function saveProducts() {
             localStorage.setItem('products', JSON.stringify(products));
-            console.log('💾 Products saved to localStorage');
         }
 
         function saveSales() {
             localStorage.setItem('sales', JSON.stringify(sales));
-            console.log('💾 Sales saved to localStorage');
         }
 
         function saveSettings() {
             const currency = document.getElementById('currencySymbol').value;
             const businessName = document.getElementById('businessName').value;
-            const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
             
             settings.currency = currency;
             settings.businessName = businessName;
-            settings.taxRate = taxRate;
             
             localStorage.setItem('settings', JSON.stringify(settings));
-            
-            // Update display
             updateDashboard();
-            
             showToast('Settings saved successfully!', 'success');
             closeSettingsModal();
         }
@@ -2049,42 +1802,11 @@
                 document.body.className = document.body.className.replace(/theme-\w+/g, '');
                 document.body.classList.add(`theme-${settings.theme}`);
             }
-            
             document.getElementById('currencySymbol').value = settings.currency;
             document.getElementById('businessName').value = settings.businessName;
-            document.getElementById('taxRate').value = settings.taxRate || 0;
         }
 
-        // ==================== PRODUCT MANAGEMENT ====================
-        function populateProductSelects() {
-            const productSelect = document.getElementById('productSelect');
-            productSelect.innerHTML = '<option value="">Select a product...</option>';
-            
-            // Group products by category
-            const categories = {};
-            products.forEach(product => {
-                if (!categories[product.category]) {
-                    categories[product.category] = [];
-                }
-                categories[product.category].push(product);
-            });
-            
-            // Add products grouped by category
-            Object.keys(categories).sort().forEach(category => {
-                const optgroup = document.createElement('optgroup');
-                optgroup.label = `${getCategoryIcon(category)} ${category}`;
-                
-                categories[category].sort((a, b) => a.name.localeCompare(b.name)).forEach((product, index) => {
-                    const option = document.createElement('option');
-                    option.value = products.indexOf(product);
-                    option.textContent = product.name;
-                    optgroup.appendChild(option);
-                });
-                
-                productSelect.appendChild(optgroup);
-            });
-        }
-
+        // ==================== PRODUCT MANAGEMENT (WITH INLINE EDITING) ====================
         function getCategoryIcon(category) {
             const icons = {
                 'Streaming': '🎬',
@@ -2096,6 +1818,33 @@
                 'Other': '📦'
             };
             return icons[category] || '📦';
+        }
+
+        function populateProductSelects() {
+            const productSelect = document.getElementById('productSelect');
+            productSelect.innerHTML = '<option value="">Select a product...</option>';
+            
+            const categories = {};
+            products.forEach(product => {
+                if (!categories[product.category]) {
+                    categories[product.category] = [];
+                }
+                categories[product.category].push(product);
+            });
+            
+            Object.keys(categories).sort().forEach(category => {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = `${getCategoryIcon(category)} ${category}`;
+                
+                categories[category].sort((a, b) => a.name.localeCompare(b.name)).forEach((product) => {
+                    const option = document.createElement('option');
+                    option.value = products.indexOf(product);
+                    option.textContent = product.name;
+                    optgroup.appendChild(option);
+                });
+                
+                productSelect.appendChild(optgroup);
+            });
         }
 
         function updateSaleInfo() {
@@ -2178,23 +1927,37 @@
             tbody.innerHTML = '';
             
             if (products.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="empty-state"><div class="empty-icon">🛍️</div><h3>No products</h3><p>Add your first product!</p></td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><div class="empty-icon">🛍️</div><h3>No products</h3><p>Add your first product!</p></td></tr>';
                 return;
             }
             
             products.forEach((product, index) => {
+                const profitMargin = product.price - product.capital;
+                const profitPercent = product.capital > 0 ? ((profitMargin / product.capital) * 100).toFixed(1) : 0;
+                const profitClass = profitMargin >= 0 ? 'profit-positive' : 'profit-negative';
+                
                 const row = document.createElement('tr');
+                row.id = `product-row-${index}`;
                 row.innerHTML = `
                     <td>
-                        ${product.name}
+                        <strong>${product.name}</strong>
                         <span class="category-badge category-${product.category.toLowerCase()}">${product.category}</span>
                     </td>
                     <td>${getCategoryIcon(product.category)} ${product.category}</td>
-                    <td class="amount-cell">${settings.currency}${product.price.toFixed(2)}</td>
-                    <td class="amount-cell">${settings.currency}${product.capital.toFixed(2)}</td>
+                    <td class="editable-cell" onclick="editProductPrice(${index}, 'price')" id="price-cell-${index}">
+                        <strong class="amount-cell">${settings.currency}${product.price.toFixed(2)}</strong>
+                        <span class="edit-icon">✏️</span>
+                    </td>
+                    <td class="editable-cell" onclick="editProductPrice(${index}, 'capital')" id="capital-cell-${index}">
+                        <strong class="amount-cell">${settings.currency}${product.capital.toFixed(2)}</strong>
+                        <span class="edit-icon">✏️</span>
+                    </td>
+                    <td class="profit-margin-cell ${profitClass}">
+                        ${settings.currency}${profitMargin.toFixed(2)} (${profitPercent}%)
+                    </td>
                     <td>
-                        <button class="action-btn edit-btn" onclick="editProduct(${index})" title="Edit product">✏️ Edit</button>
-                        <button class="action-btn delete-btn" onclick="deleteProduct(${index})" title="Delete product">🗑️ Delete</button>
+                        <button class="action-btn edit-btn" onclick="editProductFull(${index})" title="Edit details">✏️ Edit</button>
+                        <button class="action-btn delete-btn" onclick="deleteProduct(${index})" title="Delete">🗑️</button>
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -2203,10 +1966,61 @@
             document.getElementById('activeProducts').textContent = products.length;
         }
 
-        function editProduct(index) {
+        function editProductPrice(index, field) {
             const product = products[index];
+            const cellId = `${field}-cell-${index}`;
+            const cell = document.getElementById(cellId);
+            
+            const currentValue = product[field];
+            
+            cell.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <input type="number" step="0.01" min="0" 
+                        value="${currentValue}" 
+                        id="edit-input-${index}-${field}"
+                        style="flex: 1; padding: 8px 12px; border: 2px solid var(--primary); border-radius: 10px; font-weight: 700; font-size: 1em;"
+                        onkeypress="if(event.key === 'Enter') saveProductPrice(${index}, '${field}')">
+                    <button class="save-edit-btn" onclick="saveProductPrice(${index}, '${field}')" title="Save">✅</button>
+                    <button class="cancel-edit-btn" onclick="cancelProductEdit(${index})" title="Cancel">❌</button>
+                </div>
+            `;
+            
+            document.getElementById(`edit-input-${index}-${field}`).focus();
+            document.getElementById(`edit-input-${index}-${field}`).select();
+        }
+
+        function saveProductPrice(index, field) {
+            const inputId = `edit-input-${index}-${field}`;
+            const newValue = parseFloat(document.getElementById(inputId).value);
+            
+            if (isNaN(newValue) || newValue < 0) {
+                showToast('Please enter a valid positive number', 'error');
+                return;
+            }
+            
+            const oldValue = products[index][field];
+            products[index][field] = newValue;
+            
+            saveProducts();
+            populateProductSelects();
+            loadProducts();
+            
+            const fieldName = field === 'price' ? 'Price' : 'Capital';
+            showToast(`${products[index].name} ${fieldName} updated: ${settings.currency}${oldValue.toFixed(2)} → ${settings.currency}${newValue.toFixed(2)}`, 'success');
+        }
+
+        function cancelProductEdit(index) {
+            loadProducts();
+        }
+
+        function editProductFull(index) {
+            const product = products[index];
+            
             const newName = prompt('Product Name:', product.name);
             if (newName === null) return;
+            
+            const newCategory = prompt('Category (Streaming/Editing/Music/AI/Education/Design/Other):', product.category);
+            if (newCategory === null) return;
             
             const newPrice = prompt('Default Price:', product.price);
             if (newPrice === null) return;
@@ -2215,6 +2029,7 @@
             if (newCapital === null) return;
             
             products[index].name = newName.trim();
+            products[index].category = newCategory.trim();
             products[index].price = parseFloat(newPrice) || 0;
             products[index].capital = parseFloat(newCapital) || 0;
             
@@ -2235,6 +2050,85 @@
             }
         }
 
+        function searchProducts() {
+            const searchTerm = document.getElementById('productSearchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#productTableBody tr');
+            
+            let visibleCount = 0;
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                const isVisible = text.includes(searchTerm);
+                row.style.display = isVisible ? '' : 'none';
+                if (isVisible && !row.querySelector('.empty-state')) visibleCount++;
+            });
+        }
+
+        function exportProductsCSV() {
+            if (products.length === 0) {
+                showToast('No products to export', 'error');
+                return;
+            }
+            
+            let csv = 'Product Name,Category,Default Price,Default Capital,Profit Margin,Profit %\n';
+            
+            products.forEach(product => {
+                const profitMargin = product.price - product.capital;
+                const profitPercent = product.capital > 0 ? ((profitMargin / product.capital) * 100).toFixed(1) : 0;
+                csv += `"${product.name}","${product.category}",${product.price},${product.capital},${profitMargin},${profitPercent}\n`;
+            });
+            
+            const filename = `products-list-${new Date().toISOString().split('T')[0]}.csv`;
+            downloadCSV(csv, filename);
+        }
+
+        function importProductsCSV() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.csv';
+            
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    const csv = event.target.result;
+                    const lines = csv.split('\n');
+                    let imported = 0;
+                    
+                    for (let i = 1; i < lines.length; i++) {
+                        const line = lines[i].trim();
+                        if (!line) continue;
+                        
+                        const matches = line.match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g);
+                        if (!matches || matches.length < 4) continue;
+                        
+                        const name = matches[0].replace(/"/g, '').trim();
+                        const category = matches[1].replace(/"/g, '').trim();
+                        const price = parseFloat(matches[2]);
+                        const capital = parseFloat(matches[3]);
+                        
+                        if (name && category && !isNaN(price) && !isNaN(capital)) {
+                            products.push({ name, category, price, capital });
+                            imported++;
+                        }
+                    }
+                    
+                    if (imported > 0) {
+                        saveProducts();
+                        populateProductSelects();
+                        loadProducts();
+                        showToast(`${imported} products imported successfully!`, 'success');
+                    } else {
+                        showToast('No valid products found in CSV', 'error');
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+
         // ==================== SALES MANAGEMENT ====================
         function addSale(event) {
             event.preventDefault();
@@ -2248,7 +2142,6 @@
             const product = products[productIndex];
             const qty = parseInt(document.getElementById('quantity').value);
             const date = document.getElementById('saleDate').value;
-            const admin = document.getElementById('adminSelect').value;
             const price = parseFloat(document.getElementById('salePrice').value);
             const capital = parseFloat(document.getElementById('saleCapital').value);
             
@@ -2263,7 +2156,7 @@
                 totalCapital: qty * capital,
                 profit: (qty * price) - (qty * capital),
                 date: date,
-                admin: admin,
+                admin: 'Adeebaabkhan',
                 timestamp: new Date().toISOString()
             };
             
@@ -2272,7 +2165,6 @@
             loadSales();
             updateDashboard();
             
-            // Reset form
             document.getElementById('addSaleForm').reset();
             document.getElementById('saleDate').value = new Date().toISOString().split('T')[0];
             document.getElementById('salePriceInfo').style.display = 'none';
@@ -2287,7 +2179,7 @@
             if (sales.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="10" class="empty-state">
+                        <td colspan="9" class="empty-state">
                             <div class="empty-icon">📦</div>
                             <h3>No sales yet</h3>
                             <p>Add your first sale to get started!</p>
@@ -2297,7 +2189,6 @@
                 return;
             }
             
-            // Sort sales by date (newest first)
             const sortedSales = [...sales].sort((a, b) => new Date(b.date) - new Date(a.date));
             
             sortedSales.forEach((sale, index) => {
@@ -2318,9 +2209,8 @@
                     <td class="amount-cell" style="color: ${profitColor}">
                         <strong>${settings.currency}${sale.profit.toFixed(2)}</strong>
                     </td>
-                    <td>${sale.admin}</td>
                     <td>
-                        <button class="action-btn delete-btn" onclick="deleteSale(${sale.id})" title="Delete sale">🗑️</button>
+                        <button class="action-btn delete-btn" onclick="deleteSale(${sale.id})" title="Delete">🗑️</button>
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -2342,21 +2232,15 @@
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const rows = document.querySelectorAll('#salesTableBody tr');
             
-            let visibleCount = 0;
             rows.forEach(row => {
                 const text = row.textContent.toLowerCase();
-                const isVisible = text.includes(searchTerm);
-                row.style.display = isVisible ? '' : 'none';
-                if (isVisible && !row.querySelector('.empty-state')) visibleCount++;
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
             });
-            
-            console.log(`🔍 Search: "${searchTerm}" - ${visibleCount} results found`);
         }
 
         function filterSales(filter) {
             currentFilter = filter;
             
-            // Update active button
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if (btn.getAttribute('data-filter') === filter) {
@@ -2372,11 +2256,9 @@
             
             const rows = document.querySelectorAll('#salesTableBody tr');
             
-            let visibleCount = 0;
             rows.forEach(row => {
                 if (filter === 'all') {
                     row.style.display = '';
-                    if (!row.querySelector('.empty-state')) visibleCount++;
                     return;
                 }
                 
@@ -2385,18 +2267,12 @@
                 
                 const saleDate = new Date(dateCell.textContent);
                 
-                let isVisible = false;
                 if (filter === 'today') {
-                    isVisible = saleDate.toDateString() === today.toDateString();
+                    row.style.display = saleDate.toDateString() === today.toDateString() ? '' : 'none';
                 } else if (filter === 'week') {
-                    isVisible = saleDate >= oneWeekAgo;
+                    row.style.display = saleDate >= oneWeekAgo ? '' : 'none';
                 }
-                
-                row.style.display = isVisible ? '' : 'none';
-                if (isVisible) visibleCount++;
             });
-            
-            console.log(`📊 Filter: ${filter} - ${visibleCount} sales shown`);
         }
 
         // ==================== BULK SALES ====================
@@ -2405,7 +2281,7 @@
             if (container.style.display === 'none') {
                 container.style.display = 'block';
                 if (document.getElementById('bulkSalesTableBody').children.length === 0) {
-                    addBulkRow(); // Start with one row
+                    addBulkRow();
                 }
                 container.scrollIntoView({ behavior: 'smooth' });
             } else {
@@ -2447,7 +2323,6 @@
             `;
             
             tbody.appendChild(row);
-            console.log(`➕ Bulk row #${rowNum} added`);
         }
 
         function updateBulkRowInfo(rowNum) {
@@ -2460,7 +2335,6 @@
                 priceInput.value = product.price;
                 capitalInput.value = product.capital;
                 
-                // Update selected item display
                 document.getElementById('selectedItemDisplay').innerHTML = `
                     <h3>${product.name}</h3>
                     <p>Default ${settings.currency}${product.price.toFixed(2)} / Capital ${settings.currency}${product.capital.toFixed(2)}</p>
@@ -2507,13 +2381,11 @@
             if (row) {
                 row.remove();
                 calculateBulkTotals();
-                console.log(`➖ Bulk row #${rowNum} removed`);
             }
         }
 
         function saveBulkSales() {
             const date = document.getElementById('bulkDate').value;
-            const admin = document.getElementById('bulkAdmin').value;
             
             if (!date) {
                 showToast('Please select a date', 'error');
@@ -2547,7 +2419,7 @@
                         totalCapital: qty * capital,
                         profit: (qty * price) - (qty * capital),
                         date: date,
-                        admin: admin,
+                        admin: 'Adeebaabkhan',
                         timestamp: new Date().toISOString()
                     };
                     
@@ -2564,7 +2436,7 @@
                 showToast(`${addedCount} sales added! Total: ${settings.currency}${totalAmount.toFixed(2)}`, 'success');
                 toggleBulkSales();
             } else {
-                showToast('No valid sales to add. Please fill in product details.', 'error');
+                showToast('No valid sales to add', 'error');
             }
         }
 
@@ -2609,7 +2481,6 @@
             document.getElementById('totalProfit').textContent = `${settings.currency}${totalProfit.toFixed(2)}`;
             document.getElementById('productsSold').textContent = productsSold;
             
-            // Find best seller
             const productCount = {};
             filteredSales.forEach(sale => {
                 productCount[sale.productName] = (productCount[sale.productName] || 0) + sale.quantity;
@@ -2657,7 +2528,6 @@
         function filterByPeriod(period) {
             currentPeriod = period;
             
-            // Update active tab
             document.querySelectorAll('.period-tab').forEach(tab => {
                 tab.classList.remove('active');
                 if (tab.getAttribute('data-period') === period) {
@@ -2666,57 +2536,36 @@
             });
             
             updateDashboard();
-            console.log(`📅 Period filter: ${period}`);
         }
 
         // ==================== CHARTS ====================
         function initCharts() {
-            // Sales Trend Chart
             const salesCtx = document.getElementById('salesChart').getContext('2d');
             charts.salesChart = new Chart(salesCtx, {
                 type: 'line',
                 data: {
                     labels: [],
                     datasets: [{
-                        label: 'Sales Amount',
+                        label: 'Sales',
                         data: [],
                         borderColor: '#EC4899',
                         backgroundColor: 'rgba(236, 72, 153, 0.1)',
                         tension: 0.4,
-                        fill: true,
-                        pointRadius: 5,
-                        pointHoverRadius: 8
+                        fill: true
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
                     plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `${settings.currency}${context.parsed.y.toFixed(2)}`;
-                                }
-                            }
-                        }
+                        legend: { display: false }
                     },
                     scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    return settings.currency + value;
-                                }
-                            }
-                        }
+                        y: { beginAtZero: true }
                     }
                 }
             });
             
-            // Category Chart
             const categoryCtx = document.getElementById('categoryChart').getContext('2d');
             charts.categoryChart = new Chart(categoryCtx, {
                 type: 'doughnut',
@@ -2725,44 +2574,16 @@
                     datasets: [{
                         data: [],
                         backgroundColor: [
-                            '#EC4899',
-                            '#8B5CF6',
-                            '#3B82F6',
-                            '#10B981',
-                            '#F59E0B',
-                            '#EF4444',
-                            '#06B6D4',
-                            '#8B5CF6'
-                        ],
-                        borderWidth: 3,
-                        borderColor: '#ffffff'
+                            '#EC4899', '#8B5CF6', '#3B82F6', '#10B981',
+                            '#F59E0B', '#EF4444', '#06B6D4'
+                        ]
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
                     plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                padding: 15,
-                                font: {
-                                    size: 12,
-                                    weight: 'bold'
-                                }
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const label = context.label || '';
-                                    const value = context.parsed;
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const percentage = ((value / total) * 100).toFixed(1);
-                                    return `${label}: ${settings.currency}${value.toFixed(2)} (${percentage}%)`;
-                                }
-                            }
-                        }
+                        legend: { position: 'bottom' }
                     }
                 }
             });
@@ -2773,11 +2594,9 @@
         function updateCharts() {
             const filteredSales = getFilteredSales();
             
-            // Update Sales Trend
             const salesByDate = {};
             filteredSales.forEach(sale => {
-                const date = sale.date;
-                salesByDate[date] = (salesByDate[date] || 0) + sale.total;
+                salesByDate[sale.date] = (salesByDate[sale.date] || 0) + sale.total;
             });
             
             const sortedDates = Object.keys(salesByDate).sort();
@@ -2787,7 +2606,6 @@
             charts.salesChart.data.datasets[0].data = last7Days.map(date => salesByDate[date]);
             charts.salesChart.update();
             
-            // Update Category Distribution
             const categoryTotals = {};
             filteredSales.forEach(sale => {
                 categoryTotals[sale.category] = (categoryTotals[sale.category] || 0) + sale.total;
@@ -2847,7 +2665,6 @@
                     case '-': result = prev - current; break;
                     case '*': result = prev * current; break;
                     case '/': result = current !== 0 ? prev / current : 0; break;
-                    case '%': result = prev % current; break;
                 }
                 
                 calcDisplay = result.toString();
@@ -2855,10 +2672,6 @@
                 calcOperator = '';
                 calcWaitingForOperand = true;
                 updateCalcDisplay();
-            } else if (['+', '-', '*', '/', '%'].includes(calcDisplay.slice(-1))) {
-                calcOperator = calcDisplay.slice(-1);
-                calcPrevValue = calcDisplay.slice(0, -1);
-                calcWaitingForOperand = true;
             }
         }
 
@@ -2866,33 +2679,10 @@
             document.getElementById('calcDisplay').textContent = calcDisplay;
         }
 
-        // Handle operator button clicks
-        window.appendCalcOperator = function(op) {
-            if (calcOperator && !calcWaitingForOperand) {
-                calculateResult();
-            }
-            calcPrevValue = calcDisplay;
-            calcOperator = op;
-            calcWaitingForOperand = true;
-        };
-
-        // Override operator buttons to use new function
-        document.addEventListener('DOMContentLoaded', function() {
-            const operatorButtons = document.querySelectorAll('.calc-btn.operator');
-            operatorButtons.forEach(btn => {
-                if (btn.textContent === '+' || btn.textContent === '-' || btn.textContent === '×' || btn.textContent === '/') {
-                    btn.onclick = function() {
-                        appendCalcOperator(btn.textContent === '×' ? '*' : btn.textContent);
-                    };
-                }
-            });
-        });
-
         // ==================== UTILITIES ====================
         function formatDate(dateString) {
             const date = new Date(dateString);
-            const options = { month: 'short', day: 'numeric', year: 'numeric' };
-            return date.toLocaleDateString('en-US', options);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         }
 
         function exportSalesCSV() {
@@ -2901,14 +2691,13 @@
                 return;
             }
             
-            let csv = 'Date,Product,Category,Quantity,Price,Capital,Total,Profit,Admin\n';
+            let csv = 'Date,Product,Category,Quantity,Price,Capital,Total,Profit\n';
             
             sales.forEach(sale => {
-                csv += `${sale.date},"${sale.productName}","${sale.category}",${sale.quantity},${sale.price},${sale.capital},${sale.total},${sale.profit},"${sale.admin}"\n`;
+                csv += `${sale.date},"${sale.productName}","${sale.category}",${sale.quantity},${sale.price},${sale.capital},${sale.total},${sale.profit}\n`;
             });
             
-            const filename = `sales-history-${new Date().toISOString().split('T')[0]}.csv`;
-            downloadCSV(csv, filename);
+            downloadCSV(csv, `sales-history-${new Date().toISOString().split('T')[0]}.csv`);
         }
 
         function downloadCSV(csv, filename) {
@@ -2947,9 +2736,7 @@
             document.body.classList.toggle('dark-mode');
             settings.darkMode = document.body.classList.contains('dark-mode');
             localStorage.setItem('settings', JSON.stringify(settings));
-            
-            const mode = settings.darkMode ? 'Dark' : 'Light';
-            showToast(`${mode} mode activated`, 'info');
+            showToast(settings.darkMode ? 'Dark mode activated' : 'Light mode activated', 'info');
         }
 
         function openThemeModal() {
@@ -2966,7 +2753,7 @@
             if (settings.darkMode) document.body.classList.add('dark-mode');
             settings.theme = theme;
             localStorage.setItem('settings', JSON.stringify(settings));
-            showToast(`Theme changed to ${theme.charAt(0).toUpperCase() + theme.slice(1)}!`, 'success');
+            showToast(`Theme changed to ${theme}!`, 'success');
             closeThemeModal();
         }
 
@@ -2979,15 +2766,14 @@
         }
 
         function clearAllData() {
-            if (confirm('⚠️ WARNING: This will permanently delete ALL sales data. This action cannot be undone. Are you absolutely sure?')) {
-                if (confirm('⚠️ FINAL WARNING: This is your last chance. Delete all sales data?')) {
+            if (confirm('⚠️ WARNING: This will permanently delete ALL sales data. Are you sure?')) {
+                if (confirm('⚠️ FINAL WARNING: Delete all sales data?')) {
                     sales = [];
                     saveSales();
                     loadSales();
                     updateDashboard();
                     showToast('All sales data cleared!', 'info');
                     closeSettingsModal();
-                    console.log('🗑️ All sales data cleared by user');
                 }
             }
         }
@@ -2996,79 +2782,31 @@
             if (confirm('Are you sure you want to logout?')) {
                 showToast('Logging out...', 'info');
                 setTimeout(() => {
-                    // Redirect to login page (you can change this)
                     window.location.href = 'index.html';
                 }, 1000);
             }
         }
 
         // ==================== EVENT LISTENERS ====================
-        // Close modals when clicking outside
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.classList.remove('show');
             }
         }
 
-        // Keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-            // Ctrl/Cmd + K to open calculator
-            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-                e.preventDefault();
-                openCalculator();
-            }
-            
-            // Ctrl/Cmd + B to open bulk sales
-            if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
-                e.preventDefault();
-                toggleBulkSales();
-            }
-            
-            // Escape to close modals
-            if (e.key === 'Escape') {
-                document.querySelectorAll('.modal.show').forEach(modal => {
-                    modal.classList.remove('show');
-                });
-            }
-        });
-
-        // Auto-save draft
-        let autoSaveTimer;
-        function autoSave() {
-            clearTimeout(autoSaveTimer);
-            autoSaveTimer = setTimeout(() => {
-                saveSales();
-                saveProducts();
-                console.log('💾 Auto-saved');
-            }, 5000);
-        }
-
-        // Prevent accidental page close
-        window.addEventListener('beforeunload', function(e) {
-            if (document.getElementById('bulkSalesContainer').style.display !== 'none') {
-                e.preventDefault();
-                e.returnValue = 'You have unsaved bulk sales. Are you sure you want to leave?';
-                return e.returnValue;
-            }
-        });
-
-        // Initialize on page load
         window.addEventListener('load', function() {
             init();
-            
-            // Show welcome message
             setTimeout(() => {
-                showToast(`Welcome back, ${document.getElementById('userName').textContent}! 👋`, 'success');
+                showToast('Welcome back, Adeebaabkhan! 👋', 'success');
             }, 500);
         });
 
-        // Log app version
         console.log('🚀 INQUIRE Sales Tracker Dashboard v2.0');
-        console.log('📅 Current Date: 2025-11-09');
         console.log('👤 User: Adeebaabkhan');
         console.log('💎 80+ Products Available');
         console.log('✨ Fully Customizable Pricing');
         console.log('📦 Bulk Sales Entry Enabled');
+        console.log('✏️ Click-to-Edit Product Prices');
     </script>
 </body>
 </html>
