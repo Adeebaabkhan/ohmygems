@@ -1407,15 +1407,16 @@ body.dark-mode .profile-select-btn {
                     <p><span class="user-role" id="userRole">👑 OWNER</span></p>
                 </div>
             </div>
-            <div class="nav-actions">
-                <button class="btn-small btn-users" id="btnUsers" style="display: none;">👥 Manage Admins</button>
-                <button class="btn-small btn-products" id="btnProducts" style="display: none;">📦 Manage Products</button>
-                <button class="btn-small btn-calculator" id="btnCalculator">🧮 Calculator</button>
-                <button class="btn-small btn-theme" id="btnTheme">🎨 Theme</button>
-                <button class="btn-small btn-settings" id="btnSettings">⚙️ Settings</button>
-                <button class="btn-small btn-dark" id="btnDark">🌙 Dark</button>
-                <button class="btn-small btn-logout" id="btnLogout">🚪 Logout</button>
-            </div>
+NEW:
+<div class="nav-actions">
+    <button class="btn-small btn-calculator" onclick="showSection('calculator')">🧮 Calculator</button>
+    <button class="btn-small btn-products" onclick="showSection('products')">📦 Products</button>
+    <button class="btn-small btn-products" onclick="showSection('projects')">📋 Projects</button>
+    <button class="btn-small btn-users" onclick="showSection('users')">👥 Users</button>
+    <button class="btn-small btn-settings" onclick="showSection('settings')">⚙️</button>
+    <button class="btn-small btn-dark" onclick="toggleDarkMode()">🌙</button>
+    <button class="btn-small btn-logout" onclick="logout()">🚪 Logout</button>
+</div>
         </div>
 
         <!-- App Header -->
