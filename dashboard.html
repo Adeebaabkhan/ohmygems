@@ -1692,11 +1692,25 @@ body.dark-mode .profile-select-btn {
             <label>📦 Product Name</label>
             <select id="subProductNameSelect" onchange="handleSubProductNameSelect()" required>
                 <option value="">-- Select --</option>
-                <option value="Netflix">Netflix</option>
-                <option value="Spotify">Spotify</option>
-                <option value="Disney+">Disney+</option>
-                <option value="YouTube Premium">YouTube Premium</option>
-                <option value="Canva Pro">Canva Pro</option>
+                <optgroup label="🎬 Streaming">
+                    <option value="Netflix">Netflix</option>
+                    <option value="Disney+">Disney+</option>
+                    <option value="HBO Max">HBO Max</option>
+                    <option value="Prime Video">Prime Video</option>
+                    <option value="Apple TV+">Apple TV+</option>
+                    <option value="Paramount+">Paramount+</option>
+                    <option value="Discovery+">Discovery+</option>
+                    <option value="Crunchyroll">Crunchyroll</option>
+                </optgroup>
+                <optgroup label="🎵 Music">
+                    <option value="Spotify">Spotify</option>
+                    <option value="Apple Music">Apple Music</option>
+                    <option value="YouTube Premium">YouTube Premium</option>
+                </optgroup>
+                <optgroup label="🎨 Creative">
+                    <option value="Canva Pro">Canva Pro</option>
+                    <option value="Adobe Creative Cloud">Adobe Creative Cloud</option>
+                </optgroup>
                 <option value="custom">➕ Custom...</option>
             </select>
             <input type="text" id="subProductName" placeholder="Enter custom name" style="display: none; margin-top: 10px;">
@@ -1736,11 +1750,59 @@ body.dark-mode .profile-select-btn {
                         <label>📦 Product Name</label>
                         <select id="productNameSelect" onchange="handleProductNameSelect()" required>
                             <option value="">-- Select or Add Custom --</option>
-                            <option value="Netflix">Netflix</option>
-                            <option value="Spotify">Spotify</option>
-                            <option value="Disney+">Disney+</option>
-                            <option value="YouTube Premium">YouTube Premium</option>
-                            <option value="Canva Pro">Canva Pro</option>
+                            <optgroup label="🎬 Streaming Services">
+                                <option value="Netflix">Netflix</option>
+                                <option value="Disney+">Disney+</option>
+                                <option value="HBO">HBO</option>
+                                <option value="YouTube Premium">YouTube Premium</option>
+                                <option value="Prime Video">Prime Video</option>
+                                <option value="Apple TV+">Apple TV+</option>
+                                <option value="Paramount+">Paramount+</option>
+                                <option value="Discovery+">Discovery+</option>
+                                <option value="Crunchyroll">Crunchyroll</option>
+                                <option value="VIU">VIU</option>
+                                <option value="WeTV">WeTV</option>
+                                <option value="Vimeo">Vimeo</option>
+                                <option value="iQIYI">iQIYI</option>
+                                <option value="Loklok">Loklok</option>
+                                <option value="iWant">iWant</option>
+                            </optgroup>
+                            <optgroup label="🎵 Music Streaming">
+                                <option value="Spotify">Spotify</option>
+                                <option value="Apple Music">Apple Music</option>
+                            </optgroup>
+                            <optgroup label="🎨 Creative Tools">
+                                <option value="Canva">Canva</option>
+                                <option value="Adobe Creative Cloud">Adobe Creative Cloud</option>
+                            </optgroup>
+                            <optgroup label="🤖 AI & Productivity">
+                                <option value="ChatGPT">ChatGPT</option>
+                                <option value="Grammarly">Grammarly</option>
+                                <option value="Quillbot">Quillbot</option>
+                                <option value="Notion">Notion</option>
+                                <option value="Evernote">Evernote</option>
+                                <option value="Microsoft 365">Microsoft 365</option>
+                            </optgroup>
+                            <optgroup label="📱 Mobile Apps">
+                                <option value="Remini">Remini</option>
+                                <option value="CapCut">CapCut</option>
+                            </optgroup>
+                            <optgroup label="🇵🇭 Philippines">
+                                <option value="Vivaone">Vivaone</option>
+                                <option value="Vivamax">Vivamax</option>
+                                <option value="Vivabundle">Vivabundle</option>
+                            </optgroup>
+                            <optgroup label="💼 Professional">
+                                <option value="LinkedIn Premium">LinkedIn Premium</option>
+                                <option value="Dropbox">Dropbox</option>
+                            </optgroup>
+                            <optgroup label="🧘 Wellness">
+                                <option value="Calm">Calm</option>
+                                <option value="Headspace">Headspace</option>
+                            </optgroup>
+                            <optgroup label="📚 Education">
+                                <option value="Duolingo">Duolingo</option>
+                            </optgroup>
                             <option value="custom">➕ Custom Product...</option>
                         </select>
                         <input type="text" id="newProductName" placeholder="Enter custom product name" style="display: none; margin-top: 10px;">
@@ -1961,6 +2023,207 @@ let selectedProfile = null;
 
         let calcValue = '0';
 
+// =================== DEFAULT PRODUCTS CATALOG ===================
+const DEFAULT_PRODUCTS = [
+    // Disney
+    { name: 'Disney Shared', buyPrice: 50, sellPrice: 80, category: 'Disney' },
+    { name: 'Disney Solo 1dev', buyPrice: 120, sellPrice: 180, category: 'Disney' },
+    { name: 'Disney Solo 2devs', buyPrice: 150, sellPrice: 220, category: 'Disney' },
+    
+    // HBO
+    { name: 'HBO Shared', buyPrice: 45, sellPrice: 75, category: 'HBO' },
+    { name: 'HBO Solo 1dev', buyPrice: 110, sellPrice: 170, category: 'HBO' },
+    { name: 'HBO Solo 2devs', buyPrice: 140, sellPrice: 210, category: 'HBO' },
+    
+    // YouTube
+    { name: 'YouTube Solo', buyPrice: 100, sellPrice: 150, category: 'YouTube' },
+    { name: 'YouTube Famhead', buyPrice: 180, sellPrice: 250, category: 'YouTube' },
+    { name: 'YouTube Invite', buyPrice: 50, sellPrice: 90, category: 'YouTube' },
+    
+    // Spotify
+    { name: 'Spotify Standard', buyPrice: 60, sellPrice: 100, category: 'Spotify' },
+    
+    // Vivaone
+    { name: 'Vivaone Solo', buyPrice: 80, sellPrice: 120, category: 'Vivaone' },
+    { name: 'Vivaone Shared', buyPrice: 40, sellPrice: 70, category: 'Vivaone' },
+    
+    // Vivamax
+    { name: 'Vivamax Solo', buyPrice: 90, sellPrice: 130, category: 'Vivamax' },
+    { name: 'Vivamax Shared', buyPrice: 45, sellPrice: 75, category: 'Vivamax' },
+    
+    // Vivabundle
+    { name: 'Vivabundle Shared', buyPrice: 60, sellPrice: 95, category: 'Vivabundle' },
+    { name: 'Vivabundle Solo', buyPrice: 120, sellPrice: 170, category: 'Vivabundle' },
+    
+    // ChatGPT
+    { name: 'ChatGPT Shared', buyPrice: 100, sellPrice: 150, category: 'ChatGPT' },
+    { name: 'ChatGPT Solo', buyPrice: 200, sellPrice: 280, category: 'ChatGPT' },
+    
+    // Remini
+    { name: 'Remini 7d Shared', buyPrice: 30, sellPrice: 50, category: 'Remini' },
+    { name: 'Remini 7d Solo', buyPrice: 50, sellPrice: 80, category: 'Remini' },
+    { name: 'Remini 1m Shared', buyPrice: 80, sellPrice: 120, category: 'Remini' },
+    { name: 'Remini 1m Solo', buyPrice: 120, sellPrice: 180, category: 'Remini' },
+    
+    // CapCut
+    { name: 'CapCut 7d Shared', buyPrice: 35, sellPrice: 55, category: 'CapCut' },
+    { name: 'CapCut 7d Solo', buyPrice: 55, sellPrice: 85, category: 'CapCut' },
+    { name: 'CapCut 1m Shared', buyPrice: 85, sellPrice: 125, category: 'CapCut' },
+    { name: 'CapCut 1m Solo', buyPrice: 125, sellPrice: 185, category: 'CapCut' },
+    
+    // Loklok
+    { name: 'Loklok Standard Shared', buyPrice: 40, sellPrice: 65, category: 'Loklok' },
+    { name: 'Loklok Basic Shared', buyPrice: 30, sellPrice: 50, category: 'Loklok' },
+    
+    // iWant
+    { name: 'iWant Shared', buyPrice: 35, sellPrice: 60, category: 'iWant' },
+    { name: 'iWant Solo', buyPrice: 70, sellPrice: 110, category: 'iWant' },
+    
+    // Grammarly
+    { name: 'Grammarly Shared', buyPrice: 80, sellPrice: 120, category: 'Grammarly' },
+    { name: 'Grammarly Solo', buyPrice: 150, sellPrice: 220, category: 'Grammarly' },
+    
+    // Quillbot
+    { name: 'Quillbot Shared', buyPrice: 70, sellPrice: 110, category: 'Quillbot' },
+    { name: 'Quillbot Solo', buyPrice: 130, sellPrice: 190, category: 'Quillbot' },
+    
+    // Prime Video
+    { name: 'Prime Video Shared', buyPrice: 55, sellPrice: 90, category: 'Prime Video' },
+    { name: 'Prime Video Solo', buyPrice: 110, sellPrice: 160, category: 'Prime Video' },
+    
+    // iQIYI
+    { name: 'iQIYI Shared', buyPrice: 50, sellPrice: 85, category: 'iQIYI' },
+    
+    // Canva
+    { name: 'Canva Solo', buyPrice: 90, sellPrice: 140, category: 'Canva' },
+    { name: 'Canva Head', buyPrice: 150, sellPrice: 220, category: 'Canva' },
+    { name: 'Canva Invite', buyPrice: 50, sellPrice: 85, category: 'Canva' },
+    
+    // Netflix
+    { name: 'Netflix Mobile', buyPrice: 70, sellPrice: 110, category: 'Netflix' },
+    { name: 'Netflix Basic', buyPrice: 100, sellPrice: 150, category: 'Netflix' },
+    { name: 'Netflix Standard', buyPrice: 150, sellPrice: 220, category: 'Netflix' },
+    { name: 'Netflix Premium', buyPrice: 200, sellPrice: 280, category: 'Netflix' },
+    { name: 'Netflix Shared', buyPrice: 60, sellPrice: 100, category: 'Netflix' },
+    
+    // Apple Music
+    { name: 'Apple Music Individual', buyPrice: 100, sellPrice: 150, category: 'Apple Music' },
+    { name: 'Apple Music Family', buyPrice: 150, sellPrice: 220, category: 'Apple Music' },
+    { name: 'Apple Music Student', buyPrice: 50, sellPrice: 85, category: 'Apple Music' },
+    
+    // Apple TV+
+    { name: 'Apple TV+ Shared', buyPrice: 45, sellPrice: 75, category: 'Apple TV+' },
+    { name: 'Apple TV+ Solo', buyPrice: 90, sellPrice: 135, category: 'Apple TV+' },
+    
+    // Paramount+
+    { name: 'Paramount+ Shared', buyPrice: 40, sellPrice: 70, category: 'Paramount+' },
+    { name: 'Paramount+ Solo', buyPrice: 85, sellPrice: 130, category: 'Paramount+' },
+    
+    // Discovery+
+    { name: 'Discovery+ Shared', buyPrice: 38, sellPrice: 65, category: 'Discovery+' },
+    { name: 'Discovery+ Solo', buyPrice: 80, sellPrice: 125, category: 'Discovery+' },
+    
+    // Crunchyroll
+    { name: 'Crunchyroll Mega Fan', buyPrice: 90, sellPrice: 140, category: 'Crunchyroll' },
+    { name: 'Crunchyroll Fan', buyPrice: 60, sellPrice: 100, category: 'Crunchyroll' },
+    { name: 'Crunchyroll Shared', buyPrice: 45, sellPrice: 75, category: 'Crunchyroll' },
+    
+    // VIU
+    { name: 'VIU Premium', buyPrice: 55, sellPrice: 90, category: 'VIU' },
+    { name: 'VIU Shared', buyPrice: 35, sellPrice: 60, category: 'VIU' },
+    
+    // WeTV
+    { name: 'WeTV VIP Shared', buyPrice: 40, sellPrice: 70, category: 'WeTV' },
+    { name: 'WeTV VIP Solo', buyPrice: 80, sellPrice: 120, category: 'WeTV' },
+    
+    // Vimeo
+    { name: 'Vimeo Plus', buyPrice: 60, sellPrice: 100, category: 'Vimeo' },
+    { name: 'Vimeo Pro', buyPrice: 150, sellPrice: 220, category: 'Vimeo' },
+    { name: 'Vimeo Shared', buyPrice: 40, sellPrice: 70, category: 'Vimeo' },
+    
+    // LinkedIn Premium
+    { name: 'LinkedIn Premium Career', buyPrice: 200, sellPrice: 280, category: 'LinkedIn Premium' },
+    { name: 'LinkedIn Premium Business', buyPrice: 250, sellPrice: 350, category: 'LinkedIn Premium' },
+    { name: 'LinkedIn Premium Shared', buyPrice: 120, sellPrice: 180, category: 'LinkedIn Premium' },
+    
+    // Duolingo
+    { name: 'Duolingo Plus Shared', buyPrice: 50, sellPrice: 85, category: 'Duolingo' },
+    { name: 'Duolingo Plus Solo', buyPrice: 100, sellPrice: 150, category: 'Duolingo' },
+    
+    // Calm
+    { name: 'Calm Shared', buyPrice: 60, sellPrice: 100, category: 'Calm' },
+    { name: 'Calm Solo', buyPrice: 120, sellPrice: 180, category: 'Calm' },
+    
+    // Headspace
+    { name: 'Headspace Shared', buyPrice: 55, sellPrice: 95, category: 'Headspace' },
+    { name: 'Headspace Solo', buyPrice: 110, sellPrice: 165, category: 'Headspace' },
+    
+    // Adobe Creative Cloud
+    { name: 'Adobe All Apps', buyPrice: 450, sellPrice: 600, category: 'Adobe Creative Cloud' },
+    { name: 'Adobe Photography', buyPrice: 200, sellPrice: 280, category: 'Adobe Creative Cloud' },
+    { name: 'Adobe Single App', buyPrice: 180, sellPrice: 250, category: 'Adobe Creative Cloud' },
+    
+    // Microsoft 365
+    { name: 'Microsoft 365 Personal', buyPrice: 300, sellPrice: 400, category: 'Microsoft 365' },
+    { name: 'Microsoft 365 Family', buyPrice: 400, sellPrice: 550, category: 'Microsoft 365' },
+    
+    // Notion
+    { name: 'Notion Plus', buyPrice: 80, sellPrice: 130, category: 'Notion' },
+    { name: 'Notion Business', buyPrice: 150, sellPrice: 220, category: 'Notion' },
+    { name: 'Notion Shared', buyPrice: 50, sellPrice: 85, category: 'Notion' },
+    
+    // Evernote
+    { name: 'Evernote Premium', buyPrice: 100, sellPrice: 150, category: 'Evernote' },
+    { name: 'Evernote Shared', buyPrice: 60, sellPrice: 100, category: 'Evernote' },
+    
+    // Dropbox
+    { name: 'Dropbox Plus', buyPrice: 120, sellPrice: 180, category: 'Dropbox' },
+    { name: 'Dropbox Professional', buyPrice: 200, sellPrice: 280, category: 'Dropbox' },
+    { name: 'Dropbox Shared', buyPrice: 70, sellPrice: 110, category: 'Dropbox' }
+];
+
+// Function to seed default products on first initialization
+function seedDefaultProducts() {
+    console.log('🌱 Checking if products need to be seeded...');
+    
+    getRef('products').once('value').then((snapshot) => {
+        const existingProducts = snapshot.val();
+        
+        // Only seed if no products exist
+        if (!existingProducts || Object.keys(existingProducts).length === 0) {
+            console.log('🌱 Seeding default products...');
+            
+            const productsRef = getRef('products');
+            let seedCount = 0;
+            
+            DEFAULT_PRODUCTS.forEach((product, index) => {
+                const productId = Date.now() + index;
+                const margin = ((product.sellPrice - product.buyPrice) / product.buyPrice * 100);
+                
+                const newProduct = {
+                    id: productId,
+                    name: product.name,
+                    buyPrice: product.buyPrice,
+                    sellPrice: product.sellPrice,
+                    margin: margin,
+                    category: product.category || 'General',
+                    createdAt: new Date().toISOString()
+                };
+                
+                productsRef.child(productId.toString()).set(newProduct);
+                seedCount++;
+            });
+            
+            console.log(`✅ Seeded ${seedCount} default products!`);
+            showToast(`🌱 Initialized ${seedCount} products!`, 'success');
+        } else {
+            console.log('✅ Products already exist, skipping seed');
+        }
+    }).catch((error) => {
+        console.error('❌ Error seeding products:', error);
+    });
+}
+
 // =================== SUBSCRIPTION PRODUCTS ===================
 
 function switchProductType(type) {
@@ -2080,6 +2343,7 @@ function selectProfile(number) {
         function init() {
             console.log('🚀 Initializing...');
             checkAuth();
+            seedDefaultProducts(); // Seed default products if needed
             loadAllData();
             applySettings();
             // ✅ FIXED: Setup event listeners AFTER DOM is ready
