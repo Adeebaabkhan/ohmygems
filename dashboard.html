@@ -246,6 +246,7 @@
         .btn-users { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); }
         .btn-calculator { background: linear-gradient(135deg, #10B981 0%, #059669 100%); }
         .btn-products { background: linear-gradient(135deg, #EC4899 0%, #8B5CF6 100%); }
+        .btn-payout { background: linear-gradient(135deg, #10B981 0%, #059669 100%); }
 
         .btn-small:hover {
             transform: translateY(-3px);
@@ -1669,6 +1670,7 @@ body.dark-mode .profile-select-btn {
             <div class="nav-actions">
                 <button class="btn-small btn-users" id="btnUsers" style="display: none;">👥 Manage Admins</button>
                 <button class="btn-small btn-products" id="btnProducts" style="display: none;">📦 Manage Products</button>
+                <button class="btn-small btn-payout" id="btnPayout" style="display: none;">💰 Payouts</button>
                 <button class="btn-small btn-calculator" id="btnCalculator">🧮 Calculator</button>
                 <button class="btn-small btn-theme" id="btnTheme">🎨 Theme</button>
                 <button class="btn-small btn-settings" id="btnSettings">⚙️ Settings</button>
@@ -1767,6 +1769,75 @@ body.dark-mode .profile-select-btn {
                     <div class="price-info-row">
                         <span class="price-info-label">🎯 Your Commission</span>
                         <span class="price-info-value highlight" id="productCommission">₱0</span>
+                    </div>
+                </div>
+
+                <!-- Profile Tracking Fields (for streaming services) -->
+                <div id="profileTrackingFields" style="display: none;">
+                    <!-- Account ID -->
+                    <div class="form-group">
+                        <label>🎬 Account ID</label>
+                        <select id="accountIdSelect">
+                            <option value="">-- Select Account --</option>
+                        </select>
+                    </div>
+
+                    <!-- Profile Number -->
+                    <div class="form-group">
+                        <label>🔢 Profile Number</label>
+                        <select id="profileNumberSelect" onchange="updateProfileStatus()">
+                            <option value="">-- Select Profile --</option>
+                            <option value="1">Profile 1</option>
+                            <option value="2">Profile 2</option>
+                            <option value="3">Profile 3</option>
+                            <option value="4">Profile 4</option>
+                            <option value="5">Profile 5</option>
+                        </select>
+                    </div>
+
+                    <!-- Profile Status Display -->
+                    <div id="profileStatusDisplay" class="price-info-card" style="display: none; background: linear-gradient(135deg, #FFF0F5 0%, #FFE1E8 100%);">
+                        <div class="price-info-row">
+                            <span class="price-info-label">📊 Profile Status</span>
+                            <span class="price-info-value" id="profileStatusText">Loading...</span>
+                        </div>
+                        <div id="profileSlotDetails" style="margin-top: 10px; font-size: 0.9em; color: var(--text-color);"></div>
+                    </div>
+
+                    <!-- Profile Name (OPTIONAL) -->
+                    <div class="form-group">
+                        <label>👤 Profile Name (Optional)</label>
+                        <input type="text" id="profileNameInput" placeholder="e.g., John's Profile (optional - can leave blank)">
+                        <small style="color: var(--text-color); opacity: 0.7; margin-top: 5px; display: block;">You can leave this blank</small>
+                    </div>
+
+                    <!-- Profile Type -->
+                    <div class="form-group">
+                        <label>📋 Profile Type</label>
+                        <div class="account-type-options">
+                            <div class="account-type-option">
+                                <input type="radio" id="profileTypeSolo" name="profileType" value="Solo">
+                                <label for="profileTypeSolo" class="account-type-label">
+                                    <span>👤</span>
+                                    <span>Solo (1 user)</span>
+                                </label>
+                            </div>
+                            <div class="account-type-option">
+                                <input type="radio" id="profileTypeShared" name="profileType" value="Shared">
+                                <label for="profileTypeShared" class="account-type-label">
+                                    <span>👥</span>
+                                    <span>Shared (2 users)</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sold By -->
+                    <div class="form-group">
+                        <label>🎯 Sold By</label>
+                        <select id="soldBySelect">
+                            <option value="">-- Select Admin --</option>
+                        </select>
                     </div>
                 </div>
 
@@ -1889,7 +1960,6 @@ body.dark-mode .profile-select-btn {
                                 <th style="min-width: 180px;">📦 Product</th>
                                 <th style="min-width: 120px;">👤 Account Type</th>
                                 <th style="min-width: 100px;">🛡️ Warranty</th>
-                                <th style="min-width: 150px;">👥 Customer</th>
                                 <th style="min-width: 100px;">💵 Buy (₱)</th>
                                 <th style="min-width: 100px;">💰 Sell (₱)</th>
                                 <th style="min-width: 80px;">🔢 Qty</th>
@@ -1939,6 +2009,11 @@ body.dark-mode .profile-select-btn {
                             <th>Date</th>
                             <th id="adminColumn">Admin</th>
                             <th>Product</th>
+                            <th>Account</th>
+                            <th>Profile</th>
+                            <th>Slot</th>
+                            <th>Profile Name</th>
+                            <th>Sold By</th>
                             <th>Warranty</th>
                             <th>Type</th>
                             <th>Qty</th>
@@ -1961,6 +2036,90 @@ body.dark-mode .profile-select-btn {
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
+
+    <!-- Inventory Dashboard Section (Owner Only) -->
+    <div id="inventoryDashboardSection" class="table-section" style="display: none;">
+        <h2 class="section-title">📦 Inventory Dashboard</h2>
+        <p style="margin-bottom: 20px; opacity: 0.8;">Track all accounts with their profile and slot status</p>
+        
+        <div style="margin-bottom: 20px;">
+            <button class="btn btn-primary" onclick="openAccountManagementModal()">➕ Create New Account</button>
+        </div>
+        
+        <div id="accountsList" class="product-list">
+            <!-- Accounts will be rendered here -->
+        </div>
+    </div>
+
+    <!-- Account Management Modal -->
+    <div class="modal" id="accountManagementModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2>🎬 Create Account</h2>
+                <button class="close-btn" onclick="closeAccountManagementModal()">✕</button>
+            </div>
+            
+            <form id="createAccountForm" onsubmit="saveAccount(event)">
+                <div class="form-group">
+                    <label>🆔 Account ID</label>
+                    <input type="text" id="accountIdInput" placeholder="e.g., NF001, DIS002" required>
+                    <small style="color: var(--text-color); opacity: 0.7; margin-top: 5px; display: block;">Unique identifier for this account</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>📦 Product</label>
+                    <select id="accountProductSelect" required>
+                        <option value="">-- Select Product --</option>
+                        <option value="Netflix">Netflix</option>
+                        <option value="Disney+">Disney+</option>
+                        <option value="HBO">HBO</option>
+                        <option value="YouTube Premium">YouTube Premium</option>
+                        <option value="Prime Video">Prime Video</option>
+                        <option value="Apple TV+">Apple TV+</option>
+                        <option value="Paramount+">Paramount+</option>
+                        <option value="Discovery+">Discovery+</option>
+                        <option value="Crunchyroll">Crunchyroll</option>
+                        <option value="VIU">VIU</option>
+                        <option value="WeTV">WeTV</option>
+                        <option value="Vimeo">Vimeo</option>
+                        <option value="iQIYI">iQIYI</option>
+                        <option value="Loklok">Loklok</option>
+                        <option value="iWant">iWant</option>
+                        <option value="Vivaone">Vivaone</option>
+                        <option value="Vivamax">Vivamax</option>
+                        <option value="Vivabundle">Vivabundle</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>🔢 Total Profiles</label>
+                    <input type="number" id="accountProfilesInput" min="1" max="10" value="5" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>📋 Profile Type</label>
+                    <div class="account-type-options">
+                        <div class="account-type-option">
+                            <input type="radio" id="accountTypeSolo" name="accountProfileType" value="solo" required>
+                            <label for="accountTypeSolo" class="account-type-label">
+                                <span>👤</span>
+                                <span>Solo (1 user per profile)</span>
+                            </label>
+                        </div>
+                        <div class="account-type-option">
+                            <input type="radio" id="accountTypeShared" name="accountProfileType" value="shared" checked>
+                            <label for="accountTypeShared" class="account-type-label">
+                                <span>👥</span>
+                                <span>Shared (2 users per profile)</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-success">✅ Create Account</button>
+            </form>
         </div>
     </div>
 
@@ -2485,6 +2644,136 @@ body.dark-mode .profile-select-btn {
         </div>
     </div>
 
+    <!-- Payout Modal -->
+    <div class="modal" id="payoutModal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h2>💰 Admin Payouts</h2>
+                <button class="close-btn" onclick="closePayoutModal()">✕</button>
+            </div>
+            
+            <div class="period-tabs" style="margin-bottom: 20px;">
+                <button class="period-tab active" id="payoutPeriodAll" onclick="setPayoutPeriod('all')">📊 All Time</button>
+                <button class="period-tab" id="payoutPeriodWeek" onclick="setPayoutPeriod('week')">📅 This Week</button>
+                <button class="period-tab" id="payoutPeriodMonth" onclick="setPayoutPeriod('month')">📆 This Month</button>
+            </div>
+            
+            <div id="payoutList" class="payout-list">
+                <!-- Payout items will be dynamically generated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Mark Paid Modal -->
+    <div class="modal" id="markPaidModal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>✅ Mark as Paid</h2>
+                <button class="close-btn" onclick="closeMarkPaidModal()">✕</button>
+            </div>
+            
+            <form id="markPaidForm" onsubmit="confirmMarkAsPaid(event)">
+                <input type="hidden" id="payoutToMarkId">
+                <input type="hidden" id="payoutToMarkUserId">
+                <input type="hidden" id="payoutToMarkAmount">
+                
+                <div class="form-group">
+                    <label>💳 Payment Method</label>
+                    <select id="paymentMethod" required>
+                        <option value="">-- Select Method --</option>
+                        <option value="GCash">GCash</option>
+                        <option value="Bank Transfer">Bank Transfer</option>
+                        <option value="Cash">Cash</option>
+                        <option value="PayMaya">PayMaya</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>🔢 Reference Number</label>
+                    <input type="text" id="paymentReference" placeholder="Transaction/Reference ID">
+                </div>
+                
+                <div class="form-group">
+                    <label>📝 Notes (Optional)</label>
+                    <textarea id="paymentNotes" rows="3" placeholder="Additional notes..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-success">✅ Confirm Payment</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div class="modal" id="editProductModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2>✏️ Edit Product</h2>
+                <button class="close-btn" onclick="closeEditProductModal()">✕</button>
+            </div>
+            
+            <form id="editProductForm" onsubmit="saveProductEdit(event)">
+                <input type="hidden" id="editProductId">
+                
+                <div class="form-group">
+                    <label>📦 Product Name</label>
+                    <input type="text" id="editProductName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>🛒 Buy Price</label>
+                    <input type="number" id="editProductBuyPrice" step="0.01" min="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>💰 Sell Price</label>
+                    <input type="number" id="editProductSellPrice" step="0.01" min="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>📂 Category</label>
+                    <select id="editProductCategory" required>
+                        <option value="">-- Select Category --</option>
+                        <option value="Netflix">Netflix</option>
+                        <option value="Disney">Disney</option>
+                        <option value="HBO">HBO</option>
+                        <option value="YouTube">YouTube</option>
+                        <option value="Spotify">Spotify</option>
+                        <option value="Canva">Canva</option>
+                        <option value="ChatGPT">ChatGPT</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>📋 Account Types</label>
+                    <div class="warranty-options">
+                        <div class="warranty-option">
+                            <input type="checkbox" id="editTypeSolo" value="Solo">
+                            <label for="editTypeSolo" class="warranty-label">
+                                <span class="warranty-icon">👤</span> Solo
+                            </label>
+                        </div>
+                        <div class="warranty-option">
+                            <input type="checkbox" id="editTypeShared" value="Shared">
+                            <label for="editTypeShared" class="warranty-label">
+                                <span class="warranty-icon">👥</span> Shared
+                            </label>
+                        </div>
+                        <div class="warranty-option">
+                            <input type="checkbox" id="editTypePremium" value="Premium">
+                            <label for="editTypePremium" class="warranty-label">
+                                <span class="warranty-icon">⭐</span> Premium
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-success">✅ Save Changes</button>
+            </form>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div class="toast" id="toast">
         <span class="toast-icon" id="toastIcon">✓</span>
@@ -2523,6 +2812,7 @@ console.log('📂 All data will be stored in:', APP_NAME + '/');
         let payouts = [];
 let products = [];
 let subscriptionProducts = [];
+let accounts = []; // Store streaming service accounts
 let selectedProfile = null;
 let realAdmins = []; // Store real admins from Firebase
     let settings = {
@@ -2532,6 +2822,9 @@ let realAdmins = []; // Store real admins from Firebase
         };
 
         let calcValue = '0';
+        
+        // Streaming service categories for profile tracking
+        const STREAMING_CATEGORIES = ['Netflix', 'Disney', 'HBO', 'YouTube', 'Prime Video', 'Apple TV+', 'Paramount+', 'Discovery+', 'Crunchyroll', 'VIU', 'WeTV', 'Vimeo', 'iQIYI', 'Loklok', 'iWant', 'Vivaone', 'Vivamax', 'Vivabundle'];
 
 // =================== DEFAULT PRODUCTS CATALOG ===================
 const DEFAULT_PRODUCTS = [
@@ -2879,6 +3172,8 @@ function selectProfile(number) {
             if (currentSession.role === 'owner') {
                 document.getElementById('btnUsers').style.display = 'inline-block';
                 document.getElementById('btnProducts').style.display = 'inline-block';
+                document.getElementById('btnPayout').style.display = 'inline-block';
+                document.getElementById('inventoryDashboardSection').style.display = 'block';
             } else {
                 // Admins can also view/edit products
                 document.getElementById('btnProducts').style.display = 'inline-block';
@@ -2981,12 +3276,44 @@ getRef('subscriptionProducts').on('value', (snapshot) => {
         autoCalculatePayouts();
     });
 
+    // Load accounts (for profile tracking)
+    getRef('accounts').on('value', (snapshot) => {
+        const accountsData = snapshot.val() || {};
+        accounts = Object.values(accountsData);
+        console.log('🎬 Loaded accounts:', accounts.length);
+        populateAccountDropdown();
+        if (currentSession.role === 'owner') {
+            renderInventoryDashboard();
+        }
+    });
+
     // Load settings
     getRef('settings/' + currentUsername).once('value').then((snapshot) => {
         if (snapshot.exists()) {
             settings = snapshot.val();
         }
         applySettings();
+    });
+    
+    // Populate Sold By dropdown with real admin names
+    populateSoldByDropdown();
+}
+
+// Populate Sold By dropdown with admin names
+function populateSoldByDropdown() {
+    const soldBySelect = document.getElementById('soldBySelect');
+    if (!soldBySelect) return;
+    
+    soldBySelect.innerHTML = '<option value="">-- Select Admin --</option>';
+    
+    // Add current user first
+    soldBySelect.innerHTML += `<option value="${currentSession.username}">${currentSession.customName} (You)</option>`;
+    
+    // Add other admins
+    users.forEach(user => {
+        if (user.role === 'admin' && user.username !== currentSession.username) {
+            soldBySelect.innerHTML += `<option value="${user.username}">${user.customName}</option>`;
+        }
     });
 }
 
@@ -3363,7 +3690,98 @@ function updateProductDropdown() {
         document.getElementById('productSelect').addEventListener('change', function() {
             const productId = parseInt(this.value);
             displayProductDetails(productId);
+            handleProductChangeForProfileTracking(productId);
         });
+
+        // Handle product selection for profile tracking
+        function handleProductChangeForProfileTracking(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) {
+                document.getElementById('profileTrackingFields').style.display = 'none';
+                return;
+            }
+            
+            // Check if product is a streaming service
+            const isStreaming = STREAMING_CATEGORIES.includes(product.category);
+            
+            if (isStreaming) {
+                document.getElementById('profileTrackingFields').style.display = 'block';
+                populateAccountDropdown(product.category);
+            } else {
+                document.getElementById('profileTrackingFields').style.display = 'none';
+            }
+        }
+
+        // Populate account dropdown based on product category
+        function populateAccountDropdown(category) {
+            const accountSelect = document.getElementById('accountIdSelect');
+            if (!accountSelect) return;
+            
+            accountSelect.innerHTML = '<option value="">-- Select Account --</option>';
+            
+            const filteredAccounts = accounts.filter(acc => acc.product && acc.product.includes(category));
+            filteredAccounts.forEach(account => {
+                accountSelect.innerHTML += `<option value="${account.id}">${account.id} - ${account.product}</option>`;
+            });
+            
+            if (filteredAccounts.length === 0) {
+                accountSelect.innerHTML += '<option value="" disabled>No accounts available - Create one first</option>';
+            }
+        }
+
+        // Update profile status when profile is selected
+        function updateProfileStatus() {
+            const accountId = document.getElementById('accountIdSelect').value;
+            const profileNumber = document.getElementById('profileNumberSelect').value;
+            const profileType = document.querySelector('input[name="profileType"]:checked')?.value;
+            
+            if (!accountId || !profileNumber) {
+                document.getElementById('profileStatusDisplay').style.display = 'none';
+                return;
+            }
+            
+            // Find sales for this account and profile
+            const existingSales = sales.filter(s => 
+                s.accountId === accountId && 
+                s.profileNumber === parseInt(profileNumber)
+            );
+            
+            const maxSlots = profileType === 'Solo' ? 1 : 2;
+            const filledSlots = existingSales.length;
+            const availableSlots = maxSlots - filledSlots;
+            
+            // Determine status
+            let statusText = '';
+            let statusColor = '';
+            
+            if (filledSlots === 0) {
+                statusText = `✅ AVAILABLE (0/${maxSlots} slots filled)`;
+                statusColor = 'var(--success)';
+            } else if (filledSlots < maxSlots) {
+                statusText = `⚠️ HALF FILLED (${filledSlots}/${maxSlots} slots filled)`;
+                statusColor = 'var(--warning)';
+            } else {
+                statusText = `🔴 FULL (${filledSlots}/${maxSlots} slots filled)`;
+                statusColor = 'var(--danger)';
+            }
+            
+            document.getElementById('profileStatusText').textContent = statusText;
+            document.getElementById('profileStatusText').style.color = statusColor;
+            
+            // Show slot details
+            let slotDetails = '<strong>Slot Details:</strong><br>';
+            for (let i = 1; i <= maxSlots; i++) {
+                const slotSale = existingSales.find(s => s.slotNumber === i);
+                if (slotSale) {
+                    slotDetails += `• Slot ${i}: ✅ SOLD by ${slotSale.soldBy} (${slotSale.date})<br>`;
+                } else {
+                    slotDetails += `• Slot ${i}: 🟢 AVAILABLE ← You're selling this<br>`;
+                }
+            }
+            
+            document.getElementById('profileSlotDetails').innerHTML = slotDetails;
+            document.getElementById('profileStatusDisplay').style.display = 'block';
+        }
 
 // Handle product selection for subscription products
 document.getElementById('productSelect').addEventListener('change', handleProductSelectionForSale);
@@ -3444,6 +3862,87 @@ document.querySelectorAll('input[name="saleType"]').forEach(radio => {
                 });
         }
 
+        // Edit Product
+        function editProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            
+            // Pre-fill the form
+            document.getElementById('editProductId').value = product.id;
+            document.getElementById('editProductName').value = product.name;
+            document.getElementById('editProductBuyPrice').value = product.buyPrice;
+            document.getElementById('editProductSellPrice').value = product.sellPrice;
+            document.getElementById('editProductCategory').value = product.category || 'Other';
+            
+            // Set account type checkboxes
+            document.getElementById('editTypeSolo').checked = false;
+            document.getElementById('editTypeShared').checked = false;
+            document.getElementById('editTypePremium').checked = false;
+            
+            if (product.accountTypes) {
+                if (product.accountTypes.includes('Solo')) {
+                    document.getElementById('editTypeSolo').checked = true;
+                }
+                if (product.accountTypes.includes('Shared')) {
+                    document.getElementById('editTypeShared').checked = true;
+                }
+                if (product.accountTypes.includes('Premium')) {
+                    document.getElementById('editTypePremium').checked = true;
+                }
+            }
+            
+            // Show the modal
+            document.getElementById('editProductModal').classList.add('show');
+        }
+
+        function closeEditProductModal() {
+            document.getElementById('editProductModal').classList.remove('show');
+        }
+
+        function saveProductEdit(event) {
+            event.preventDefault();
+            
+            const productId = parseInt(document.getElementById('editProductId').value);
+            const name = document.getElementById('editProductName').value.trim();
+            const buyPrice = parseFloat(document.getElementById('editProductBuyPrice').value);
+            const sellPrice = parseFloat(document.getElementById('editProductSellPrice').value);
+            const category = document.getElementById('editProductCategory').value;
+            
+            if (sellPrice <= buyPrice) {
+                showToast('⚠️ Sell price must be greater than buy price', 'error');
+                return;
+            }
+            
+            // Get selected account types
+            const accountTypes = [];
+            if (document.getElementById('editTypeSolo').checked) accountTypes.push('Solo');
+            if (document.getElementById('editTypeShared').checked) accountTypes.push('Shared');
+            if (document.getElementById('editTypePremium').checked) accountTypes.push('Premium');
+            
+            const margin = ((sellPrice - buyPrice) / buyPrice * 100);
+            
+            const updatedProduct = {
+                id: productId,
+                name: name,
+                buyPrice: buyPrice,
+                sellPrice: sellPrice,
+                margin: margin,
+                category: category,
+                accountTypes: accountTypes,
+                updatedDate: new Date().toISOString().split('T')[0]
+            };
+            
+            getRef('products/' + productId).update(updatedProduct)
+                .then(() => {
+                    closeEditProductModal();
+                    showToast('✅ Product updated successfully!', 'success');
+                    renderProductList();
+                })
+                .catch((error) => {
+                    showToast('❌ Error: ' + error.message, 'error');
+                });
+        }
+
         // =================== SALES MANAGEMENT ===================
         
         // Add Sale
@@ -3457,59 +3956,327 @@ document.querySelectorAll('input[name="saleType"]').forEach(radio => {
                 return;
             }
             
-            const warrantyType = document.querySelector('input[name="warranty"]:checked');
-            const accountType = document.querySelector('input[name="accountType"]:checked');
-            
-            if (!warrantyType) {
-                showToast('⚠️ Please select warranty type (FW or NW)', 'error');
-                return;
-            }
-            
-            if (!accountType) {
-                showToast('⚠️ Please select account type (Solo or Shared)', 'error');
-                return;
-            }
-            
             const product = products.find(p => p.id === productId);
-            const quantity = parseInt(document.getElementById('productQuantity').value);
-            const price = parseFloat(document.getElementById('productPrice').textContent.replace('₱', ''));
+            const isStreaming = STREAMING_CATEGORIES.includes(product.category);
             
-            // USE ADMIN'S PROFIT PERCENT FROM THEIR ACCOUNT - FIXED CALCULATION
-            const userCommissionPercent = currentSession.profitPercent || 100;
-            const actualProfit = product.sellPrice - product.buyPrice; // Calculate profit FIRST
-            const commissionAmount = (actualProfit * userCommissionPercent) / 100; // Commission from PROFIT
-            const yourProfit = currentSession.role === 'owner' ? actualProfit : commissionAmount;
+            // Check if profile tracking fields are shown
+            if (isStreaming && document.getElementById('profileTrackingFields').style.display !== 'none') {
+                // Validate profile tracking fields
+                const accountId = document.getElementById('accountIdSelect').value;
+                const profileNumber = document.getElementById('profileNumberSelect').value;
+                const profileType = document.querySelector('input[name="profileType"]:checked');
+                const soldBy = document.getElementById('soldBySelect').value;
+                
+                if (!accountId) {
+                    showToast('⚠️ Please select an account', 'error');
+                    return;
+                }
+                
+                if (!profileNumber) {
+                    showToast('⚠️ Please select a profile number', 'error');
+                    return;
+                }
+                
+                if (!profileType) {
+                    showToast('⚠️ Please select profile type (Solo or Shared)', 'error');
+                    return;
+                }
+                
+                if (!soldBy) {
+                    showToast('⚠️ Please select who sold this', 'error');
+                    return;
+                }
+                
+                // Check for overselling - validate slot availability
+                const maxSlots = profileType.value === 'Solo' ? 1 : 2;
+                const existingSales = sales.filter(s => 
+                    s.accountId === accountId && 
+                    s.profileNumber === parseInt(profileNumber)
+                );
+                
+                if (existingSales.length >= maxSlots) {
+                    const soldByNames = existingSales.map(s => s.soldBy).join(', ');
+                    showToast(`❌ This slot is already sold! All ${maxSlots} slots filled by: ${soldByNames}`, 'error');
+                    return;
+                }
+                
+                // Determine which slot number to use
+                const usedSlots = existingSales.map(s => s.slotNumber).sort();
+                let slotNumber = 1;
+                for (let i = 1; i <= maxSlots; i++) {
+                    if (!usedSlots.includes(i)) {
+                        slotNumber = i;
+                        break;
+                    }
+                }
+                
+                const profileName = document.getElementById('profileNameInput').value.trim() || null;
+                
+                const quantity = 1; // Always 1 for profile sales
+                const price = parseFloat(document.getElementById('productPrice').textContent.replace('₱', ''));
+                
+                // Calculate commission based on sold by admin
+                const soldByUser = users.find(u => u.username === soldBy);
+                const userCommissionPercent = soldByUser ? soldByUser.profitPercent : (currentSession.profitPercent || 100);
+                const actualProfit = product.sellPrice - product.buyPrice;
+                const commissionAmount = (actualProfit * userCommissionPercent) / 100;
+                const ownerProfit = actualProfit - commissionAmount;
+                
+                const newSale = {
+                    id: Date.now(),
+                    userId: soldByUser ? soldByUser.id : currentSession.id,
+                    userName: soldByUser ? soldByUser.customName : currentSession.customName,
+                    productId: productId,
+                    productName: product.name,
+                    product: product.name,
+                    accountId: accountId,
+                    profileNumber: parseInt(profileNumber),
+                    slotNumber: slotNumber,
+                    profileName: profileName,
+                    profileType: profileType.value,
+                    soldBy: soldBy,
+                    buyPrice: product.buyPrice,
+                    sellPrice: product.sellPrice,
+                    price: price,
+                    commission: commissionAmount,
+                    ownerProfit: ownerProfit,
+                    warranty: 'NW', // Default for streaming
+                    accountType: profileType.value,
+                    quantity: quantity,
+                    totalPrice: price * quantity,
+                    totalCommission: commissionAmount * quantity,
+                    sold: true,
+                    date: new Date().toISOString().split('T')[0]
+                };
+                
+                const userKey = (soldByUser ? soldByUser.username : currentSession.username).replace(/[.#$/[\]]/g, '_');
+                getRef('sales/' + userKey + '/' + newSale.id).set(newSale)
+                    .then(() => {
+                        document.getElementById('addSaleForm').reset();
+                        document.getElementById('productDetailsCard').style.display = 'none';
+                        document.getElementById('totalEarningsCard').style.display = 'none';
+                        document.getElementById('profileTrackingFields').style.display = 'none';
+                        document.getElementById('profileStatusDisplay').style.display = 'none';
+                        showToast('✅ Profile slot sold successfully!', 'success');
+                        autoCalculatePayouts();
+                    })
+                    .catch((error) => {
+                        showToast('❌ Error: ' + error.message, 'error');
+                    });
+                
+            } else {
+                // Regular sale (non-streaming)
+                const warrantyType = document.querySelector('input[name="warranty"]:checked');
+                const accountType = document.querySelector('input[name="accountType"]:checked');
+                
+                if (!warrantyType) {
+                    showToast('⚠️ Please select warranty type (FW or NW)', 'error');
+                    return;
+                }
+                
+                if (!accountType) {
+                    showToast('⚠️ Please select account type (Solo or Shared)', 'error');
+                    return;
+                }
+                
+                const quantity = parseInt(document.getElementById('productQuantity').value);
+                const price = parseFloat(document.getElementById('productPrice').textContent.replace('₱', ''));
+                
+                // USE ADMIN'S PROFIT PERCENT FROM THEIR ACCOUNT - FIXED CALCULATION
+                const userCommissionPercent = currentSession.profitPercent || 100;
+                const actualProfit = product.sellPrice - product.buyPrice; // Calculate profit FIRST
+                const commissionAmount = (actualProfit * userCommissionPercent) / 100; // Commission from PROFIT
+                const yourProfit = currentSession.role === 'owner' ? actualProfit : commissionAmount;
+                
+                const newSale = {
+                    id: Date.now(),
+                    userId: currentSession.id,
+                    userName: currentSession.customName,
+                    productId: productId,
+                    productName: product.name,
+                    warranty: warrantyType.value,
+                    accountType: accountType.value,
+                    quantity: quantity,
+                    price: price,
+                    buyPrice: product.buyPrice,
+                    sellPrice: product.sellPrice,
+                    commission: yourProfit,
+                    totalPrice: price * quantity,
+                    totalCommission: yourProfit * quantity,
+                    sold: document.getElementById('productSoldStatus').value === 'yes',
+                    date: new Date().toISOString().split('T')[0]
+                };
+                
+                const userKey = currentSession.username.replace(/[.#$/[\]]/g, '_');
+                getRef('sales/' + userKey + '/' + newSale.id).set(newSale)
+                    .then(() => {
+                        document.getElementById('addSaleForm').reset();
+                        document.getElementById('productDetailsCard').style.display = 'none';
+                        document.getElementById('totalEarningsCard').style.display = 'none';
+                        showToast('✅ Sale added successfully!', 'success');
+                        autoCalculatePayouts();
+                    })
+                    .catch((error) => {
+                        showToast('❌ Error: ' + error.message, 'error');
+                    });
+            }
+        });
+
+        // =================== ACCOUNT MANAGEMENT ===================
+        
+        function openAccountManagementModal() {
+            document.getElementById('accountManagementModal').classList.add('show');
+        }
+        
+        function closeAccountManagementModal() {
+            document.getElementById('accountManagementModal').classList.remove('show');
+            document.getElementById('createAccountForm').reset();
+        }
+        
+        function saveAccount(event) {
+            event.preventDefault();
             
-            const newSale = {
-                id: Date.now(),
-                userId: currentSession.id,
-                userName: currentSession.customName,
-                productId: productId,
-                productName: product.name,
-                warranty: warrantyType.value,
-                accountType: accountType.value,
-                quantity: quantity,
-                price: price,
-                commission: yourProfit,
-                totalPrice: price * quantity,
-                totalCommission: yourProfit * quantity,
-                sold: document.getElementById('productSoldStatus').value === 'yes',
-                date: new Date().toISOString().split('T')[0]
+            const accountId = document.getElementById('accountIdInput').value.trim();
+            const product = document.getElementById('accountProductSelect').value;
+            const totalProfiles = parseInt(document.getElementById('accountProfilesInput').value);
+            const profileType = document.querySelector('input[name="accountProfileType"]:checked').value;
+            const slotsPerProfile = profileType === 'solo' ? 1 : 2;
+            
+            // Check if account ID already exists
+            const existingAccount = accounts.find(a => a.id === accountId);
+            if (existingAccount) {
+                showToast('❌ Account ID already exists!', 'error');
+                return;
+            }
+            
+            const newAccount = {
+                id: accountId,
+                product: product,
+                totalProfiles: totalProfiles,
+                profileType: profileType,
+                slotsPerProfile: slotsPerProfile,
+                createdDate: new Date().toISOString().split('T')[0],
+                createdBy: currentSession.username
             };
             
-            const userKey = currentSession.username.replace(/[.#$/[\]]/g, '_');
-            getRef('sales/' + userKey + '/' + newSale.id).set(newSale)
+            getRef('accounts/' + accountId).set(newAccount)
                 .then(() => {
-                    document.getElementById('addSaleForm').reset();
-                    document.getElementById('productDetailsCard').style.display = 'none';
-                    document.getElementById('totalEarningsCard').style.display = 'none';
-                    showToast('✅ Sale added successfully!', 'success');
-                    autoCalculatePayouts();
+                    closeAccountManagementModal();
+                    showToast('✅ Account created successfully!', 'success');
+                    renderInventoryDashboard();
                 })
                 .catch((error) => {
                     showToast('❌ Error: ' + error.message, 'error');
                 });
-        });
+        }
+        
+        function renderInventoryDashboard() {
+            const accountsList = document.getElementById('accountsList');
+            
+            if (accounts.length === 0) {
+                accountsList.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div><p>No accounts yet. Create your first account!</p></div>';
+                return;
+            }
+            
+            accountsList.innerHTML = accounts.map(account => {
+                // Calculate statistics for this account
+                const accountSales = sales.filter(s => s.accountId === account.id);
+                const totalRevenue = accountSales.reduce((sum, s) => sum + s.totalPrice, 0);
+                const totalCommissions = accountSales.reduce((sum, s) => sum + (s.commission * s.quantity), 0);
+                
+                // Build profile status
+                let profilesHTML = '';
+                for (let i = 1; i <= account.totalProfiles; i++) {
+                    const profileSales = accountSales.filter(s => s.profileNumber === i);
+                    const filledSlots = profileSales.length;
+                    const maxSlots = account.slotsPerProfile;
+                    
+                    let statusIcon = '';
+                    let statusColor = '';
+                    let borderColor = '';
+                    
+                    if (filledSlots === 0) {
+                        statusIcon = '✅';
+                        statusColor = 'var(--success)';
+                        borderColor = 'var(--success)';
+                    } else if (filledSlots < maxSlots) {
+                        statusIcon = '⚠️';
+                        statusColor = 'var(--warning)';
+                        borderColor = 'var(--warning)';
+                    } else {
+                        statusIcon = '🔴';
+                        statusColor = 'var(--danger)';
+                        borderColor = 'var(--danger)';
+                    }
+                    
+                    let slotsHTML = '';
+                    for (let slot = 1; slot <= maxSlots; slot++) {
+                        const slotSale = profileSales.find(s => s.slotNumber === slot);
+                        if (slotSale) {
+                            slotsHTML += `<div style="font-size: 0.85em; margin-left: 20px;">• Slot ${slot}: ✅ SOLD by ${slotSale.soldBy} (${slotSale.date})</div>`;
+                        } else {
+                            slotsHTML += `<div style="font-size: 0.85em; margin-left: 20px;">• Slot ${slot}: 🟢 AVAILABLE</div>`;
+                        }
+                    }
+                    
+                    profilesHTML += `
+                        <div style="background: var(--light); padding: 15px; border-radius: 15px; border: 3px solid ${borderColor}; margin-bottom: 10px;">
+                            <div style="font-weight: 700; color: var(--text-color); margin-bottom: 5px;">
+                                ${statusIcon} Profile ${i}: ${filledSlots}/${maxSlots} slots filled
+                            </div>
+                            ${slotsHTML}
+                            ${profileSales.length > 0 && profileSales[0].profileName ? `<div style="font-size: 0.85em; margin-top: 5px; opacity: 0.8;">Name: ${profileSales[0].profileName}</div>` : ''}
+                        </div>
+                    `;
+                }
+                
+                return `
+                    <div class="product-item">
+                        <div class="product-item-header">
+                            <div class="product-item-name">🎬 ${account.id} - ${account.product}</div>
+                            <div>
+                                ${currentSession.role === 'owner' ? `<button class="action-btn delete-btn" onclick="deleteAccount('${account.id}')">🗑️ Delete</button>` : ''}
+                            </div>
+                        </div>
+                        <div class="product-item-details">
+                            <div class="product-detail">
+                                <div class="product-detail-label">📊 Total Profiles</div>
+                                <div class="product-detail-value">${account.totalProfiles}</div>
+                            </div>
+                            <div class="product-detail">
+                                <div class="product-detail-label">👥 Profile Type</div>
+                                <div class="product-detail-value">${account.profileType} (${account.slotsPerProfile} per profile)</div>
+                            </div>
+                            <div class="product-detail">
+                                <div class="product-detail-label">💰 Total Revenue</div>
+                                <div class="product-detail-value">₱${totalRevenue.toFixed(2)}</div>
+                            </div>
+                            <div class="product-detail">
+                                <div class="product-detail-label">🎯 Total Commissions</div>
+                                <div class="product-detail-value">₱${totalCommissions.toFixed(2)}</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px;">
+                            <h4 style="color: var(--primary); margin-bottom: 15px; font-weight: 700;">Profile Status</h4>
+                            ${profilesHTML}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function deleteAccount(accountId) {
+            if (!confirm('Delete this account? All associated sales will remain but references will be broken.')) return;
+            
+            getRef('accounts/' + accountId).remove()
+                .then(() => {
+                    showToast('🗑️ Account deleted', 'info');
+                    renderInventoryDashboard();
+                })
+                .catch((error) => {
+                    showToast('❌ Error: ' + error.message, 'error');
+                });
+        }
 
         // =================== DELETE SALE ===================
         function deleteSale(id) {
@@ -3748,7 +4515,7 @@ document.querySelectorAll('input[name="saleType"]').forEach(radio => {
             if (filtered.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="10">
+                        <td colspan="15">
                             <div class="empty-state">
                                 <div class="empty-icon">📦</div>
                                 <h3>No sales found</h3>
@@ -3765,11 +4532,23 @@ document.querySelectorAll('input[name="saleType"]').forEach(radio => {
                 const accountClass = sale.accountType === 'Solo' ? 'solo' : 'shared';
                 const soldIcon = sale.sold ? '✅' : '📦';
                 
+                // Format profile tracking columns
+                const accountId = sale.accountId || '-';
+                const profileNumber = sale.profileNumber ? `Profile ${sale.profileNumber}` : '-';
+                const slotNumber = sale.slotNumber ? `${sale.slotNumber}/${sale.profileType === 'Solo' ? '1' : '2'}` : '-';
+                const profileName = sale.profileName || '-';
+                const soldBy = sale.soldBy || sale.userName || '-';
+                
                 return `
                     <tr>
                         <td>${sale.date}</td>
                         ${currentSession.role === 'owner' ? `<td>${sale.userName}</td>` : ''}
                         <td>${sale.productName}</td>
+                        <td>${accountId}</td>
+                        <td>${profileNumber}</td>
+                        <td>${slotNumber}</td>
+                        <td>${profileName}</td>
+                        <td>${soldBy}</td>
                         <td><span class="warranty-badge ${warrantyClass}">${sale.warranty}</span></td>
                         <td><span class="account-type-badge ${accountClass}">${sale.accountType}</span></td>
                         <td>${sale.quantity}</td>
@@ -3841,6 +4620,15 @@ document.querySelectorAll('input[name="saleType"]').forEach(radio => {
 
         // =================== PAYOUT MANAGEMENT ===================
         let currentPayoutPeriod = 'all';
+
+        function openPayoutModal() {
+            document.getElementById('payoutModal').classList.add('show');
+            renderPayoutList();
+        }
+
+        function closePayoutModal() {
+            document.getElementById('payoutModal').classList.remove('show');
+        }
 
         function setPayoutPeriod(period) {
             currentPayoutPeriod = period;
@@ -4187,6 +4975,13 @@ document.querySelectorAll('input[name="saleType"]').forEach(radio => {
                 btnProducts.addEventListener('click', () => {
                     document.getElementById('productModal').classList.add('show');
                     renderProductList();
+                });
+            }
+            
+            const btnPayout = document.getElementById('btnPayout');
+            if (btnPayout) {
+                btnPayout.addEventListener('click', () => {
+                    openPayoutModal();
                 });
             }
             
@@ -4606,9 +5401,6 @@ totalPrice: subProduct.sharedPrice,
                     </select>
                 </td>
                 <td>
-                    <input type="text" class="bulk-customer" placeholder="Customer name">
-                </td>
-                <td>
                     <input type="number" class="bulk-buy" placeholder="0" min="0" step="0.01">
                 </td>
                 <td>
@@ -4703,7 +5495,6 @@ totalPrice: subProduct.sharedPrice,
                 const productSelect = row.querySelector('.bulk-product');
                 const accountType = row.querySelector('.bulk-account-type').value;
                 const warranty = row.querySelector('.bulk-warranty').value;
-                const customer = row.querySelector('.bulk-customer').value;
                 const buyPrice = parseFloat(row.querySelector('.bulk-buy').value) || 0;
                 const sellPrice = parseFloat(row.querySelector('.bulk-sell').value) || 0;
                 const qty = parseInt(row.querySelector('.bulk-qty').value) || 1;
@@ -4738,9 +5529,9 @@ totalPrice: subProduct.sharedPrice,
                     userName: currentSession.customName,
                     product: selectedProduct.name,
                     productId: selectedProduct.id,
+                    productName: selectedProduct.name,
                     accountType: accountType,
                     warranty: warranty,
-                    customer: customer || 'N/A',
                     quantity: qty,
                     price: sellPrice,
                     buyPrice: buyPrice,
