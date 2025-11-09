@@ -1512,6 +1512,82 @@ body.dark-mode .profile-select-btn {
                 flex-direction: column;
             }
         }
+
+        /* =================== PAYOUT STYLES =================== */
+        .payout-item {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 20px;
+            border: 3px solid var(--border-color);
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .payout-item.pending {
+            border-color: var(--warning);
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+        }
+
+        .payout-item.paid {
+            border-color: var(--success);
+            background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+        }
+
+        body.dark-mode .payout-item {
+            background: #1e293b;
+        }
+
+        .payout-info {
+            flex: 1;
+        }
+
+        .payout-admin {
+            font-size: 1.2em;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .payout-details {
+            font-size: 0.9em;
+            opacity: 0.8;
+            color: var(--text-color);
+        }
+
+        .payout-amount {
+            font-size: 1.5em;
+            font-weight: 800;
+            color: var(--success);
+        }
+
+        .payout-breakdown {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            font-size: 0.9em;
+        }
+
+        .payout-status {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9em;
+        }
+
+        .payout-status.pending {
+            background: var(--warning);
+            color: white;
+        }
+
+        .payout-status.paid {
+            background: var(--success);
+            color: white;
+        }
     </style>
 </head>
 <body class="theme-purple">
@@ -2090,8 +2166,93 @@ body.dark-mode .profile-select-btn {
             <div class="section-title" style="margin-top: 30px;">📋 Admin List</div>
             <div class="user-list" id="userList"></div>
 
-            <div class="section-title" style="margin-top: 30px;">💰 Payouts</div>
+            <div class="section-title" style="margin-top: 30px;">💰 Payout Dashboard</div>
+            
+            <!-- Payout Period Filter -->
+            <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="filter-btn active" id="payoutPeriodAll" onclick="setPayoutPeriod('all')">📊 All Time</button>
+                <button class="filter-btn" id="payoutPeriodWeek" onclick="setPayoutPeriod('week')">📅 This Week</button>
+                <button class="filter-btn" id="payoutPeriodMonth" onclick="setPayoutPeriod('month')">📆 This Month</button>
+                <button class="btn btn-info" onclick="openPayoutHistory()">📜 View History</button>
+            </div>
+
             <div class="payout-list" id="payoutList"></div>
+        </div>
+    </div>
+
+    <!-- Payout History Modal -->
+    <div class="modal" id="payoutHistoryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📜 Payout History</h2>
+                <button class="close-btn" onclick="closePayoutHistory()">✕</button>
+            </div>
+            
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Admin</th>
+                            <th>Period</th>
+                            <th>Amount</th>
+                            <th>Method</th>
+                            <th>Reference</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="payoutHistoryBody">
+                        <tr>
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <div class="empty-icon">📜</div>
+                                    <p>No payout history yet</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mark as Paid Modal -->
+    <div class="modal" id="markPaidModal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>💰 Mark Payout as Paid</h2>
+                <button class="close-btn" onclick="closeMarkPaidModal()">✕</button>
+            </div>
+            
+            <form id="markPaidForm" onsubmit="confirmMarkAsPaid(event)">
+                <input type="hidden" id="payoutToMarkId">
+                <input type="hidden" id="payoutToMarkUserId">
+                <input type="hidden" id="payoutToMarkAmount">
+                
+                <div class="form-group">
+                    <label>💳 Payment Method</label>
+                    <select id="paymentMethod" required>
+                        <option value="">-- Select Method --</option>
+                        <option value="GCash">GCash</option>
+                        <option value="Bank Transfer">Bank Transfer</option>
+                        <option value="Cash">Cash</option>
+                        <option value="PayMaya">PayMaya</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>🔢 Reference Number (Optional)</label>
+                    <input type="text" id="paymentReference" placeholder="e.g., TRX123456">
+                </div>
+                
+                <div class="form-group">
+                    <label>📝 Notes (Optional)</label>
+                    <textarea id="paymentNotes" placeholder="Additional notes..." rows="3"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-success">✅ Confirm Payment</button>
+            </form>
         </div>
     </div>
 
@@ -2527,6 +2688,8 @@ function selectProfile(number) {
                 document.getElementById('btnUsers').style.display = 'inline-block';
                 document.getElementById('btnProducts').style.display = 'inline-block';
             } else {
+                // Admins can also view/edit products
+                document.getElementById('btnProducts').style.display = 'inline-block';
                 document.getElementById('userFilter').style.display = 'none';
                 document.getElementById('adminColumn').style.display = 'none';
                 document.getElementById('dashboardSubtitle').textContent = currentSession.customName + "'s Dashboard";
@@ -2604,7 +2767,8 @@ function loadAllData() {
         products = Object.values(productsData);
         console.log('✅ Loaded products:', products.length);
         updateProductDropdown();
-        if (currentSession.role === 'owner') {
+        // Both owners and admins can view products
+        if (currentSession.role === 'owner' || currentSession.role === 'admin') {
             renderProductList();
         }
     });
@@ -2871,19 +3035,38 @@ function updateProductDropdown() {
             productList.innerHTML = products.map(product => {
                 const profit = product.sellPrice - product.buyPrice;
                 
-                // Show examples for different commission rates
-                const comm20 = (product.sellPrice * 20) / 100;
-                const comm30 = (product.sellPrice * 30) / 100;
-                const price20 = product.sellPrice - comm20;
-                const price30 = product.sellPrice - comm30;
+                // Calculate admin commission if user is admin
+                let adminCommission = 0;
+                let adminEarns = 0;
+                let ownerGets = 0;
+                
+                if (currentSession.role === 'admin') {
+                    adminCommission = currentSession.profitPercent || 25;
+                    adminEarns = profit * (adminCommission / 100);
+                    ownerGets = profit - adminEarns;
+                }
+                
+                // Check for custom commission
+                let customCommissionIndicator = '';
+                if (product.customCommissions && currentSession.role === 'admin') {
+                    const customComm = product.customCommissions[currentSession.id];
+                    if (customComm !== undefined) {
+                        adminCommission = customComm;
+                        adminEarns = profit * (adminCommission / 100);
+                        ownerGets = profit - adminEarns;
+                        customCommissionIndicator = '✨ Custom';
+                    }
+                }
                 
                 return `
                     <div class="product-item">
                         <div class="product-item-header">
                             <div class="product-item-name">${product.name}</div>
                             <div>
-                                <button class="action-btn edit-btn" onclick="editProduct(${product.id})">✏️ Edit</button>
-                                <button class="action-btn delete-btn" onclick="deleteProduct(${product.id})">🗑️ Delete</button>
+                                ${currentSession.role === 'owner' || currentSession.role === 'admin' ? 
+                                    `<button class="action-btn edit-btn" onclick="editProduct(${product.id})">✏️ Edit</button>` : ''}
+                                ${currentSession.role === 'owner' ? 
+                                    `<button class="action-btn delete-btn" onclick="deleteProduct(${product.id})">🗑️ Delete</button>` : ''}
                             </div>
                         </div>
                         <div class="product-item-details">
@@ -2900,17 +3083,23 @@ function updateProductDropdown() {
                                 <div class="product-detail-value">${product.margin.toFixed(2)}%</div>
                             </div>
                             <div class="product-detail">
-                                <div class="product-detail-label">🎯 Your Profit</div>
+                                <div class="product-detail-label">${currentSession.role === 'admin' ? '💰 Total Profit' : '🎯 Your Profit'}</div>
                                 <div class="product-detail-value" style="color: var(--success); font-size: 1.3em;">₱${profit.toFixed(2)}</div>
                             </div>
-                            <div class="product-detail">
-                                <div class="product-detail-label">👤 Admin Price (20%)</div>
-                                <div class="product-detail-value">₱${price20.toFixed(2)}</div>
-                            </div>
-                            <div class="product-detail">
-                                <div class="product-detail-label">👤 Admin Price (30%)</div>
-                                <div class="product-detail-value">₱${price30.toFixed(2)}</div>
-                            </div>
+                            ${currentSession.role === 'admin' ? `
+                                <div class="product-detail">
+                                    <div class="product-detail-label">👤 Your Commission ${customCommissionIndicator}</div>
+                                    <div class="product-detail-value">${adminCommission}%</div>
+                                </div>
+                                <div class="product-detail">
+                                    <div class="product-detail-label">💵 You Earn</div>
+                                    <div class="product-detail-value" style="color: var(--primary); font-size: 1.2em;">₱${adminEarns.toFixed(2)}</div>
+                                </div>
+                                <div class="product-detail">
+                                    <div class="product-detail-label">👑 Owner Gets</div>
+                                    <div class="product-detail-value">₱${ownerGets.toFixed(2)}</div>
+                                </div>
+                            ` : ''}
                         </div>
                     </div>
                 `;
@@ -3400,6 +3589,20 @@ document.querySelectorAll('input[name="saleType"]').forEach(radio => {
         }
 
         // =================== PAYOUT MANAGEMENT ===================
+        let currentPayoutPeriod = 'all';
+
+        function setPayoutPeriod(period) {
+            currentPayoutPeriod = period;
+            
+            // Update button states
+            document.querySelectorAll('#payoutPeriodAll, #payoutPeriodWeek, #payoutPeriodMonth').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('payoutPeriod' + period.charAt(0).toUpperCase() + period.slice(1)).classList.add('active');
+            
+            autoCalculatePayouts();
+        }
+
         function renderPayoutList() {
             const payoutList = document.getElementById('payoutList');
             
@@ -3408,32 +3611,168 @@ document.querySelectorAll('input[name="saleType"]').forEach(radio => {
                 return;
             }
             
-            payoutList.innerHTML = payouts.map(payout => {
+            // Filter payouts based on current period
+            const now = new Date();
+            let filteredPayouts = payouts.filter(p => p.status === 'pending');
+            
+            payoutList.innerHTML = filteredPayouts.map(payout => {
                 const user = users.find(u => u.id === payout.userId);
                 if (!user) return '';
                 
+                // Get sales for this user in the current period
+                let userSales = sales.filter(s => s.userId === user.id && s.sold);
+                
+                if (currentPayoutPeriod === 'week') {
+                    const weekAgo = new Date(now);
+                    weekAgo.setDate(now.getDate() - 7);
+                    userSales = userSales.filter(s => new Date(s.date) >= weekAgo);
+                } else if (currentPayoutPeriod === 'month') {
+                    const monthAgo = new Date(now);
+                    monthAgo.setMonth(now.getMonth() - 1);
+                    userSales = userSales.filter(s => new Date(s.date) >= monthAgo);
+                }
+                
+                const salesCount = userSales.length;
+                const totalProfit = userSales.reduce((sum, s) => sum + ((s.price - s.buyPrice) * s.quantity), 0);
+                const commission = userSales.reduce((sum, s) => sum + ((s.commission || 0) * s.quantity), 0);
+                
+                // Calculate default vs custom commission breakdown
+                const defaultCommission = userSales.filter(s => !s.customCommission).reduce((sum, s) => sum + ((s.commission || 0) * s.quantity), 0);
+                const customCommissionTotal = userSales.filter(s => s.customCommission).reduce((sum, s) => sum + ((s.commission || 0) * s.quantity), 0);
+                
                 return `
                     <div class="payout-item ${payout.status}">
-                        <div class="payout-info">
-                            <div class="payout-admin">${user.customName}</div>
-                            <div class="payout-details">Date: ${payout.date}</div>
+                        <div class="payout-info" style="flex: 1;">
+                            <div class="payout-admin">👤 ${user.customName} (${user.profitPercent}% default)</div>
+                            <div class="payout-details">
+                                Sales: ${salesCount} items | Profit Generated: ₱${totalProfit.toFixed(2)}
+                            </div>
+                            ${customCommissionTotal > 0 ? `
+                                <div class="payout-breakdown">
+                                    Default (${user.profitPercent}%): ₱${defaultCommission.toFixed(2)} | 
+                                    Custom: ₱${customCommissionTotal.toFixed(2)}
+                                </div>
+                            ` : ''}
                         </div>
-                        <div class="payout-amount">₱${payout.amount.toFixed(2)}</div>
+                        <div class="payout-amount">💰 ₱${commission.toFixed(2)}</div>
                         <span class="payout-status ${payout.status}">${payout.status}</span>
-                        ${payout.status === 'pending' ? `<button class="action-btn edit-btn" onclick="markPaid(${payout.id})">✅ Mark Paid</button>` : ''}
+                        ${payout.status === 'pending' ? `
+                            <button class="action-btn edit-btn" onclick="openMarkPaidModal(${payout.id}, ${user.id}, ${commission})">
+                                ✅ Mark as Paid
+                            </button>
+                        ` : ''}
                     </div>
                 `;
             }).join('');
+            
+            if (filteredPayouts.length === 0) {
+                payoutList.innerHTML = '<div class="empty-state"><div class="empty-icon">💰</div><p>No pending payouts</p></div>';
+            }
         }
 
-        function markPaid(payoutId) {
-            getRef('payouts/' + payoutId).update({ status: 'paid' })
+        function openMarkPaidModal(payoutId, userId, amount) {
+            document.getElementById('payoutToMarkId').value = payoutId;
+            document.getElementById('payoutToMarkUserId').value = userId;
+            document.getElementById('payoutToMarkAmount').value = amount;
+            document.getElementById('markPaidModal').classList.add('show');
+        }
+
+        function closeMarkPaidModal() {
+            document.getElementById('markPaidModal').classList.remove('show');
+            document.getElementById('markPaidForm').reset();
+        }
+
+        function confirmMarkAsPaid(event) {
+            event.preventDefault();
+            
+            const payoutId = document.getElementById('payoutToMarkId').value;
+            const userId = parseInt(document.getElementById('payoutToMarkUserId').value);
+            const amount = parseFloat(document.getElementById('payoutToMarkAmount').value);
+            const method = document.getElementById('paymentMethod').value;
+            const reference = document.getElementById('paymentReference').value;
+            const notes = document.getElementById('paymentNotes').value;
+            
+            // Create payout history record
+            const historyRecord = {
+                id: Date.now(),
+                userId: userId,
+                amount: amount,
+                method: method,
+                reference: reference || 'N/A',
+                notes: notes || 'N/A',
+                period: currentPayoutPeriod,
+                paidDate: new Date().toISOString().split('T')[0],
+                timestamp: Date.now()
+            };
+            
+            // Save history record
+            getRef('payoutHistory/' + historyRecord.id).set(historyRecord)
                 .then(() => {
-                    showToast('✅ Payout marked as paid', 'success');
+                    // Update payout status to paid
+                    return getRef('payouts/' + payoutId).update({ 
+                        status: 'paid',
+                        paidDate: historyRecord.paidDate,
+                        method: method,
+                        reference: reference
+                    });
+                })
+                .then(() => {
+                    showToast('✅ Payout marked as paid and saved to history!', 'success');
+                    closeMarkPaidModal();
+                    autoCalculatePayouts();
                 })
                 .catch((error) => {
                     showToast('❌ Error: ' + error.message, 'error');
                 });
+        }
+
+        function openPayoutHistory() {
+            document.getElementById('payoutHistoryModal').classList.add('show');
+            loadPayoutHistory();
+        }
+
+        function closePayoutHistory() {
+            document.getElementById('payoutHistoryModal').classList.remove('show');
+        }
+
+        function loadPayoutHistory() {
+            getRef('payoutHistory').once('value', (snapshot) => {
+                const history = snapshot.val() || {};
+                const historyArray = Object.values(history).sort((a, b) => b.timestamp - a.timestamp);
+                
+                const tbody = document.getElementById('payoutHistoryBody');
+                
+                if (historyArray.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <div class="empty-icon">📜</div>
+                                    <p>No payout history yet</p>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                tbody.innerHTML = historyArray.map(record => {
+                    const user = users.find(u => u.id === record.userId);
+                    if (!user) return '';
+                    
+                    return `
+                        <tr>
+                            <td>${record.paidDate}</td>
+                            <td>${user.customName}</td>
+                            <td>${record.period}</td>
+                            <td>₱${record.amount.toFixed(2)}</td>
+                            <td>${record.method}</td>
+                            <td>${record.reference}</td>
+                            <td>${record.notes}</td>
+                        </tr>
+                    `;
+                }).join('');
+            });
         }
 
         // =================== AUTO-CALCULATE PAYOUTS ===================
