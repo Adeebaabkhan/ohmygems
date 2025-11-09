@@ -52,11 +52,76 @@
             --light: #1e293b;
         }
 
+        /* Basic Themes */
         body.theme-purple { --primary: #8B5CF6; }
         body.theme-blue { --primary: #3B82F6; }
         body.theme-green { --primary: #10B981; }
         body.theme-pink { --primary: #EC4899; }
         body.theme-orange { --primary: #F59E0B; }
+
+        /* Community Themes */
+        body.theme-cherry { 
+            --primary: #FFB7C5; 
+            --secondary: #FFF0F5;
+            background: linear-gradient(135deg, #FFB7C5 0%, #FFF0F5 50%, #FFE4E9 100%);
+        }
+        
+        body.theme-citrus { 
+            --primary: #FF9500; 
+            --secondary: #FFD60A;
+            background: linear-gradient(135deg, #FF9500 0%, #FFD60A 50%, #FFF4CC 100%);
+        }
+        
+        body.theme-lavender { 
+            --primary: #B794F4; 
+            --secondary: #F0E5FF;
+            background: linear-gradient(135deg, #B794F4 0%, #E9D8FD 50%, #F0E5FF 100%);
+        }
+        
+        body.theme-ocean { 
+            --primary: #1E40AF; 
+            --secondary: #06B6D4;
+            background: linear-gradient(135deg, #1E40AF 0%, #06B6D4 50%, #67E8F9 100%);
+        }
+        
+        body.theme-fire { 
+            --primary: #EF4444; 
+            --secondary: #3B82F6;
+            background: linear-gradient(135deg, #EF4444 0%, #EC4899 50%, #3B82F6 100%);
+        }
+        
+        body.theme-rainbow { 
+            --primary: #EC4899;
+            background: linear-gradient(135deg, #EF4444 0%, #F59E0B 16%, #10B981 33%, #3B82F6 50%, #8B5CF6 66%, #EC4899 83%, #EF4444 100%);
+        }
+        
+        body.theme-dark { 
+            --primary: #6366F1; 
+            --bg-color: #0f172a;
+            --text-color: #f1f5f9;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --light: #1e293b;
+            background: linear-gradient(135deg, #020617 0%, #0f172a 50%, #1e293b 100%);
+        }
+        
+        body.theme-sunshine { 
+            --primary: #FBBF24; 
+            --secondary: #FEF3C7;
+            background: linear-gradient(135deg, #FBBF24 0%, #FDE68A 50%, #FEF3C7 100%);
+        }
+        
+        body.theme-mint { 
+            --primary: #10B981; 
+            --secondary: #D1FAE5;
+            background: linear-gradient(135deg, #10B981 0%, #6EE7B7 50%, #D1FAE5 100%);
+        }
+        
+        body.theme-grape { 
+            --primary: #A855F7; 
+            --secondary: #F3E8FF;
+            background: linear-gradient(135deg, #A855F7 0%, #D8B4FE 50%, #F3E8FF 100%);
+        }
 
         body {
             font-family: var(--font-family);
@@ -2266,13 +2331,23 @@ body.dark-mode .profile-select-btn {
             
             <div class="settings-grid">
                 <div class="setting-card">
-                    <div class="setting-title">🎨 Theme Colors</div>
+                    <div class="setting-title">🎨 Community Themes</div>
                     <select id="themeSelect" style="width: 100%; padding: 12px; border-radius: 15px; border: 3px solid var(--border-color); background: var(--light); color: var(--text-color); font-weight: 700;">
-                        <option value="theme-purple">Purple</option>
-                        <option value="theme-blue">Blue</option>
-                        <option value="theme-green">Green</option>
-                        <option value="theme-pink">Pink</option>
-                        <option value="theme-orange">Orange</option>
+                        <option value="theme-purple">💜 Purple (Default)</option>
+                        <option value="theme-blue">💙 Blue</option>
+                        <option value="theme-green">💚 Green</option>
+                        <option value="theme-pink">💗 Pink</option>
+                        <option value="theme-orange">🧡 Orange</option>
+                        <option value="theme-cherry">🌸 Cherry Blossom</option>
+                        <option value="theme-citrus">🍊 Citrus Burst</option>
+                        <option value="theme-lavender">💐 Lavender Dreams</option>
+                        <option value="theme-ocean">🌊 Deep Ocean</option>
+                        <option value="theme-fire">🔥 Fire & Ice</option>
+                        <option value="theme-rainbow">🌈 Rainbow Pride</option>
+                        <option value="theme-dark">🌑 Dark Mode Pro</option>
+                        <option value="theme-sunshine">☀️ Sunshine Yellow</option>
+                        <option value="theme-mint">🌿 Mint Fresh</option>
+                        <option value="theme-grape">🍇 Grape Soda</option>
                     </select>
                 </div>
                 
@@ -2287,8 +2362,111 @@ body.dark-mode .profile-select-btn {
                 </div>
             </div>
             
+            <!-- Advanced Theme Builder -->
+            <div style="margin-top: 30px; padding: 20px; background: var(--light); border-radius: 20px; border: 3px dashed var(--border-color);">
+                <h3 style="color: var(--primary); margin-bottom: 15px; font-weight: 800;">🎨 Custom Theme Builder</h3>
+                <p style="margin-bottom: 15px; opacity: 0.8; font-size: 0.9em;">Create your own custom theme!</p>
+                
+                <button class="btn btn-info" onclick="toggleThemeBuilder()">🎨 Open Theme Builder</button>
+            </div>
+            
             <div style="margin-top: 30px;">
                 <button class="btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theme Builder Modal -->
+    <div class="modal" id="themeBuilderModal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2>🎨 Custom Theme Builder</h2>
+                <button class="close-btn" onclick="closeThemeBuilder()">✕</button>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <h3 style="color: var(--primary); margin-bottom: 15px;">Colors</h3>
+                    
+                    <div class="form-group">
+                        <label>🎨 Primary Color</label>
+                        <input type="color" id="customPrimary" value="#8B5CF6" style="width: 100%; height: 50px; border-radius: 10px;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>💗 Secondary Color</label>
+                        <input type="color" id="customSecondary" value="#EC4899" style="width: 100%; height: 50px; border-radius: 10px;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>✅ Success Color</label>
+                        <input type="color" id="customSuccess" value="#10B981" style="width: 100%; height: 50px; border-radius: 10px;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>❌ Danger Color</label>
+                        <input type="color" id="customDanger" value="#EF4444" style="width: 100%; height: 50px; border-radius: 10px;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>⚠️ Warning Color</label>
+                        <input type="color" id="customWarning" value="#F59E0B" style="width: 100%; height: 50px; border-radius: 10px;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>ℹ️ Info Color</label>
+                        <input type="color" id="customInfo" value="#3B82F6" style="width: 100%; height: 50px; border-radius: 10px;">
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 style="color: var(--primary); margin-bottom: 15px;">Typography & Style</h3>
+                    
+                    <div class="form-group">
+                        <label>📝 Font Family</label>
+                        <select id="customFont" style="width: 100%; padding: 12px; border-radius: 10px;">
+                            <option value="'Poppins', sans-serif">Poppins</option>
+                            <option value="'Roboto', sans-serif">Roboto</option>
+                            <option value="'Montserrat', sans-serif">Montserrat</option>
+                            <option value="'Inter', sans-serif">Inter</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>📐 Border Radius</label>
+                        <select id="customRadius" style="width: 100%; padding: 12px; border-radius: 10px;">
+                            <option value="30px">More Rounded</option>
+                            <option value="20px">Rounded</option>
+                            <option value="10px">Less Rounded</option>
+                            <option value="5px">Square</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>⚡ Animation Speed</label>
+                        <select id="customAnimation" style="width: 100%; padding: 12px; border-radius: 10px;">
+                            <option value="0.2s">Fast</option>
+                            <option value="0.3s">Normal</option>
+                            <option value="0.5s">Slow</option>
+                            <option value="0s">None</option>
+                        </select>
+                    </div>
+                    
+                    <h3 style="color: var(--primary); margin: 20px 0 15px;">Preview</h3>
+                    <div id="themePreview" style="padding: 20px; background: var(--light); border-radius: 15px; border: 3px solid var(--border-color);">
+                        <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;">Primary Button</button>
+                        <button class="btn btn-success" style="width: 100%; margin-bottom: 10px;">Success Button</button>
+                        <button class="btn btn-danger" style="width: 100%;">Danger Button</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px; display: flex; gap: 15px; flex-wrap: wrap;">
+                <button class="btn btn-success" onclick="applyCustomTheme()">✅ Apply Theme</button>
+                <button class="btn btn-primary" onclick="saveCustomTheme()">💾 Save Theme</button>
+                <button class="btn btn-info" onclick="exportTheme()">📤 Export</button>
+                <button class="btn btn-secondary" onclick="importTheme()">📥 Import</button>
+                <button class="btn btn-danger" onclick="resetTheme()">🔄 Reset</button>
             </div>
         </div>
     </div>
@@ -4173,6 +4351,129 @@ totalPrice: subProduct.sharedPrice,
                 }
             });
         });
+
+        // =================== THEME BUILDER FUNCTIONS ===================
+        function toggleThemeBuilder() {
+            document.getElementById('themeBuilderModal').classList.add('show');
+        }
+
+        function closeThemeBuilder() {
+            document.getElementById('themeBuilderModal').classList.remove('show');
+        }
+
+        function applyCustomTheme() {
+            const primary = document.getElementById('customPrimary').value;
+            const secondary = document.getElementById('customSecondary').value;
+            const success = document.getElementById('customSuccess').value;
+            const danger = document.getElementById('customDanger').value;
+            const warning = document.getElementById('customWarning').value;
+            const info = document.getElementById('customInfo').value;
+            const font = document.getElementById('customFont').value;
+            const radius = document.getElementById('customRadius').value;
+            const animation = document.getElementById('customAnimation').value;
+
+            // Apply custom CSS variables
+            document.documentElement.style.setProperty('--primary', primary);
+            document.documentElement.style.setProperty('--secondary', secondary);
+            document.documentElement.style.setProperty('--success', success);
+            document.documentElement.style.setProperty('--danger', danger);
+            document.documentElement.style.setProperty('--warning', warning);
+            document.documentElement.style.setProperty('--info', info);
+            document.documentElement.style.setProperty('--font-family', font);
+            
+            // Update border radius for all elements
+            document.querySelectorAll('.card, .btn, input, select, textarea, .modal-content').forEach(el => {
+                el.style.borderRadius = radius;
+            });
+
+            showToast('✅ Custom theme applied!', 'success');
+        }
+
+        function saveCustomTheme() {
+            const customTheme = {
+                primary: document.getElementById('customPrimary').value,
+                secondary: document.getElementById('customSecondary').value,
+                success: document.getElementById('customSuccess').value,
+                danger: document.getElementById('customDanger').value,
+                warning: document.getElementById('customWarning').value,
+                info: document.getElementById('customInfo').value,
+                font: document.getElementById('customFont').value,
+                radius: document.getElementById('customRadius').value,
+                animation: document.getElementById('customAnimation').value
+            };
+
+            // Save to Firebase
+            getRef('settings/' + currentUsername + '/customTheme').set(customTheme)
+                .then(() => {
+                    showToast('✅ Custom theme saved!', 'success');
+                    applyCustomTheme();
+                })
+                .catch((error) => {
+                    showToast('❌ Error: ' + error.message, 'error');
+                });
+        }
+
+        function exportTheme() {
+            const customTheme = {
+                primary: document.getElementById('customPrimary').value,
+                secondary: document.getElementById('customSecondary').value,
+                success: document.getElementById('customSuccess').value,
+                danger: document.getElementById('customDanger').value,
+                warning: document.getElementById('customWarning').value,
+                info: document.getElementById('customInfo').value,
+                font: document.getElementById('customFont').value,
+                radius: document.getElementById('customRadius').value,
+                animation: document.getElementById('customAnimation').value
+            };
+
+            const themeCode = btoa(JSON.stringify(customTheme));
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(themeCode).then(() => {
+                showToast('✅ Theme code copied to clipboard!', 'success');
+            }).catch(() => {
+                prompt('Copy this theme code:', themeCode);
+            });
+        }
+
+        function importTheme() {
+            const themeCode = prompt('Enter theme code:');
+            if (!themeCode) return;
+
+            try {
+                const customTheme = JSON.parse(atob(themeCode));
+                
+                document.getElementById('customPrimary').value = customTheme.primary;
+                document.getElementById('customSecondary').value = customTheme.secondary;
+                document.getElementById('customSuccess').value = customTheme.success;
+                document.getElementById('customDanger').value = customTheme.danger;
+                document.getElementById('customWarning').value = customTheme.warning;
+                document.getElementById('customInfo').value = customTheme.info;
+                document.getElementById('customFont').value = customTheme.font;
+                document.getElementById('customRadius').value = customTheme.radius;
+                document.getElementById('customAnimation').value = customTheme.animation;
+
+                applyCustomTheme();
+                showToast('✅ Theme imported successfully!', 'success');
+            } catch (error) {
+                showToast('❌ Invalid theme code', 'error');
+            }
+        }
+
+        function resetTheme() {
+            document.getElementById('customPrimary').value = '#8B5CF6';
+            document.getElementById('customSecondary').value = '#EC4899';
+            document.getElementById('customSuccess').value = '#10B981';
+            document.getElementById('customDanger').value = '#EF4444';
+            document.getElementById('customWarning').value = '#F59E0B';
+            document.getElementById('customInfo').value = '#3B82F6';
+            document.getElementById('customFont').value = "'Poppins', sans-serif";
+            document.getElementById('customRadius').value = '20px';
+            document.getElementById('customAnimation').value = '0.3s';
+
+            applyCustomTheme();
+            showToast('✅ Theme reset to default!', 'success');
+        }
 
         // =================== BULK SALES FUNCTIONS ===================
         let bulkSalesRows = [];
