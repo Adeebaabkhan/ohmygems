@@ -2039,6 +2039,90 @@ body.dark-mode .profile-select-btn {
         </div>
     </div>
 
+    <!-- Inventory Dashboard Section (Owner Only) -->
+    <div id="inventoryDashboardSection" class="table-section" style="display: none;">
+        <h2 class="section-title">📦 Inventory Dashboard</h2>
+        <p style="margin-bottom: 20px; opacity: 0.8;">Track all accounts with their profile and slot status</p>
+        
+        <div style="margin-bottom: 20px;">
+            <button class="btn btn-primary" onclick="openAccountManagementModal()">➕ Create New Account</button>
+        </div>
+        
+        <div id="accountsList" class="product-list">
+            <!-- Accounts will be rendered here -->
+        </div>
+    </div>
+
+    <!-- Account Management Modal -->
+    <div class="modal" id="accountManagementModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2>🎬 Create Account</h2>
+                <button class="close-btn" onclick="closeAccountManagementModal()">✕</button>
+            </div>
+            
+            <form id="createAccountForm" onsubmit="saveAccount(event)">
+                <div class="form-group">
+                    <label>🆔 Account ID</label>
+                    <input type="text" id="accountIdInput" placeholder="e.g., NF001, DIS002" required>
+                    <small style="color: var(--text-color); opacity: 0.7; margin-top: 5px; display: block;">Unique identifier for this account</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>📦 Product</label>
+                    <select id="accountProductSelect" required>
+                        <option value="">-- Select Product --</option>
+                        <option value="Netflix">Netflix</option>
+                        <option value="Disney+">Disney+</option>
+                        <option value="HBO">HBO</option>
+                        <option value="YouTube Premium">YouTube Premium</option>
+                        <option value="Prime Video">Prime Video</option>
+                        <option value="Apple TV+">Apple TV+</option>
+                        <option value="Paramount+">Paramount+</option>
+                        <option value="Discovery+">Discovery+</option>
+                        <option value="Crunchyroll">Crunchyroll</option>
+                        <option value="VIU">VIU</option>
+                        <option value="WeTV">WeTV</option>
+                        <option value="Vimeo">Vimeo</option>
+                        <option value="iQIYI">iQIYI</option>
+                        <option value="Loklok">Loklok</option>
+                        <option value="iWant">iWant</option>
+                        <option value="Vivaone">Vivaone</option>
+                        <option value="Vivamax">Vivamax</option>
+                        <option value="Vivabundle">Vivabundle</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>🔢 Total Profiles</label>
+                    <input type="number" id="accountProfilesInput" min="1" max="10" value="5" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>📋 Profile Type</label>
+                    <div class="account-type-options">
+                        <div class="account-type-option">
+                            <input type="radio" id="accountTypeSolo" name="accountProfileType" value="solo" required>
+                            <label for="accountTypeSolo" class="account-type-label">
+                                <span>👤</span>
+                                <span>Solo (1 user per profile)</span>
+                            </label>
+                        </div>
+                        <div class="account-type-option">
+                            <input type="radio" id="accountTypeShared" name="accountProfileType" value="shared" checked>
+                            <label for="accountTypeShared" class="account-type-label">
+                                <span>👥</span>
+                                <span>Shared (2 users per profile)</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-success">✅ Create Account</button>
+            </form>
+        </div>
+    </div>
+
     <!-- Product Management Modal -->
     <div class="modal" id="productModal">
         <div class="modal-content">
@@ -3089,6 +3173,7 @@ function selectProfile(number) {
                 document.getElementById('btnUsers').style.display = 'inline-block';
                 document.getElementById('btnProducts').style.display = 'inline-block';
                 document.getElementById('btnPayout').style.display = 'inline-block';
+                document.getElementById('inventoryDashboardSection').style.display = 'block';
             } else {
                 // Admins can also view/edit products
                 document.getElementById('btnProducts').style.display = 'inline-block';
@@ -3197,6 +3282,9 @@ getRef('subscriptionProducts').on('value', (snapshot) => {
         accounts = Object.values(accountsData);
         console.log('🎬 Loaded accounts:', accounts.length);
         populateAccountDropdown();
+        if (currentSession.role === 'owner') {
+            renderInventoryDashboard();
+        }
     });
 
     // Load settings
@@ -4033,6 +4121,162 @@ document.querySelectorAll('input[name="saleType"]').forEach(radio => {
                     });
             }
         });
+
+        // =================== ACCOUNT MANAGEMENT ===================
+        
+        function openAccountManagementModal() {
+            document.getElementById('accountManagementModal').classList.add('show');
+        }
+        
+        function closeAccountManagementModal() {
+            document.getElementById('accountManagementModal').classList.remove('show');
+            document.getElementById('createAccountForm').reset();
+        }
+        
+        function saveAccount(event) {
+            event.preventDefault();
+            
+            const accountId = document.getElementById('accountIdInput').value.trim();
+            const product = document.getElementById('accountProductSelect').value;
+            const totalProfiles = parseInt(document.getElementById('accountProfilesInput').value);
+            const profileType = document.querySelector('input[name="accountProfileType"]:checked').value;
+            const slotsPerProfile = profileType === 'solo' ? 1 : 2;
+            
+            // Check if account ID already exists
+            const existingAccount = accounts.find(a => a.id === accountId);
+            if (existingAccount) {
+                showToast('❌ Account ID already exists!', 'error');
+                return;
+            }
+            
+            const newAccount = {
+                id: accountId,
+                product: product,
+                totalProfiles: totalProfiles,
+                profileType: profileType,
+                slotsPerProfile: slotsPerProfile,
+                createdDate: new Date().toISOString().split('T')[0],
+                createdBy: currentSession.username
+            };
+            
+            getRef('accounts/' + accountId).set(newAccount)
+                .then(() => {
+                    closeAccountManagementModal();
+                    showToast('✅ Account created successfully!', 'success');
+                    renderInventoryDashboard();
+                })
+                .catch((error) => {
+                    showToast('❌ Error: ' + error.message, 'error');
+                });
+        }
+        
+        function renderInventoryDashboard() {
+            const accountsList = document.getElementById('accountsList');
+            
+            if (accounts.length === 0) {
+                accountsList.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div><p>No accounts yet. Create your first account!</p></div>';
+                return;
+            }
+            
+            accountsList.innerHTML = accounts.map(account => {
+                // Calculate statistics for this account
+                const accountSales = sales.filter(s => s.accountId === account.id);
+                const totalRevenue = accountSales.reduce((sum, s) => sum + s.totalPrice, 0);
+                const totalCommissions = accountSales.reduce((sum, s) => sum + (s.commission * s.quantity), 0);
+                
+                // Build profile status
+                let profilesHTML = '';
+                for (let i = 1; i <= account.totalProfiles; i++) {
+                    const profileSales = accountSales.filter(s => s.profileNumber === i);
+                    const filledSlots = profileSales.length;
+                    const maxSlots = account.slotsPerProfile;
+                    
+                    let statusIcon = '';
+                    let statusColor = '';
+                    let borderColor = '';
+                    
+                    if (filledSlots === 0) {
+                        statusIcon = '✅';
+                        statusColor = 'var(--success)';
+                        borderColor = 'var(--success)';
+                    } else if (filledSlots < maxSlots) {
+                        statusIcon = '⚠️';
+                        statusColor = 'var(--warning)';
+                        borderColor = 'var(--warning)';
+                    } else {
+                        statusIcon = '🔴';
+                        statusColor = 'var(--danger)';
+                        borderColor = 'var(--danger)';
+                    }
+                    
+                    let slotsHTML = '';
+                    for (let slot = 1; slot <= maxSlots; slot++) {
+                        const slotSale = profileSales.find(s => s.slotNumber === slot);
+                        if (slotSale) {
+                            slotsHTML += `<div style="font-size: 0.85em; margin-left: 20px;">• Slot ${slot}: ✅ SOLD by ${slotSale.soldBy} (${slotSale.date})</div>`;
+                        } else {
+                            slotsHTML += `<div style="font-size: 0.85em; margin-left: 20px;">• Slot ${slot}: 🟢 AVAILABLE</div>`;
+                        }
+                    }
+                    
+                    profilesHTML += `
+                        <div style="background: var(--light); padding: 15px; border-radius: 15px; border: 3px solid ${borderColor}; margin-bottom: 10px;">
+                            <div style="font-weight: 700; color: var(--text-color); margin-bottom: 5px;">
+                                ${statusIcon} Profile ${i}: ${filledSlots}/${maxSlots} slots filled
+                            </div>
+                            ${slotsHTML}
+                            ${profileSales.length > 0 && profileSales[0].profileName ? `<div style="font-size: 0.85em; margin-top: 5px; opacity: 0.8;">Name: ${profileSales[0].profileName}</div>` : ''}
+                        </div>
+                    `;
+                }
+                
+                return `
+                    <div class="product-item">
+                        <div class="product-item-header">
+                            <div class="product-item-name">🎬 ${account.id} - ${account.product}</div>
+                            <div>
+                                ${currentSession.role === 'owner' ? `<button class="action-btn delete-btn" onclick="deleteAccount('${account.id}')">🗑️ Delete</button>` : ''}
+                            </div>
+                        </div>
+                        <div class="product-item-details">
+                            <div class="product-detail">
+                                <div class="product-detail-label">📊 Total Profiles</div>
+                                <div class="product-detail-value">${account.totalProfiles}</div>
+                            </div>
+                            <div class="product-detail">
+                                <div class="product-detail-label">👥 Profile Type</div>
+                                <div class="product-detail-value">${account.profileType} (${account.slotsPerProfile} per profile)</div>
+                            </div>
+                            <div class="product-detail">
+                                <div class="product-detail-label">💰 Total Revenue</div>
+                                <div class="product-detail-value">₱${totalRevenue.toFixed(2)}</div>
+                            </div>
+                            <div class="product-detail">
+                                <div class="product-detail-label">🎯 Total Commissions</div>
+                                <div class="product-detail-value">₱${totalCommissions.toFixed(2)}</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px;">
+                            <h4 style="color: var(--primary); margin-bottom: 15px; font-weight: 700;">Profile Status</h4>
+                            ${profilesHTML}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function deleteAccount(accountId) {
+            if (!confirm('Delete this account? All associated sales will remain but references will be broken.')) return;
+            
+            getRef('accounts/' + accountId).remove()
+                .then(() => {
+                    showToast('🗑️ Account deleted', 'info');
+                    renderInventoryDashboard();
+                })
+                .catch((error) => {
+                    showToast('❌ Error: ' + error.message, 'error');
+                });
+        }
 
         // =================== DELETE SALE ===================
         function deleteSale(id) {
